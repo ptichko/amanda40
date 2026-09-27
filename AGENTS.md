@@ -199,10 +199,11 @@ Everything below lives in the CONTENT SECTION of `index.html`:
 | symbol | purpose |
 | --- | --- |
 | `CONFIG` | `winDistance`, `maxPenaltyPoints`, `minTravel`/`maxTravel`, `oracleAppearChance` |
-| `ZONES` | the progress ranges (`min`/`max`) locations are grouped into |
+| `ZONES` | the progress ranges (`min`/`max`) locations are grouped into. Three eras, each named with its years: **Childhood, 1986 to 2001** (0–13), **The Teenage Years, 2000 to 2005** (14–26), **Grown Up, 2006 to 2012** (27–40) |
 | `ORACLE_HINTS` | hint texts the Oracle can give, each with an `accuracy` and optional `weight` |
 | `INTRO_LOCATION` | the fixed location every game starts at |
-| `LOCATIONS` | every place the player can land |
+| `INTRO_SEQUENCE` | pixel-art panels that play once after "Begin the journey", before zone 1 — see "The intro sequence" below |
+| `LOCATIONS` | the 15 places the player can land, in date order within each zone |
 | `END_TEXT` | `win` (with `goodMessage`/`badMessage`) and `gameover` titles, messages, images |
 
 ## Content recipe
@@ -235,12 +236,32 @@ Conventions that are not enforced by code but matter in practice:
   location in the wrong zone shows up at the wrong point in the story.
 - **`image`** should point at `images/` with the matching filename. Drop the real art in
   under the same name and the game picks it up with no code change.
-- **`choices`** — 2 to 4 per location works best. At least one `normal`, and spread
-  `penalty`/`heal` so a run has texture. A `gameover` should be rare and intentional.
+- **`choices`** — 2 to 4 per location works best. The choice marked `oracleCorrect: true`
+  is the one that actually happened; the others are the roads not taken. The Oracle
+  highlights the true one, which is why it beats the automatic best-outcome ranking in
+  `getCorrectChoice()` — mark it on **every** location, or she starts guessing.
 - **`outcome.image`** is optional; set it to show a picture inside the outcome box
   (useful for a dramatic `gameover`).
 - **Tone**: warm, affectionate, funny. This is a birthday present. Avoid anything that
   would read as a jab.
+
+## The intro sequence
+
+`INTRO_SEQUENCE` is an array of `{ image, title, caption, button }` panels played once,
+after the player presses "Begin the journey" and before the first zone. It is where
+Wentworth Douglass Hospital lives — the birth is a panel, not a location, because it has
+no choices, no outcome, and should never come up again or appear in the album.
+
+`playIntroSequence()` in the engine walks the panels, one Continue button each, then hands
+control back so the first zone location is picked as normal. Two things to know:
+
+- **It has to survive a replay.** A shared link has no player to press Continue, so
+  `playIntroSequence()` renders each panel and steps straight to the next when
+  `state.replaying` is set. Without that, every shared link dead-ends on the birth panel.
+- It needs no log token: it's deterministic, so the replay rebuilds it for free. Don't
+  add one.
+
+Add as many panels as you like — the array is the whole interface.
 
 ## Invariants a change must preserve
 
@@ -250,11 +271,15 @@ Conventions that are not enforced by code but matter in practice:
 - `ZONES` ranges must be contiguous and cover `0..winDistance` with no gaps, or
   `getZoneForProgress()` silently falls back to the last zone.
 - `INTRO_LOCATION` must stay outside `LOCATIONS` and without a `zone`.
-- If you add zones, also update the two-button hardcoded list in
-  `appendZoneTransitionEntry` — it assumes exactly three zones.
-- The Oracle's "correct" choice is derived, not declared: `getCorrectChoice()` picks the
-  best-ranked outcome type via `OUTCOME_RANK` (`heal` > `normal` > `penalty` >
-  `gameover`). To pin a specific choice instead, mark it `oracleCorrect: true`.
+- `INTRO_SEQUENCE` panels must stay outside `LOCATIONS` too, or they become ordinary
+  stops that can repeat and turn up in the album.
+- Every location needs exactly one `oracleCorrect: true` choice. With none,
+  `getCorrectChoice()` falls back to the best-ranked outcome type via `OUTCOME_RANK`
+  (`heal` > `normal` > `penalty` > `gameover`), and the Oracle starts pointing at
+  whatever is safest rather than at what happened. `test_content.js` enforces this.
+- Adding a zone needs no engine change — `renderZoneMarkers()` and
+  `appendZoneTransitionEntry()` both read `ZONES` — but the new zone's `min`/`max` must
+  keep the ranges contiguous.
 
 ## Images
 
@@ -264,15 +289,32 @@ non-location assets:
 | file | role | status |
 | --- | --- | --- |
 | `loc_intro.svg` | intro card | **final** — pixel-art Amanda in a birthday hat, waving on the road under the "40" |
+| `cutscene_birth.svg` | the first intro panel | **final** — a hospital room in Dover NH, 1986 |
 | `win.svg` | win card | **final** — pixel-art Amanda, cake, confetti |
 | `gameover.svg` | game-over card | **final** — dejected pixel-art Amanda, arms down, beside the dropped birthday cake under a cold moon |
 | `walker_0..2.svg` | the three-frame sprite that rides the progress bar | **final** — same character, 24x31 |
 | `bg-tile.svg` | the seamless wallpaper the page background tiles | **hand-written** — the only image not generated by `make_art.py`; the stylesheet references it by relative path, don't rename |
-| `loc_*.svg` (the other six) | one per mid-game location | **placeholders** — replace these |
+| `loc_*.svg` (the 15 mid-game locations) | one per location | **placeholders** — generated, meant to be replaced with real photos |
 
 Replace placeholder files in place, keeping the filenames, and everything just works.
 Prefer small assets so the page still opens instantly from disk. If you add a location,
-add its image too.
+add its image too (or re-run `--placeholders`, below).
+
+### Placeholder cards
+
+The 15 mid-game location images are generated too, but **not** by `make_art.py`'s
+`JOBS` and not covered by `--check` — they exist to be replaced, and `--check` would
+start failing the moment a real photo took one of their names. Write them with:
+
+```powershell
+python tools/make_art.py --placeholders        # rewrite every placeholder card
+python tools/make_art.py --list-placeholders   # what they are and which year each shows
+```
+
+They are generated by **parsing `index.html`**, not from a list in the script, so a
+location can't be renamed in the content and left behind in the art. Each card is a
+dithered gradient in its zone's colour, a dashed frame, the year, and the location name
+in the blocky font.
 
 The pixel art is deliberately 8px-cell chunky with `shape-rendering="crispEdges"`. If you
 swap in a photo for one of the final files, that's fine — but keep

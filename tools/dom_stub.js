@@ -39,7 +39,8 @@ function contentObject() {
   if (start < 0 || engineBanner < 0) throw new Error('content section not found');
   const block = js.slice(start, js.lastIndexOf('/*', engineBanner));
   return vm.runInNewContext(
-    block + '\n;({ CONFIG, ZONES, ORACLE_HINTS, INTRO_LOCATION, LOCATIONS, END_TEXT })'
+    block + '\n;({ CONFIG, ZONES, ORACLE_HINTS, INTRO_LOCATION, INTRO_SEQUENCE,' +
+    ' LOCATIONS, END_TEXT })'
   );
 }
 
@@ -238,10 +239,26 @@ function stepOnce(g, pick) {
   if (oracle && !oracle.disabled) g.key('o');
 
   const choices = g.findIn(card, 'choice-btn');
-  if (!choices.length) return false;
+  if (!choices.length) {
+    // No choices here: an intro cutscene panel, or any other card whose only
+    // way forward is its button. ENTER presses it.
+    return clickForward(g);
+  }
   const index = Math.min(pick(choices), choices.length - 1);
   g.key(String(index + 1));
   g.key('Enter');
+  return true;
+}
+
+// Clicks the last enabled primary button in the current card -- the way forward
+// from an intro cutscene panel. Exported because several drivers need it and
+// forgetting to handle the cutscene shows up as a test that silently stalls.
+function clickForward(g) {
+  const card = g.card();
+  if (!card) return false;
+  const btns = g.findIn(card, 'primary-btn').filter(b => !b.disabled && !b.removed);
+  if (!btns.length) return false;
+  btns[btns.length - 1].click();
   return true;
 }
 
@@ -265,7 +282,12 @@ function playWithKeyboard(g, choiceFor) {
       trail.push('O:oracle');
     }
     const choices = g.findIn(card, 'choice-btn');
-    if (!choices.length) break;
+    if (!choices.length) {
+      // An intro cutscene panel: its button is the only way on.
+      if (!clickForward(g)) break;
+      trail.push('ENTER:cutscene');
+      continue;
+    }
     const index = Math.min(pick(choices), choices.length - 1);
     g.key(String(index + 1));
     trail.push((index + 1) + ':' + ((choices[index].children[0] || {})._text || ''));
@@ -273,6 +295,19 @@ function playWithKeyboard(g, choiceFor) {
     trail.push('ENTER:continue');
   }
   return trail;
+}
+
+// The label of the first choice in the content with the given outcome type.
+// Tests match on this instead of hardcoding a string, so rewording a choice in
+// index.html doesn't quietly turn a test into a no-op.
+function labelWithOutcome(type) {
+  const { LOCATIONS } = contentObject();
+  for (const loc of LOCATIONS) {
+    for (const choice of loc.choices) {
+      if (choice.outcome.type === type) return choice.label;
+    }
+  }
+  return null;
 }
 
 /*
@@ -297,6 +332,6 @@ function findSeedRun(pred, choiceFor, limit = 60) {
 }
 
 module.exports = {
-  REPO, INDEX, readIndex, gameScript, contentObject,
-  boot, collect, reporter, stepOnce, playWithKeyboard, findSeedRun,
+  REPO, INDEX, readIndex, gameScript, contentObject, labelWithOutcome,
+  boot, collect, reporter, stepOnce, clickForward, playWithKeyboard, findSeedRun,
 };

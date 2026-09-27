@@ -6,31 +6,44 @@ and nothing to compile.
 
 ## The game
 
-A journey in three zones: **The Long Way Round**, **The Turning Point**, and **The Far
-Shore**. Each step you pick one of 2–4 choices; every choice has a fixed, determined
+A journey in three eras — **Childhood, 1986 to 2001**, **The Teenage Years, 2000 to
+2005**, and **Grown Up, 2006 to 2012** — across 15 stops drawn from the actual life: the
+first house in Rochester, a talent show there's video of, a Velveteen Rabbit with the
+playbill to prove it, a train from Philadelphia to make a prize, a degree, and a magazine
+article. Each step you pick one of 2–3 choices; every choice has a fixed, determined
 outcome, and only the distance you travel is random. Travel 40 steps to reach the far side
 and win. Three stumbles (red Xs in the HUD) and the journey ends early.
 
-An **Oracle** turns up at most locations. Consult her and she'll highlight one of your
-choices — she's right some of the time, and the odds depend on which hint she draws.
-Her hit rate shows up in the end-of-game stats, so consult her if you like, and don't
-if you'd rather trust yourself.
+Every location has one choice marked `oracleCorrect` — the one that really happened. The
+others are the roads not taken.
+
+An **Oracle** turns up at most locations. Consult her and she'll highlight what actually
+happened — she's right some of the time, and the odds depend on which hint she draws. Her
+hit rate shows up in the end-of-game stats, so consult her if you like, and don't if you'd
+rather trust yourself.
+
+Before the first zone there's a **cutscene**: click *Begin the journey* and you get a
+pixel-art panel of the room you were born in — Wentworth Douglass Hospital, Dover NH,
+1986 — before the road starts.
 
 ## Status: placeholder content
 
-The engine is complete and playable. **All the writing is placeholder** — six generic
-locations, placeholder Oracle hints, and placeholder win/lose text, each marked
-`PLACEHOLDER:` in the source. Replace them with real places, memories, and inside
-jokes from Amanda's life.
+The engine is complete and playable, and the **structure is real** — the three eras, the
+15 stops, the years, the artefacts (video, playbill, CD, certificate, letter, newspaper
+article, magazine) and the true/wrong choice on every location are all in place. What is
+still placeholder is the **wording**: every description, caption and outcome is a first
+draft, marked `PLACEHOLDER:` in the source. 71 lines to go. `test_content.js` reports the
+count on every run, and it should be zero before this is given to anyone.
 
-Everything you'd want to write lives in the **CONTENT SECTION** near the top of the
-`<script>` block in `index.html`:
+Swap in the real memories, keeping the years and the facts. Everything you'd want to write
+lives in the **CONTENT SECTION** near the top of the `<script>` block in `index.html`:
 
 - `CONFIG` — total steps to win, stumble limit, travel range, Oracle appearance rate.
-- `ZONES` — the three progress ranges locations are grouped into.
+- `ZONES` — the three eras, each with its year span.
 - `ORACLE_HINTS` — hint texts the Oracle can give, and how often she's right.
 - `INTRO_LOCATION` — the fixed location every game starts at.
-- `LOCATIONS` — the places you can land, each with a `zone`, a `weight`, and choices.
+- `INTRO_SEQUENCE` — the pixel-art panels that play after "Begin the journey".
+- `LOCATIONS` — the 15 places you can land, each with a `zone`, a `weight`, and choices.
 - `END_TEXT` — win and game-over titles and messages.
 
 The **ENGINE SECTION** below it (selection, state, rendering) shouldn't need changes
@@ -80,11 +93,14 @@ journey, with the ones you never reached greyed out.
 
 ## Images
 
-`images/` is done for the intro, win, and game-over cards (real pixel art — leave those
-alone unless you want to redraw her). The six mid-game locations still hold grey
-placeholders: replace those files in place, keeping the filenames, and the game picks up
-the new art with no code change. To see everything at once without playing through, open
-`index.html?debug=true` — it dumps every location and both end screens into the feed.
+`images/` is done for the intro, the birth cutscene, the win card, and the game-over card
+(real pixel art — leave those alone unless you want to redraw her). The 15 mid-game
+locations have generated placeholder cards instead — a dithered gradient in their era's
+colour, the year, and the location name. Drop a real photo in under the same filename and
+the game picks it up with no code change. Regenerate the placeholders after editing the
+content with `python tools/make_art.py --placeholders`. To see everything at once without
+playing through, open `index.html?debug=true` — it dumps every location and both end
+screens into the feed.
 
 ## Working on it
 
@@ -106,8 +122,9 @@ redrawing pixels by hand. `tools/make_art.py` rewrites the six files it owns:
 
 ```powershell
 python tools/make_art.py --preview    # print the sprite as ASCII
-python tools/make_art.py              # rewrite the art
-python tools/make_art.py --check      # fail if images/ is out of date
+python tools/make_art.py              # rewrite the finished art
+python tools/make_art.py --placeholders  # rewrite the location placeholders
+python tools/make_art.py --check      # fail if the finished art is out of date
 ```
 
 Open `tools/art_preview.html` afterwards to eyeball every image at once, zoomed.
@@ -117,67 +134,56 @@ invariants a change must preserve, and the rules for keeping replay and sound wo
 
 ## Next steps
 
-Ordered, roughly by dependency. Steps 1–3 are the actual gift; 4–5 are polish. The engine
-is finished — everything below is content and art.
+The structure is done. What's left is the writing and the photographs.
 
-### 1. Brainstorm the places (outside the code)
+### 1. Replace the 71 `PLACEHOLDER:` lines
 
-Make a list of real places, first get-togethers, and recurring spots from Amanda's life
-— ten to fifteen is plenty. For each, note roughly *when* it happened, because that
-decides which zone it belongs in. Decide up front whether real people get named; a
-"we both know who this is" inside joke lands much harder than a stranger's name.
+`grep -n PLACEHOLDER index.html` is the worklist. Everything it lists is a first draft
+written from the facts — the years, the schools, the towns, the artefacts and who did what
+are all correct, but the voice is generic. Go through it and make it hers.
 
-### 2. Fill in the content (`index.html`, CONTENT SECTION only)
+Two things to preserve while you do:
 
-Work zone by zone, so the story escalates:
+- **Keep the years.** They carry the chronology, and the placeholder cards read them
+  straight out of the descriptions.
+- **Keep `oracleCorrect: true` on the true choice.** It's what makes the Oracle point at
+  what actually happened instead of guessing. `test_content.js` fails if a location
+  doesn't have exactly one.
 
-| zone | steps | should feel like |
-| --- | --- | --- |
-| 1 | 0–13 | the beginning — early years, first adventures, the low-stuff |
-| 2 | 14–26 | the middle — growth, trouble, the best and worst stories |
-| 3 | 27–40 | now — leading to the Lookout Point and the win |
+If you add or remove a location, re-run `python tools/make_art.py --placeholders` so the
+cards match.
 
-For each place: `id` (`loc_<camelCaseOfName>`), `name`, a one-or-two-sentence
-`description` in second person ("you"), `image`, `zone`, `weight`, and 2–4 `choices`
-with a fixed `outcome` each. A run is roughly 13–20 actions, so **3–4 locations per
-zone is about right** — enough that the player rarely sees the same place twice.
+### 2. Drop in the photographs
 
-Then write, in order: `ORACLE_HINTS` (four hints, descending `accuracy`, in the
-Oracle's voice), `INTRO_LOCATION`'s horoscope, and `END_TEXT` — including the
-`badMessage` branch for players who leave an offering at the shrine.
+The 15 mid-game locations have generated placeholder cards. Each is named after its
+location `id` — put a real photo at that filename and nothing else needs to change.
+Keep the wide aspect ratio the placeholders use and keep files small; the whole point is
+that it opens instantly from disk. `index.html?debug=true` shows every one at once.
 
-When the writing is done, `grep -n PLACEHOLDER index.html` should return nothing.
+The obvious candidates are the things you already have: the talent show video, the
+playbill and the original Velveteen Rabbit script, the DARE speech in your own
+handwriting, the CD, the newspaper clipping, the certificate, the letter, the magazine.
 
-### 3. Swap the remaining art (`images/`)
-
-The intro, win, and game-over cards are finished pixel art — leave them. The six
-mid-game locations still hold grey placeholders: drop in one image per location, named
-after its `id` (`loc_theCornerDiner.svg` → `images/loc_theCornerDiner.svg`). Keep the
-wide aspect ratio the placeholders use and keep files small — the whole point is that it
-opens instantly from disk. Check every image at once with `index.html?debug=true`.
-
-### 4. Playtest and tune
+### 3. Playtest
 
 Play several full runs by hand, both outcomes. Things to look for:
 
-- a location that never comes up, or one that comes up every run
-- a zone where every choice is a `penalty` — a death sentence rather than a story beat
+- a stop that never comes up, or one that comes up every run
+- a location whose real detail didn't make it into the draft
 - win/lose balance: is the journey ending on the first stumble too often?
 - then tune `CONFIG` (`winDistance`, `minTravel`/`maxTravel`, `maxPenaltyPoints`,
   `oracleAppearChance`). If you change `winDistance`, **change the `ZONES` `max` values
   to match** — see the invariants in [AGENTS.md](AGENTS.md).
 
-### 5. Ship it
+### 4. Ship it
 
-- [ ] Commit, then open `index.html` on the machine it'll be played on (a `file://`
-      path works; no server, nothing to install). If she'll play it on a phone, serve it
-      for a minute with `python -m http.server 8000 --directory .` and open
-      `http://<your-pc-ip>:8000` — phones can't open `file://` paths.
-- [ ] Run `tools\run_tests.ps1` one last time; it should be green and report zero
-      `PLACEHOLDER:` lines.
+- [ ] Run `tools\run_tests.ps1` one last time; green, and reporting zero `PLACEHOLDER:`
+      lines.
+- [ ] Open `index.html` on the machine it'll be played on (a `file://` path works; no
+      server, nothing to install). If she'll play it on a phone, serve it for a minute with
+      `python -m http.server 8000 --directory .` and open `http://<your-pc-ip>:8000` —
+      phones can't open `file://` paths.
 - [ ] Check the `<title>` and `<h1>` still suit, and add a dedication line to
       `INTRO_LOCATION` if you want her name in the first thing she reads.
-- [ ] If the intro mentions a year, remember it goes stale next year.
-- [ ] Optional extras, all content-only: an `outcome.image` on a dramatic game over, a
-      fourth zone (needs the hardcoded three-zone list in `appendZoneTransitionEntry`
-      updated too), or a `weight` bump so the best location shows up more often.
+- [ ] Optional, all content-only: a second intro panel, an `outcome.image` on a dramatic
+      game over, or a `weight` bump so the best stop comes up more often.

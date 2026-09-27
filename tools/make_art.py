@@ -30,6 +30,7 @@ around or restage a background. Nothing else in the repo needs to know.
 import io
 import os
 import random
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -171,16 +172,90 @@ class Grid:
 
 
 # ---------------------------------------------------------------- glyphs
-# 5x7 blocky capitals. The scenes currently only use '4' and '0'; the rest are
-# here so a sign or a caption can be added without redrawing a font.
+# 5x7 blocky capitals. text() renders spaces itself and drops anything not in
+# here, so names can be passed through as-is (apostrophes and commas just
+# become gaps).
 GLYPHS = {
-    '0': ['.###.', '#...#', '#..##', '#.#.#', '##..#', '#...#', '.###.'],
-    '4': ['...#.', '..##.', '.#.#.', '#..#.', '#####', '...#.', '...#.'],
+    '0': ['.###.', '#..##', '#.#.#', '##..#', '#...#', '#...#', '.###.'],
+    '1': ['..#..', '.##..', '..#..', '..#..', '..#..', '..#..', '.###.'],
+    '2': ['.###.', '#...#', '....#', '...#.', '..#..', '.#...', '#####'],
     '3': ['####.', '....#', '..##.', '....#', '....#', '#...#', '.###.'],
-    'H': ['#...#', '#...#', '#####', '#...#', '#...#', '#...#', '#...#'],
+    '4': ['...#.', '..##.', '.#.#.', '#..#.', '#####', '...#.', '...#.'],
+    '5': ['#####', '#....', '####.', '....#', '....#', '#...#', '.###.'],
+    '6': ['..##.', '.#...', '#....', '####.', '#...#', '#...#', '.###.'],
+    '7': ['#####', '....#', '...#.', '..#..', '.#...', '.#...', '.#...'],
+    '8': ['.###.', '#...#', '#...#', '.###.', '#...#', '#...#', '.###.'],
+    '9': ['.###.', '#...#', '#...#', '.####', '....#', '...#.', '.##..'],
     'A': ['.###.', '#...#', '#...#', '#####', '#...#', '#...#', '#...#'],
+    'B': ['####.', '#...#', '#...#', '####.', '#...#', '#...#', '####.'],
+    'C': ['.###.', '#...#', '#....', '#....', '#....', '#...#', '.###.'],
+    'D': ['####.', '#...#', '#...#', '#...#', '#...#', '#...#', '####.'],
+    'E': ['#####', '#....', '#....', '####.', '#....', '#....', '#####'],
+    'F': ['#####', '#....', '#....', '####.', '#....', '#....', '#....'],
+    'G': ['.###.', '#...#', '#....', '#.###', '#...#', '#...#', '.###.'],
+    'H': ['#...#', '#...#', '#...#', '#####', '#...#', '#...#', '#...#'],
+    'I': ['#####', '..#..', '..#..', '..#..', '..#..', '..#..', '#####'],
+    'J': ['..###', '...#.', '...#.', '...#.', '...#.', '#..#.', '.##..'],
+    'K': ['#...#', '#..#.', '#.#..', '##...', '#.#..', '#..#.', '#...#'],
+    'L': ['#....', '#....', '#....', '#....', '#....', '#....', '#####'],
+    'M': ['#...#', '##.##', '#.#.#', '#.#.#', '#...#', '#...#', '#...#'],
+    'N': ['#...#', '##..#', '#.#.#', '#..##', '#...#', '#...#', '#...#'],
+    'O': ['.###.', '#...#', '#...#', '#...#', '#...#', '#...#', '.###.'],
+    'P': ['####.', '#...#', '#...#', '####.', '#....', '#....', '#....'],
+    'Q': ['.###.', '#...#', '#...#', '#...#', '#.#.#', '#..#.', '.##.#'],
+    'R': ['####.', '#...#', '#...#', '####.', '#.#..', '#..#.', '#...#'],
+    'S': ['.####', '#....', '#....', '.###.', '....#', '....#', '####.'],
+    'T': ['#####', '..#..', '..#..', '..#..', '..#..', '..#..', '..#..'],
+    'U': ['#...#', '#...#', '#...#', '#...#', '#...#', '#...#', '.###.'],
+    'V': ['#...#', '#...#', '#...#', '#...#', '#...#', '.#.#.', '..#..'],
+    'W': ['#...#', '#...#', '#...#', '#.#.#', '#.#.#', '##.##', '#...#'],
+    'X': ['#...#', '#...#', '.#.#.', '..#..', '.#.#.', '#...#', '#...#'],
     'Y': ['#...#', '#...#', '.#.#.', '..#..', '..#..', '..#..', '..#..'],
+    'Z': ['#####', '....#', '...#.', '..#..', '.#...', '#....', '#####'],
 }
+
+
+def _normalise(s):
+    """Uppercase, and turn anything unrenderable into a space."""
+    return ''.join(ch if ch in GLYPHS or ch == ' ' else ' ' for ch in s.upper())
+
+
+# Each glyph is 5 cells wide and is followed by one cell of gap, so characters
+# advance 6 cells each. The gap is the whole reason "40" reads as two digits
+# rather than one wide glyph -- don't remove it.
+CHAR_ADVANCE = 6
+SPACE_ADVANCE = 3
+MAX_TEXT_ROWS = 45
+
+
+def wrap(s, max_chars):
+    """Greedy word wrap for the blocky font."""
+    words = _normalise(s).split()
+    lines, cur = [], ''
+    for w in words:
+        if not cur:
+            cur = w
+        elif len(cur) + 1 + len(w) <= max_chars:
+            cur += ' ' + w
+        else:
+            lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
+    return lines or ['']
+
+
+def text_width(s, scale):
+    s = _normalise(s)
+    if not s:
+        return 0
+    total = sum((SPACE_ADVANCE if ch == ' ' else CHAR_ADVANCE) * scale for ch in s)
+    return total - scale          # no trailing gap after the last character
+
+
+def text_centered(layer, s, y, scale, main='w', shadow='p', shadow_off=2, outline='o'):
+    x = (layer.w - text_width(s, scale)) // 2
+    text(layer, s, x, y, scale, main, shadow, shadow_off, outline)
 
 
 def text(layer, s, x, y, scale, main='w', shadow='p', shadow_off=3, outline='o'):
@@ -189,16 +264,22 @@ def text(layer, s, x, y, scale, main='w', shadow='p', shadow_off=3, outline='o')
     Built at cell resolution first so the outline is one *pixel* thick, not one
     glyph cell -- otherwise it swallows the shadow at these sizes.
     """
-    cols = (sum(len(GLYPHS[ch][0]) + 1 for ch in s) * scale) - scale
+    s = _normalise(s)
+    cols = text_width(s, scale)
+    if cols <= 0:
+        return
     t = Grid(cols, 7 * scale)
     ox = 0
     for ch in s:
+        if ch == ' ':
+            ox += SPACE_ADVANCE * scale
+            continue
         for gy, grow in enumerate(GLYPHS[ch]):
             for gx, g in enumerate(grow):
                 if g == '#':
                     t.rect(ox + gx * scale, gy * scale,
                            ox + (gx + 1) * scale - 1, (gy + 1) * scale - 1, 'w')
-        ox += (len(GLYPHS[ch][0]) + 1) * scale
+        ox += CHAR_ADVANCE * scale
     if outline:
         t.outline(outline)
 
@@ -212,6 +293,87 @@ def text(layer, s, x, y, scale, main='w', shadow='p', shadow_off=3, outline='o')
             v = t.g[yy][xx]
             if v != '.':
                 layer.px(x + xx, y + yy, main if v == 'w' else outline)
+
+
+# ---------------------------------------------------------------- placeholders
+# A placeholder card for a location that has no art yet. Generated from
+# index.html itself rather than from a list here, so a location can never be
+# renamed in the content and left behind in the art.
+#
+# Deliberately NOT in JOBS: these are meant to be replaced with real photos, and
+# `--check` must not then start failing on them. Write them with
+# `--placeholders`, and check `--list-placeholders` to see what exists.
+
+ZONE_RAMPS = {1: ('C', 'l'), 2: ('C', 'F'), 3: ('P', 'F')}
+YEAR_RE = re.compile(r'\b(19|20)\d{2}\b')
+LOCATION_RE = re.compile(
+    r"id:\s*'(loc_[A-Za-z0-9]+)',\s*name:\s*'((?:[^'\\]|\\.)*)',\s*image:\s*'([^']+)'",
+    re.S,
+)
+ZONE_RE = re.compile(r"zone:\s*(\d)")
+
+
+def placeholder_jobs():
+    """Reads index.html and returns (filename, label, year, zone) per location."""
+    with io.open(os.path.join(os.path.dirname(HERE), 'index.html'), encoding='utf-8') as f:
+        html = f.read()
+
+    matches = list(LOCATION_RE.finditer(html))
+    final_arts = set(j[0] for j in JOBS)   # already generated for real
+    jobs = []
+    for i, m in enumerate(matches):
+        loc_id, name, image = m.group(1), m.group(2).replace("\\'", "'"), m.group(3)
+        if not image.startswith('images/'):
+            continue
+        if os.path.basename(image) in final_arts:
+            continue
+        # Each location's block runs from its own id: to the next one, which is
+        # where its zone and description live.
+        stop = matches[i + 1].start() if i + 1 < len(matches) else len(html)
+        block = html[m.end():stop]
+
+        zm = ZONE_RE.search(block)
+        zone = int(zm.group(1)) if zm else 1
+        dm = re.search(r"description:\s*'((?:[^'\\]|\\.)*)'", block, re.S)
+        desc = dm.group(1).replace("\\'", "'") if dm else ''
+        year = YEAR_RE.search(desc)
+        jobs.append((os.path.basename(image), name, year.group(0) if year else '', zone))
+    return jobs
+
+
+NAME_CHARS_PER_LINE = 13     # 13 * 6 - 1 = 77 cells, which fits an 80-wide card
+NAME_LINE_GAP = 8
+
+
+def placeholder_card(name, year, zone):
+    g = Grid(W, H)
+    lo, hi = ZONE_RAMPS.get(zone, ('C', 'F'))
+    sky(g, ramp(lo, hi, 7))
+    # dashed frame, so it reads as a slot waiting for a photograph
+    for row in (2, H - 3):
+        for x in range(3, W - 3, 2):
+            g.px(x, row, 'p')
+    for col in (2, W - 3):
+        for y in range(3, H - 3, 2):
+            g.px(col, y, 'p')
+
+    lines = wrap(name, NAME_CHARS_PER_LINE)[:4]
+    # A long name is worth more than the year, and the year is usually in the
+    # name anyway ("Singing the National Anthem, June 2005"). So if the name
+    # needs four lines, it takes the whole card and the year is dropped.
+    show_year = year and len(lines) <= 3
+    if show_year:
+        text_centered(g, year, 4, 2, 'w', 'v', 3)
+        y = 21
+    else:
+        y = 8
+    room = H - 4 - y - 7 * len(lines) - NAME_LINE_GAP * (len(lines) - 1)
+    if room > 0:
+        y += room // 2
+    for line in lines:
+        text_centered(g, line, y, 1, 'w', 'v', 2)
+        y += NAME_LINE_GAP
+    return g
 
 
 # ---------------------------------------------------------------- the sprite
@@ -490,6 +652,60 @@ def scene_gameover():
     return g
 
 
+# ---------------------------------------------------------------- intro panel
+def scene_birth():
+    """The first intro panel: a hospital room in Dover NH, 1986.
+
+    Reads left to right: the night outside the window, the sign on the wall, the
+    bed, and the new person on it. No lettering in the picture -- the card's
+    title and caption carry the words, and the scene should just be the room
+    before the story starts.
+    """
+    g = Grid(W, H)
+    sky(g, [(0.0, 'v'), (0.5, 'N'), (0.75, 'F'), (1.0, 'k')])   # wall, dim
+
+    # window, with the night behind it
+    g.rect(4, 5, 20, 24, 'k')
+    g.rect(5, 6, 19, 23, 'v')
+    for sx, sy in ((8, 9), (15, 8), (11, 14), (17, 18), (7, 20)):
+        g.px(sx, sy, 'w')
+    g.disc(15, 11, 3, 'g')          # moon
+    g.vline(12, 5, 24, 'k')          # glazing bars
+    g.hline(4, 20, 15, 'k')
+
+    # sign on the wall
+    g.rect(25, 7, 35, 8, 'r')
+    g.rect(29, 3, 31, 12, 'r')
+
+    # floor
+    g.hline(0, W - 1, 30, 'N')
+    g.hline(0, W - 1, 31, 'F')
+
+    # the bed, side on: headboard, mattress, legs
+    g.rect(66, 19, 70, 30, 'k')     # headboard
+    g.rect(30, 26, 66, 29, 'w')     # mattress
+    g.hline(30, 66, 26, 'g')
+    g.hline(30, 70, 30, 'k')        # frame
+    g.vline(32, 31, 33, 'k')        # legs
+    g.vline(66, 31, 33, 'k')
+    g.rect(33, 26, 42, 28, 'g')     # pillow
+
+    # the new person: a bundle, and a very small face
+    g.rect(45, 24, 60, 29, 'm')     # blanket
+    g.hline(45, 60, 24, 'L')
+    g.rect(57, 21, 62, 25, 's')     # head
+    g.hline(57, 62, 21, 'H')        # hair, maybe
+    g.px(58, 23, 'e')
+    g.px(61, 23, 'e')
+
+    # lamp, and the light it puts on the blanket
+    g.rect(73, 20, 77, 21, 'k')     # shade
+    g.vline(75, 22, 30, 'k')        # stem
+    g.rect(74, 30, 76, 31, 'k')     # base
+    g.disc(75, 19, 2, 'y')
+    return g
+
+
 def walker(frame=0):
     """24x31, drawn small enough to ride the progress bar."""
     return amanda(frame)
@@ -504,6 +720,8 @@ JOBS = [
      'Pixel art: Amanda at her fortieth birthday, cake and confetti'),
     ('gameover.svg', scene_gameover, CELL, 'v',
      'Pixel art: Amanda with her arms down beside the dropped birthday cake, on a cold moonlit road'),
+    ('cutscene_birth.svg', scene_birth, CELL, None,
+     'Pixel art: a hospital room in Dover New Hampshire in 1986, a window, and a new arrival'),
     ('walker_0.svg', lambda: walker(0), 1, None,
      'Pixel art sprite of Amanda, blonde hair and teal jacket, standing'),
     ('walker_1.svg', lambda: walker(1), 1, None,
@@ -514,15 +732,39 @@ JOBS = [
 
 
 def main(argv):
+    if '--preview' in argv:
+        for frame in range(3):
+            print('=== walker frame %d ===' % frame)
+            amanda(frame).show()
+        return
+
+    # Placeholders live outside JOBS on purpose: they are meant to be replaced
+    # with real photographs, and --check must not start failing once they are.
+    if '--placeholders' in argv or '--list-placeholders' in argv:
+        jobs = placeholder_jobs()
+        if not jobs:
+            sys.exit('found no locations in index.html -- has the CONTENT SECTION changed?')
+        for filename, name, year, zone in jobs:
+            if '--list-placeholders' in argv:
+                print('%-34s %-40s %s' % (filename, name[:40], year or '(no year)'))
+                continue
+            path = os.path.join(OUT, filename)
+            with io.open(path, 'w', encoding='utf-8', newline='\n') as f:
+                f.write(placeholder_card(name, year, zone)
+                        .to_svg(CELL, label='Placeholder card: ' + name))
+            print('wrote %-34s %6d bytes' % (filename, os.path.getsize(path)))
+        if '--list-placeholders' in argv:
+            print('\n%d placeholder card(s)' % len(jobs))
+        return
+
     wanted = [a for a in argv if not a.startswith('-')]
     unknown = [n for n in wanted if n not in [j[0] for j in JOBS]]
     if unknown:
         sys.exit('no such image: %s (try --list)' % ', '.join(unknown))
 
-    if '--preview' in argv:
-        for frame in range(3):
-            print('=== walker frame %d ===' % frame)
-            amanda(frame).show()
+    if '--list' in argv:
+        for name, build, scale, bg, label in JOBS:
+            print('%-16s %s' % (name, label))
         return
 
     # --check renders everything in memory and compares with what's committed,

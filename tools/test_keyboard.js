@@ -4,9 +4,11 @@
  * album and mute controls must work from the keyboard too.
  * Run: node tools/test_keyboard.js
  */
-const { boot, findSeedRun, playWithKeyboard, reporter } = require('./dom_stub');
+const { boot, contentObject, findSeedRun, playWithKeyboard, reporter } = require('./dom_stub');
 
 const r = reporter('keyboard');
+
+const { LOCATIONS } = contentObject();
 
 const g = boot();
 
@@ -57,7 +59,10 @@ const albumBtn = g.findIn(endCard, 'primary-btn').filter(b => /album/i.test(b._t
 r.check(albumBtn, 'the end card offers an album button');
 albumBtn.click();
 const items = g.find('album-item');
-r.equal(items.length, 7, 'the album lists the intro plus every location');
+// The album holds the intro plus every location, so it must track the content
+// rather than a number someone has to remember to update.
+r.equal(items.length, LOCATIONS.length + 1,
+  'the album lists the intro plus every location (' + (LOCATIONS.length + 1) + ')');
 r.equal(g.find('album-image').length, items.length, 'every album item has its picture');
 r.check(albumBtn.removed, 'the album button removes itself once opened');
 

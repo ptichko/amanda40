@@ -9,9 +9,16 @@
  * content change can't quietly stop covering one of the effects.
  * Run: node tools/test_sound.js
  */
-const { boot, findSeedRun, reporter } = require('./dom_stub');
+const { boot, clickForward, findSeedRun, labelWithOutcome, reporter } = require('./dom_stub');
 
 const r = reporter('sound');
+
+// Match on a label taken from the current content rather than a hardcoded
+// string, so rewording a choice doesn't quietly stop this covering it.
+const PENALTY_LABEL = labelWithOutcome('penalty');
+const HEAL_LABEL = labelWithOutcome('heal');
+r.check(!!PENALTY_LABEL && !!HEAL_LABEL,
+  'the content has a stumble and a healing choice to test with');
 
 const notesOf = page => page.notes
   .map(n => n.type[0] + n.freq + (n.slideTo ? '->' + n.slideTo : ''))
@@ -20,11 +27,11 @@ const tonesOf = page => page.notes.map(n => n.type[0] + n.freq).join(' ');
 const quiet = page => { page.notes.length = 0; };
 
 // Offers a choice whose label matches, at the current stop?
-const offers = (page, re) => {
+const offers = (page, label) => {
   const card = page.card();
-  if (!card || card._class.includes('end-entry')) return false;
+  if (!card || card._class.includes('end-entry') || !label) return false;
   return page.findIn(card, 'choice-btn')
-    .some(b => re.test((b.children[0] || {})._text || ''));
+    .some(b => ((b.children[0] || {})._text || '').toLowerCase() === label.toLowerCase());
 };
 
 // ---- nothing before the first gesture ----
@@ -40,12 +47,12 @@ g.key('Enter');
 quiet(g);
 
 // ---- a choice that leads to a stumble ----
-const stumble = findSeedRun(page => offers(page, /swing again/i));
+const stumble = findSeedRun(page => offers(page, PENALTY_LABEL));
 r.check(!!stumble, 'found a run that offers a stumble');
 if (stumble) {
   const p = stumble.g;
   const index = p.findIn(p.card(), 'choice-btn')
-    .findIndex(b => /swing again/i.test((b.children[0] || {})._text || ''));
+    .findIndex(b => ((b.children[0] || {})._text || '').toLowerCase() === PENALTY_LABEL.toLowerCase());
   quiet(p);
   p.key(String(index + 1));
   r.equal(notesOf(p), 's760 s240->90', 'a stumble is the blip plus a falling saw sweep');
@@ -53,12 +60,12 @@ if (stumble) {
 }
 
 // ---- a choice that heals ----
-const heal = findSeedRun(page => offers(page, /let the years catch up/i));
+const heal = findSeedRun(page => offers(page, HEAL_LABEL));
 r.check(!!heal, 'found a run that offers a heal');
 if (heal) {
   const p = heal.g;
   const index = p.findIn(p.card(), 'choice-btn')
-    .findIndex(b => /let the years catch up/i.test((b.children[0] || {})._text || ''));
+    .findIndex(b => ((b.children[0] || {})._text || '').toLowerCase() === HEAL_LABEL.toLowerCase());
   quiet(p);
   p.key(String(index + 1));
   r.equal(notesOf(p), 's760 t523 t784', 'a heal is the blip plus a rising triangle pair');
@@ -101,7 +108,7 @@ function playCapturing(seed) {
     if (oracleBtn && !oracleBtn.disabled) { p.key('o'); quiet(p); }
 
     const choices = p.findIn(card, 'choice-btn');
-    if (!choices.length) break;
+    if (!choices.length) { clickForward(p); continue; }
 
     quiet(p);
     p.key(String((guard % choices.length) + 1));

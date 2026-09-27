@@ -583,6 +583,15 @@
     color: var(--lime);
   }
 
+  /* ---- Intro sequence (the panels that play after "Begin the journey") ---- */
+  .cutscene-entry {
+    text-align: center;
+  }
+
+  .cutscene-entry .entry-description {
+    margin-bottom: 18px;
+  }
+
   /* ---- End entry (win/game-over, rendered as a location entry) ---- */
   .end-entry {
     text-align: center;
@@ -823,27 +832,27 @@ const CONFIG = {
   oracleAppearChance: 0.6 // odds the "Consult the Oracle" option shows up at a location
 };
 
-// The journey is divided into three zones by progress. Each location
-// belongs to exactly one zone (see LOCATIONS below), and only locations in
-// the player's current zone are eligible to be picked next. Boundaries are
-// also drawn as markers on the progress bar.
+// The journey is three eras, split by progress. Each location belongs to exactly
+// one zone (see LOCATIONS below), and only locations in the player's current zone
+// are eligible to be picked next. Boundaries are also drawn as markers on the
+// progress bar, and the zone name is called out on the transition card -- which
+// is why they carry the years.
 const ZONES = [
-  { id: 1, name: 'The Long Way Round', min: 0, max: 13 },
-  { id: 2, name: 'The Turning Point', min: 14, max: 26 },
-  { id: 3, name: 'The Far Shore', min: 27, max: 40 },
+  { id: 1, name: 'Childhood, 1986 to 2001', min: 0, max: 13 },
+  { id: 2, name: 'The Teenage Years, 2000 to 2005', min: 14, max: 26 },
+  { id: 3, name: 'Grown Up, 2006 to 2012', min: 27, max: 40 },
 ];
 
-// The Oracle's possible hints. Each time the Oracle is consulted, one entry
-// is picked (weighted by optional `weight`, default 1 if omitted), and
-// `accuracy` is the probability that the Oracle ends up highlighting the
-// location's actual "correct" choice (see getCorrectChoice below) rather
-// than a random wrong one. Edit text/accuracy/weight freely, and add or
-// remove entries.
+// The Oracle's possible hints. Each time she is consulted, one entry is picked
+// (weighted by optional `weight`, default 1 if omitted), and `accuracy` is the
+// probability that she ends up highlighting the location's actual "correct"
+// choice (see getCorrectChoice below) rather than a random wrong one. Edit
+// text/accuracy/weight freely, and add or remove entries.
 const ORACLE_HINTS = [
-  { text: 'PLACEHOLDER: the Oracle is certain.', accuracy: 0.9 },
-  { text: 'PLACEHOLDER: the Oracle hedges, but only a little.', accuracy: 0.6 },
-  { text: 'PLACEHOLDER: the Oracle is talking to somebody else.', accuracy: 0.3 },
-  { text: 'PLACEHOLDER: the Oracle buries her face in her hands.', accuracy: 0.1 },
+  { text: 'PLACEHOLDER: the Oracle taps the card without looking at it. "That one. I remember."', accuracy: 0.9 },
+  { text: 'PLACEHOLDER: the Oracle frowns at her own handwriting, then commits to it anyway.', accuracy: 0.6 },
+  { text: 'PLACEHOLDER: the Oracle is reading from a different decade entirely.', accuracy: 0.3 },
+  { text: 'PLACEHOLDER: the Oracle closes the book and says "your call", which is not an answer.', accuracy: 0.1 },
 ];
 
 // Each choice has a single, fixed outcome (no randomness in *what*
@@ -863,11 +872,25 @@ const ORACLE_HINTS = [
 // player here first.
 const INTRO_LOCATION = {
   id: 'loc_intro', name: 'Happy 40th, Amanda!', image: 'images/loc_intro.svg',
-  description: 'PLACEHOLDER: the Oracle reads your horoscope card aloud. "Forty is a door, not a wall. Walk through it."',
+  description: 'PLACEHOLDER: forty years, in three parts. The Oracle has had your chart since the night you were born, and she says the road only goes one way from here.',
   choices: [
     { label: 'Begin the journey', outcome: { type: 'normal', text: 'The path opens.' } },
   ],
 };
+
+// Pixel-art panels that play once, after "Begin the journey" and before the
+// first zone — see playIntroSequence() in the engine. Deliberately not
+// locations: no choices, no outcome, never repeated, so they live outside
+// LOCATIONS and outside the album. Add as many as you like; each gets a
+// Continue button and the last one hands control back to the game.
+const INTRO_SEQUENCE = [
+  {
+    image: 'images/cutscene_birth.svg',
+    title: 'PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986',
+    caption: 'PLACEHOLDER: the first room you were ever in, and then the long drive home to Rochester with a new person in the back seat.',
+    button: 'Continue',
+  },
+];
 
 // Locations the player can land on. Each has a `zone` (1, 2, or 3 — see
 // ZONES above) and only locations in the player's current zone are
@@ -875,68 +898,165 @@ const INTRO_LOCATION = {
 // locations within the same zone. Each choice carries a fixed
 // `outcome: { type, text }` (type is one of the four listed above).
 //
-// PLACEHOLDER SET: the six locations below are stand-ins so the game runs
-// out of the box. Replace names/descriptions/images with real places from
-// Amanda's life; see AGENTS.md for the recipe.
+// The choice marked `oracleCorrect: true` is the one that actually happened —
+// the Oracle points at the real thing, which is why it beats the automatic
+// best-outcome ranking in getCorrectChoice(). The others are the roads not
+// taken.
+//
+// PLACEHOLDER: every description, caption and choice below is a first draft.
+// Swap the wording for the real memories; keep the years and the facts.
 const LOCATIONS = [
-  // --- Zone 1: The Long Way Round (0-13) ---
+  // --- Zone 1: Childhood, 1986 to 2001 (0-13) ---
   {
-    id: 'loc_theFrontPorch', name: 'The Front Porch', image: 'images/loc_theFrontPorch.svg',
-    description: 'PLACEHOLDER: a porch you know by heart. The swing still creaks in the same place.',
+    id: 'loc_rochesterFirstHome', name: 'The First House, Rochester', image: 'images/loc_rochesterFirstHome.svg',
+    description: 'PLACEHOLDER: 1986 to 1991, the first house, in Rochester NH — the one with the porch you could see the river from. In 1991 you started kindergarten at Jack and Jill, in a yellow coat you refused to take off.',
     zone: 1, weight: 1,
     choices: [
-      { label: 'Sit down and let the years catch up', outcome: { type: 'heal', text: 'Something loosens in your chest.' } },
-      { label: 'Start arguing with the swing again', outcome: { type: 'penalty', text: 'The swing wins, as usual.' } },
-      { label: 'Go to the front steps and count them', outcome: { type: 'normal', text: 'Thirty-nine. You lose count. You start again.' } },
+      { label: 'Start kindergarten at Jack and Jill', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: four years old, and the teacher says your name back to you.' } },
+      { label: 'Hide behind the coat rack until the second bell', outcome: { type: 'penalty', text: 'PLACEHOLDER: it works for eleven minutes.' } },
+      { label: 'Say your name to everyone in the room, twice', outcome: { type: 'heal', text: 'PLACEHOLDER: the room says it back. Something settles.' } },
     ],
   },
   {
-    id: 'loc_theKitchenTable', name: 'The Kitchen Table', image: 'images/loc_theKitchenTable.svg',
-    description: 'PLACEHOLDER: the table is set for one more than the usual number of people.',
+    id: 'loc_stElizabethSeton', name: 'St. Elizabeth Seton School', image: 'images/loc_stElizabethSeton.svg',
+    description: 'PLACEHOLDER: kindergarten and first grade at St. Elizabeth Seton, still in Rochester. Two rooms, one teacher who knew your name and your mother\'s, and a walk to the church that you insisted on doing backwards.',
     zone: 1, weight: 1,
     choices: [
-      { label: 'Set an extra place anyway', outcome: { type: 'normal', text: 'The chair stays pulled out all evening.' } },
-      { label: 'Clear the table instead', outcome: { type: 'penalty', text: 'You drop a stack of plates. Loudly.' } },
+      { label: 'Walk to school backwards the whole way', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: it takes twice as long, and you still get there first.' } },
+      { label: 'Move to a school further from home', outcome: { type: 'penalty', text: 'PLACEHOLDER: a longer drive, and nobody to sit with.' } },
+      { label: 'Learn the names of everyone in both rooms', outcome: { type: 'heal', text: 'PLACEHOLDER: first grade ends with thirty names and nobody missing.' } },
     ],
   },
-  // --- Zone 2: The Turning Point (14-26) ---
   {
-    id: 'loc_theOldApartment', name: 'The Old Apartment', image: 'images/loc_theOldApartment.svg',
-    description: 'PLACEHOLDER: the walk-up with the bad radiator. Every window holds a different decade.',
+    id: 'loc_theMoveToStrafford', name: 'The Move to Strafford', image: 'images/loc_theMoveToStrafford.svg',
+    description: 'PLACEHOLDER: 1993. Rochester to Strafford, in a car with more boxes than seats. Strafford Elementary from kindergarten all the way through eighth grade — the longest address you ever had.',
+    zone: 1, weight: 1,
+    choices: [
+      { label: 'Unpack the box marked KEEP FIRST', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: books, the good blanket, the tape player. First night, first order of business.' } },
+      { label: 'Unpack the box marked THROW AWAY FIRST', outcome: { type: 'penalty', text: 'PLACEHOLDER: you break something irreplaceable before the first school day.' } },
+      { label: 'Introduce yourself to a neighbour before you unpack', outcome: { type: 'heal', text: 'PLACEHOLDER: by Sunday you have a house key that is not yours.' } },
+    ],
+  },
+  {
+    id: 'loc_theTalentShow', name: 'The Strafford Talent Show', image: 'images/loc_theTalentShow.svg',
+    description: 'PLACEHOLDER: Strafford Elementary picked you to sing "Wind Beneath My Wings" in the talent show. There is video: the whole song, an audience, and a child taking it extremely seriously.',
+    zone: 1, weight: 1,
+    choices: [
+      { label: 'Sing the whole song', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: the video is still on a tape somewhere. You can hear yourself believing it.' } },
+      { label: 'Step out at the last second', outcome: { type: 'penalty', text: 'PLACEHOLDER: they sing your part. Somebody else takes the microphone and your place.' } },
+      { label: 'Hold the microphone with both hands', outcome: { type: 'heal', text: 'PLACEHOLDER: somehow it steadies you. The room goes quiet.' } },
+    ],
+  },
+  {
+    id: 'loc_theDareSpeech', name: 'The DARE Speech', image: 'images/loc_theDareSpeech.svg',
+    description: 'PLACEHOLDER: sixth grade, DARE graduation. The class asked you to give the speech on their behalf, and you wrote it out first. You still have the paper, and the video of you reading it.',
+    zone: 1, weight: 1,
+    choices: [
+      { label: 'Read the speech you wrote out', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: the original is in a drawer somewhere, edges gone soft from being folded and refolded.' } },
+      { label: 'Improvise it instead', outcome: { type: 'penalty', text: 'PLACEHOLDER: three minutes in, the room stops following. You finish anyway.' } },
+      { label: 'End on the line you were most afraid to say', outcome: { type: 'heal', text: 'PLACEHOLDER: the last line is the one people remember.' } },
+    ],
+  },
+  {
+    id: 'loc_piscataquaYouthPlayers', name: 'The Piscataqua Youth Players', image: 'images/loc_piscataquaYouthPlayers.svg',
+    description: 'PLACEHOLDER: four years before the Velveteen Rabbit you were Lucy Oopma Loompa in Charlie and the Chocolate Factory. December 1996: the Rabbit, with a playbill, and an original script with your handwriting in the margins.',
+    zone: 1, weight: 1,
+    choices: [
+      { label: 'Take the Velveteen Rabbit', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: the playbill says so. So does the script, in pencil, in the margins.' } },
+      { label: 'Go on as the Tree instead', outcome: { type: 'penalty', text: 'PLACEHOLDER: standing very still turns out to be a different kind of hard.' } },
+      { label: 'Learn everyone else\'s lines as well', outcome: { type: 'heal', text: 'PLACEHOLDER: you knew the whole show. Nobody handed you that.' } },
+    ],
+  },
+  {
+    id: 'loc_theFamilyTrips', name: 'Disney World, Jellystone, Poland Springs', image: 'images/loc_theFamilyTrips.svg',
+    description: 'PLACEHOLDER: the three places you asked to go back to. Disney World in Orlando, Jellystone Campground in New Hampshire, and your grandparents\' camp at Poland Springs, Maine — same camp, same rock, every summer for years.',
+    zone: 1, weight: 1,
+    choices: [
+      { label: 'Swim at Jellystone every single morning', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: the water is cold, and you were in it before breakfast. Every day.' } },
+      { label: 'Ride the biggest one at Disney World, twice', outcome: { type: 'normal', text: 'PLACEHOLDER: twice, because the first time you were too small to remember it.' } },
+      { label: 'Go back to the same spot at Poland Springs every year', outcome: { type: 'heal', text: 'PLACEHOLDER: the same rock, the same view, the same people already waiting.' } },
+    ],
+  },
+  // --- Zone 2: The Teenage Years, 2000 to 2005 (14-26) ---
+  {
+    id: 'loc_destinationImagination', name: 'Destination Imagination, First Place', image: 'images/loc_destinationImagination.svg',
+    description: 'PLACEHOLDER: March 2000. Your Destination Imagination team took first place, and you were three hundred miles away at your brother\'s hockey tournament in Pennsylvania. Train from Philadelphia to Boston, bus to Portsmouth, Aunt Lynne waiting at Kingswood High School in Wolfeboro. You flew back for the rest of the tournament and were told at the rink. There is a newspaper article.',
     zone: 2, weight: 1,
     choices: [
-      { label: 'Climb the stairs slowly', outcome: { type: 'normal', text: 'Four flights. You are fitter than the year you moved in.' } },
-      { label: 'Take them at a run, for no reason', outcome: { type: 'penalty', text: 'The radiator, of all things, wins the argument.' } },
+      { label: 'Take the train, then the bus, to get there in time', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: Philadelphia to Boston to Portsmouth, and Aunt Lynne at the school gates. You make it.' } },
+      { label: 'Stay at the tournament and miss it', outcome: { type: 'penalty', text: 'PLACEHOLDER: you hear about first place in a car park, a week later, out of somebody else\'s newspaper.' } },
+      { label: 'Carry the trophy home down the aisle yourself', outcome: { type: 'heal', text: 'PLACEHOLDER: trophy on your lap, Portland to Philadelphia. Nobody says a word the whole way.' } },
     ],
   },
   {
-    id: 'loc_theCornerDiner', name: 'The Corner Diner', image: 'images/loc_theCornerDiner.svg',
-    description: 'PLACEHOLDER: the same booth, the same sticky menu, a different decade on the calendar.',
+    id: 'loc_storiesAreMadeThatWay', name: '"Stories Are Made That Way"', image: 'images/loc_storiesAreMadeThatWay.svg',
+    description: 'PLACEHOLDER: 1 April 2002. The musical CD comes out, and you sing several of the tracks with the other children. You still have the CD.',
     zone: 2, weight: 1,
     choices: [
-      { label: 'Order the usual', outcome: { type: 'normal', text: 'They do not even ask. That is the whole point.' } },
-      { label: 'Read the entire menu twice', outcome: { type: 'normal', text: 'You order the usual anyway. The waitress smiles.' } },
-      { label: 'Attempt the experimental special', outcome: { type: 'penalty', text: 'It is a lot of chili. A great deal of chili.' } },
-    ],
-  },
-  // --- Zone 3: The Far Shore (27-40) ---
-  {
-    id: 'loc_theGiftShop', name: 'The Gift Shop', image: 'images/loc_theGiftShop.svg',
-    description: 'PLACEHOLDER: a small shop that only seems to open on birthdays.',
-    zone: 3, weight: 1,
-    choices: [
-      { label: 'Buy something for yourself', outcome: { type: 'heal', text: 'Forty years old and you know what you want. Progress.' } },
-      { label: 'Buy something for everyone else', outcome: { type: 'normal', text: 'The bag gets heavier every block.' } },
-      { label: 'Take the exit sign down and keep it', outcome: { type: 'penalty', text: 'The Oracle says that is not how doors work.' } },
+      { label: 'Sing your own tracks, not only the backing', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: several songs, with the other children, on an actual record.' } },
+      { label: 'Sing backing vocals only', outcome: { type: 'penalty', text: 'PLACEHOLDER: you are on every track, and nobody would know it from the sleeve notes.' } },
+      { label: 'Learn every other child\'s part as well', outcome: { type: 'heal', text: 'PLACEHOLDER: you could have sung any of them. You never needed to.' } },
     ],
   },
   {
-    id: 'loc_theLookoutPoint', name: 'The Lookout Point', image: 'images/loc_theLookoutPoint.svg',
-    description: 'PLACEHOLDER: the last stop. The Oracle is here, and she is not smiling.',
+    id: 'loc_theLeadershipConference', name: 'Washington DC, July 2003', image: 'images/loc_theLeadershipConference.svg',
+    description: 'PLACEHOLDER: the teaching staff at Bishop Brady nominated you for the National Student Leadership Conference in Washington DC, in the area of Business and Commerce. July 2003: you went. There is a letter.',
+    zone: 2, weight: 1,
+    choices: [
+      { label: 'Go to Washington DC that July', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: nominated by the teaching staff, in Business and Commerce. The letter is real.' } },
+      { label: 'Skip it — there was a tournament that summer', outcome: { type: 'penalty', text: 'PLACEHOLDER: you were at the rink. The letter stays in a drawer.' } },
+      { label: 'Take notes on everyone you met', outcome: { type: 'heal', text: 'PLACEHOLDER: you came home with a notebook and no idea what you wanted yet.' } },
+    ],
+  },
+  {
+    id: 'loc_editorsChoicePoetry', name: 'Editor\'s Choice, Achievement in Poetry', image: 'images/loc_editorsChoicePoetry.svg',
+    description: 'PLACEHOLDER: March 2004. The Editor\'s Choice Award for Achievement in Poetry. There is a certificate, which means somebody wrote your name on a line and meant it.',
+    zone: 2, weight: 1,
+    choices: [
+      { label: 'Accept the poetry award', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: Editor\'s Choice, Achievement in Poetry, March 2004. The certificate is signed.' } },
+      { label: 'Turn it down — you were only doing it for the class', outcome: { type: 'penalty', text: 'PLACEHOLDER: you give it back, the class gives it back, and it ends up in a drawer either way.' } },
+      { label: 'Read one poem out loud at the ceremony', outcome: { type: 'heal', text: 'PLACEHOLDER: your own, not the one that won. It goes over well.' } },
+    ],
+  },
+  {
+    id: 'loc_theNationalAnthem', name: 'Singing the National Anthem, June 2005', image: 'images/loc_theNationalAnthem.svg',
+    description: 'PLACEHOLDER: June 2005, Bishop Brady High School graduation. You sang the National Anthem. Nobody who loves you knew you were going to do it.',
+    zone: 2, weight: 1,
+    choices: [
+      { label: 'Take the microphone at graduation', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: a surprise to everyone who loves you, which is most of why it worked.' } },
+      { label: 'Let somebody else do it', outcome: { type: 'penalty', text: 'PLACEHOLDER: it goes well. You spent the whole thing on the sideline.' } },
+      { label: 'Sing it looking at one person you trust', outcome: { type: 'heal', text: 'PLACEHOLDER: one person. The rest of the stadium is a blur afterwards.' } },
+    ],
+  },
+  // --- Zone 3: Grown Up, 2006 to 2012 (27-40) ---
+  {
+    id: 'loc_stonehillToEmerson', name: 'Stonehill to Emerson', image: 'images/loc_stonehillToEmerson.svg',
+    description: 'PLACEHOLDER: January 2007. Accepted to Emerson College, transferring from Stonehill, in creative writing. You had been writing for years; this was the first time the writing was the point.',
     zone: 3, weight: 1,
     choices: [
-      { label: 'Ask what happens at forty', outcome: { type: 'normal', text: '"Nothing," she says. "That is the entire plot."' } },
-      { label: 'Ask what she is guarding', outcome: { type: 'gameover', text: 'The Oracle looks at you for a long moment, and then the path ends here.', image: 'images/gameover.svg' } },
+      { label: 'Take the transfer to Emerson', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: January 2007, accepted. Creative writing.' } },
+      { label: 'Stay at Stonehill and finish there', outcome: { type: 'penalty', text: 'PLACEHOLDER: not wrong, exactly. Just not the thing you had already decided.' } },
+      { label: 'Write something before you go, to prove you could', outcome: { type: 'heal', text: 'PLACEHOLDER: you finish it on the train. It is not very good, and you go anyway.' } },
+    ],
+  },
+  {
+    id: 'loc_magnaCumLaude', name: 'Magna Cum Laude', image: 'images/loc_magnaCumLaude.svg',
+    description: 'PLACEHOLDER: you graduated from Emerson, Magna Cum Laude, with a BFA in creative writing and a concentration in creative non-fiction and poetry. Both halves of it, in one degree.',
+    zone: 3, weight: 1,
+    choices: [
+      { label: 'Put creative non-fiction and poetry in the same degree', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: BFA, creative writing, concentrated in creative non-fiction and poetry. Magna Cum Laude.' } },
+      { label: 'Choose one and drop the other', outcome: { type: 'penalty', text: 'PLACEHOLDER: you take the practical half. The other one keeps. It does not go anywhere.' } },
+      { label: 'Thank the teachers who wrote you a reference', outcome: { type: 'heal', text: 'PLACEHOLDER: you kept the emails. You use them later, more than once.' } },
+    ],
+  },
+  {
+    id: 'loc_wegoHealth', name: 'WEGO Health, Somerville', image: 'images/loc_wegoHealth.svg',
+    description: 'PLACEHOLDER: April 2012, Somerville. Health Social Media writer at WEGO Health, and an advocate for Patient Leaders — the company that empowers health activists to help other people. Your article, "Patient Leaders of Online Health Communities Discuss Patient to Patient Conversations on Clinical Trials", ran in Monitor Magazine, the global voice of clinical research professionals. There is a copy of the magazine.',
+    zone: 3, weight: 1,
+    choices: [
+      { label: 'Write about patient leaders, for patient leaders', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: April 2012, Somerville. The Monitor article. There is a copy of the magazine.' } },
+      { label: 'Write the press release instead', outcome: { type: 'penalty', text: 'PLACEHOLDER: it goes out. Nobody has to think about it, which was never the point.' } },
+      { label: 'Let a patient leader read it before it runs', outcome: { type: 'heal', text: 'PLACEHOLDER: they change two sentences. Both of them are better.' } },
     ],
   },
 ];
@@ -944,13 +1064,13 @@ const LOCATIONS = [
 const END_TEXT = {
   win: {
     title: 'The Fourth Decade',
-    goodMessage: 'PLACEHOLDER: Amanda reaches the Lookout Point at forty, chooses the oath, and the Oracle steps aside without being asked. The view is better than the last twenty times she has seen it.',
-    badMessage: 'PLACEHOLDER: Amanda reaches the Lookout Point at forty, leaves a coin at the shrine out of habit, and is asked to move the shrine for the next traveller. She does it anyway. It is very funny.',
+    goodMessage: 'PLACEHOLDER: forty, and the road still going. Every stop on it is yours: the first house in Rochester, a yellow coat, a talent show on somebody\'s video tape, a train from Philadelphia, a cake with the candles knocked over on the ground, and a great deal of work done on behalf of other people. The Oracle puts the book away.',
+    badMessage: 'PLACEHOLDER: forty, with a coin left at the shrine out of habit. Somebody has to move the shrine before the next traveller gets there. You do it yourself, and it is very funny.',
     image: 'images/win.svg',
   },
   gameover: {
     title: 'The journey ends',
-    message: 'PLACEHOLDER: too many stumbles. The Oracle recommends rest, tea, and a second attempt.',
+    message: 'PLACEHOLDER: three stumbles and the Oracle calls it. She recommends rest, tea, and a second attempt — the whole of it is still there, exactly where you left it.',
     image: 'images/gameover.svg',
   },
 };
@@ -1146,6 +1266,7 @@ function newGame(options) {
     currentEntry: null,
     currentGate: null,
     replaying: false,
+    introPlayed: false,
   };
   sceneFeedEl.innerHTML = '';
   appendLocationEntry(INTRO_LOCATION);
@@ -1281,17 +1402,74 @@ function resolveChoice(choice, entryEl, instant) {
       return;
     }
 
-    const next = pickNextLocation(state.currentLocationId);
-    state.currentLocationId = next.id;
-    state.visited.add(next.id);
+    // The intro hands off to the pixel-art sequence (playIntroSequence) before
+    // the first zone, so it is pulled out of the normal "pick the next stop" path.
+    const leavingIntro = state.currentLocationId === INTRO_LOCATION.id && !state.introPlayed;
 
-    const newZone = getZoneForProgress(state.progress);
-    if (newZone.id !== prevZone.id) {
-      appendZoneTransitionEntry(newZone, () => appendLocationEntry(next));
-    } else {
-      appendLocationEntry(next);
+    const advance = () => {
+      const next = pickNextLocation(state.currentLocationId);
+      state.currentLocationId = next.id;
+      state.visited.add(next.id);
+
+      const newZone = getZoneForProgress(state.progress);
+      if (newZone.id !== prevZone.id) {
+        appendZoneTransitionEntry(newZone, () => appendLocationEntry(next));
+      } else {
+        appendLocationEntry(next);
+      }
+    };
+
+    if (leavingIntro) {
+      state.introPlayed = true;
+      playIntroSequence(advance);
+      return;
     }
+
+    advance();
   }, instant);
+}
+
+// Plays the intro panels from INTRO_SEQUENCE, one at a time, each with its own
+// Continue button, then calls onDone to drop the player into the first zone.
+// Runs during a replay too — the sequence is deterministic, so a shared link
+// rebuilds it without needing a token of its own.
+function playIntroSequence(onDone) {
+  let index = 0;
+
+  function next() {
+    if (index >= INTRO_SEQUENCE.length) {
+      onDone();
+      return;
+    }
+    const panel = INTRO_SEQUENCE[index];
+    index += 1;
+
+    // 'location-entry' as well as the hook, so it picks up the same card
+    // spacing and image framing as every other panel in the feed.
+    const { entry, body } = buildEntryCard('location-entry cutscene-entry',
+      panel.image, panel.title, panel.title, panel.caption);
+
+    // A replay has no player to press Continue, so the panels are rendered and
+    // stepped through in one go -- otherwise a shared link would stall here.
+    if (state.replaying) {
+      sceneFeedEl.appendChild(entry);
+      next();
+      return;
+    }
+
+    const btn = el('button', 'primary-btn', panel.button || 'Continue');
+    btn.addEventListener('click', () => {
+      btn.remove();
+      playSound('select');
+      next();
+    });
+    body.appendChild(btn);
+
+    sceneFeedEl.appendChild(entry);
+    scrollFeedToBottom();
+  }
+
+  next();
 }
 
 // Appends the outcome text (plus a penalty detail line) and a Continue
@@ -1413,7 +1591,7 @@ function appendZoneTransitionEntry(zone, onContinue) {
 
   entry.appendChild(el('h2', 'zone-transition-title', 'Entering new territory'));
   entry.appendChild(el('p', 'zone-transition-message',
-    'The Oracle taps the map. "New territory. Breathe."'));
+    'The Oracle taps the map. "' + zone.name + '. Breathe."'));
 
   const actions = el('div', 'zone-transition-actions');
   entry.appendChild(actions);

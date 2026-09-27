@@ -6,7 +6,7 @@
  * resulting hash and compares the two journeys fingerprint by fingerprint.
  * Run: node tools/test_replay.js
  */
-const { boot, reporter } = require('./dom_stub');
+const { boot, clickForward, reporter } = require('./dom_stub');
 
 const r = reporter('replay');
 
@@ -49,7 +49,7 @@ function playWithOracle(search) {
     const oracle = g.findIn(card, 'oracle-btn')[0];
     if (oracle && !oracle.disabled) oracle.click();
     const choices = g.findIn(card, 'choice-btn');
-    if (!choices.length) break;
+    if (!choices.length) { clickForward(g); continue; }
     choices[guard % choices.length].click();
     const conts = g.findIn(card, 'primary-btn').filter(b => !b.disabled && !b.removed);
     if (conts.length) conts[conts.length - 1].click();
@@ -124,7 +124,7 @@ function playAllFirst(seed) {
     if (!card || card._class.includes('end-entry')) break;
     if (card._class.includes('zone-transition')) { g.findIn(card, 'primary-btn')[0].click(); continue; }
     const choices = g.findIn(card, 'choice-btn');
-    if (!choices.length) break;
+    if (!choices.length) { clickForward(g); continue; }
     choices[0].click();
     const conts = g.findIn(card, 'primary-btn').filter(b => !b.disabled && !b.removed);
     if (conts.length) conts[conts.length - 1].click();

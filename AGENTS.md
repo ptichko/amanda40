@@ -17,7 +17,8 @@ should be rejected, or the change should include a migration of the whole repo.
    script in `tools/` is an offline art generator and is never loaded by the page.
 2. **No network access at runtime.** No CDN links, no web fonts, no remote images.
    Every asset is a relative path under `images/` (including `images/bg-tile.svg`,
-   which the page background tiles).
+   which the page background tiles). There are also no sound files: every effect is
+   synthesised with the Web Audio API, so nothing to download and nothing to ship.
 3. **No `@font-face`, no Google Fonts.** The 1990s look depends on fonts that are
    already installed locally — see "Look and feel" below. Adding a webfont would
    both break the no-network rule and defeat the period styling.
@@ -31,7 +32,7 @@ should be rejected, or the change should include a migration of the whole repo.
 
 - Play: open `index.html`. There is nothing to install and nothing to start.
 - Play with the keyboard: `1`–`9` pick a choice, `O` consults the Oracle, `ENTER`
-  presses the last button in the current card.
+  presses the last button in the current card, `M` mutes the sound.
 - Eyeball all artwork at once: `index.html?debug=true` dumps every location plus both
   end screens into the feed on load. Use this after touching images.
 - Replay or share a run: every run has a seed, and the address bar always holds
@@ -256,6 +257,29 @@ any CSS, read this list — each item is load-bearing:
 
 If you add a new UI element, style it from the existing tokens rather than introducing a
 new colour or a webfont.
+
+## Sound
+
+All effects are synthesised — no audio files exist in this repo. `sfx` is the catalogue
+(one function per event), `note()` is the single primitive that builds one oscillator
+plus an envelope, and `SOUND_VOLUME` is the master level. Four rules, each of which has
+already been got wrong once:
+
+- **Route every effect through `playSound()`.** It is the only thing that checks
+  `soundEnabled`, checks `state.replaying`, and swallows errors. Calling `sfx.*()`
+  directly skips all three.
+- **The audio context is created on the first user gesture**, via `armAudio()` on
+  `pointerdown`/`keydown`. Creating it on page load gets it blocked by autoplay policy,
+  and the game would stay silent until a reload.
+- **A replayed run is silent** (`state.replaying`), otherwise opening a shared link fires
+  every effect in the run at once.
+- **Muting is session state only** — deliberately not persisted, because a `file://`
+  page has no reliable storage. It resets on reload, which is the lesser evil against a
+  mute that mysteriously persists.
+
+The toggle is a real `<button>` in the key-hints line (`#sound-toggle`, styled
+`.sound-toggle`, `aria-pressed` kept in sync), so it is reachable by mouse, keyboard, and
+screen reader, and the `M` key flips the same state.
 
 ## Style
 

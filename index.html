@@ -138,6 +138,31 @@
     color: var(--magenta);
   }
 
+  /* Sound on/off, sitting inline in the key hints. */
+  .sound-toggle {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: #000066;
+    background: var(--silver);
+    border: 2px outset var(--silver-light);
+    padding: 1px 8px;
+    cursor: pointer;
+  }
+
+  .sound-toggle:hover {
+    background: var(--cyan);
+  }
+
+  .sound-toggle:active {
+    border-style: inset;
+  }
+
+  .sound-toggle[aria-pressed="false"] {
+    color: #6a6a6a;
+    background: var(--silver-dark);
+    text-decoration: line-through;
+  }
+
   /* ---- HUD ---- */
   #hud {
     background: var(--panel);
@@ -774,7 +799,7 @@
     </div>
   </div>
 
-  <p class="keyhints">1&ndash;4 choose &middot; <b>ENTER</b> continue &middot; <b>O</b> consult the Oracle</p>
+  <p class="keyhints">1&ndash;4 choose &middot; <b>ENTER</b> continue &middot; <b>O</b> consult the Oracle &middot; <b>M</b> <button type="button" class="sound-toggle" id="sound-toggle" aria-pressed="true">sound on</button></p>
 
   <p class="colophon">Best viewed in Netscape Navigator 4.0 at 800&#215;600 &#183; hand-coded in Notepad &#183; no cookies, no tracking, no server</p>
 </div>
@@ -939,6 +964,7 @@ const sceneEl = document.getElementById('scene');
 const sceneFeedEl = document.getElementById('scene-feed');
 const progressFillEl = document.getElementById('progress-fill');
 const progressWalkerEl = document.getElementById('progress-walker');
+const soundToggleEl = document.getElementById('sound-toggle');
 const penaltyPointsEl = document.getElementById('penalty-points');
 const zoneMarkersEl = document.getElementById('zone-markers');
 
@@ -1046,34 +1072,41 @@ function getLocationById(id) {
 // same actions back in reproduces the same stops, distances and outcomes, so
 // the whole journey is rebuilt rather than just the final position.
 function replayLog(tokens) {
-  for (const token of tokens) {
-    if (state.ended) break;
+  // Muting the effects for the duration keeps a shared link from firing every
+  // sound in the run at once.
+  state.replaying = true;
+  try {
+    for (const token of tokens) {
+      if (state.ended) break;
 
-    if (token === 'o') {
-      // Clicking the real button keeps the hint, the highlight and the stats
-      // identical to the original run.
-      const entry = state.currentEntry;
-      const oracleBtn = entry && entry.querySelector('.oracle-btn');
-      if (oracleBtn && !oracleBtn.disabled) oracleBtn.click();
-      continue;
-    }
-
-    if (token in GATE_TOKENS) {
-      const gate = state.currentGate;
-      if (gate) {
-        const btns = gate.querySelectorAll('.primary-btn');
-        const btn = btns[GATE_TOKENS[token]];
-        if (btn && !btn.disabled) btn.click();
+      if (token === 'o') {
+        // Clicking the real button keeps the hint, the highlight and the stats
+        // identical to the original run.
+        const entry = state.currentEntry;
+        const oracleBtn = entry && entry.querySelector('.oracle-btn');
+        if (oracleBtn && !oracleBtn.disabled) oracleBtn.click();
+        continue;
       }
-      continue;
+
+      if (token in GATE_TOKENS) {
+        const gate = state.currentGate;
+        if (gate) {
+          const btns = gate.querySelectorAll('.primary-btn');
+          const btn = btns[GATE_TOKENS[token]];
+          if (btn && !btn.disabled) btn.click();
+        }
+        continue;
+      }
+
+      const location = getLocationById(state.currentLocationId);
+      const entry = state.currentEntry;
+      const choice = location && location.choices[token];
+      if (!choice || !entry) break;
+
+      resolveChoice(choice, entry, true);
     }
-
-    const location = getLocationById(state.currentLocationId);
-    const entry = state.currentEntry;
-    const choice = location && location.choices[token];
-    if (!choice || !entry) break;
-
-    resolveChoice(choice, entry, true);
+  } finally {
+    state.replaying = false;
   }
 }
 
@@ -1098,6 +1131,7 @@ function newGame(options) {
     log: [],
     currentEntry: null,
     currentGate: null,
+    replaying: false,
   };
   sceneFeedEl.innerHTML = '';
   appendLocationEntry(INTRO_LOCATION);
@@ -1206,6 +1240,12 @@ function resolveChoice(choice, entryEl, instant) {
   // (the next location, a zone transition, or an end screen) actually
   // appears, so only the penalty marks update here.
   updatePenaltyHud();
+
+  if (outcome.type === 'penalty') {
+    playSound('stumble');
+  } else if (outcome.type === 'heal') {
+    playSound('heal');
+  }
 
   appendConsequence(entryEl, outcome, distance, () => {
     updateProgressBar();
@@ -1379,6 +1419,7 @@ function appendZoneTransitionEntry(zone, onContinue) {
 
     entry.appendChild(el('p', 'zone-transition-choice', `You chose: ${buttonEl.textContent}`));
 
+    playSound('zone');
     scrollFeedToBottom();
     onContinue();
   }
@@ -1400,6 +1441,10 @@ function appendZoneTransitionEntry(zone, onContinue) {
 
 function endGame(type, message) {
   state.ended = true;
+  // Delayed a beat so it doesn't land on top of the stumble that may have
+  // just ended the run.
+  if (type === 'win') setTimeout(() => playSound('win'), 180);
+  else setTimeout(() => playSound('gameover'), 180);
   appendEndEntry(type, message);
 }
 
@@ -1574,11 +1619,13 @@ function selectChoice(choice, btn, buttonMap, entryEl) {
   const oracleBtn = entryEl.querySelector('.oracle-btn');
   if (oracleBtn) oracleBtn.disabled = true;
 
-  btn.classList.add('choice-selected');
-  const fill = btn.querySelector('.choice-fill');
-  if (fill) fill.classList.add('choice-fill-active');
+    btn.classList.add('choice-selected');
+    const fill = btn.querySelector('.choice-fill');
+    if (fill) fill.classList.add('choice-fill-active');
 
-  setTimeout(() => resolveChoice(choice, entryEl), CHOICE_SELECT_ANIMATION_MS);
+    playSound('select');
+
+    setTimeout(() => resolveChoice(choice, entryEl), CHOICE_SELECT_ANIMATION_MS);
 }
 
 // Small inline icon marking Oracle's recommended choice.
@@ -1629,6 +1676,8 @@ function renderOracle(location, buttonMap, oracleEl) {
 
     state.oracleConsultCount += 1;
     if (highlighted === correct) state.oracleCorrectCount += 1;
+
+    playSound('oracle');
 
     hintText.textContent = hint.text;
     buttonMap.forEach(buttonEl => {
@@ -1697,6 +1746,119 @@ function updateHud() {
   updatePenaltyHud();
 }
 
+/* ---- Sound ----
+   Every effect is synthesised with the Web Audio API, so there are no sound
+   files to ship, nothing to download, and it still works from file://. Square
+   and triangle waves, short envelopes: chiptune, roughly.
+
+   Browsers refuse to start audio before a user gesture, so the context is
+   created on the first interaction of any kind (armAudio below) rather than on
+   page load. Muting is per-session state, deliberately not persisted: there is
+   nowhere reliable to persist it to from a file:// page. */
+const SOUND_VOLUME = 0.16;
+const WAVES = { square: 'square', saw: 'sawtooth', tri: 'triangle' };
+
+let audioCtx = null;
+let masterGain = null;
+let soundEnabled = true;
+
+function ensureAudio() {
+  if (!soundEnabled) return null;
+  if (!audioCtx) {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    audioCtx = new Ctor();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = SOUND_VOLUME;
+    masterGain.connect(audioCtx.destination);
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+// One note. `slide` bends the pitch over the note's length, which is how the
+// stumble falls and the heal rises.
+function note(freq, delay, dur, wave, peak, slideTo) {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = WAVES[wave] || WAVES.square;
+  osc.frequency.setValueAtTime(freq, t0);
+  if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+
+  gain.gain.setValueAtTime(0.0001, t0);
+  gain.gain.exponentialRampToValueAtTime(peak, t0 + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+  osc.connect(gain);
+  gain.connect(masterGain);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.03);
+}
+
+const sfx = {
+  select() { note(760, 0, 0.06, 'square', 0.5); },
+  oracle() {
+    note(520, 0, 0.09, 'tri', 0.45);
+    note(784, 0.08, 0.12, 'tri', 0.4);
+  },
+  stumble() { note(240, 0, 0.28, 'saw', 0.5, 90); },
+  heal() {
+    note(523, 0, 0.1, 'tri', 0.45);
+    note(784, 0.09, 0.16, 'tri', 0.45);
+  },
+  zone() {
+    note(659, 0, 0.16, 'square', 0.35);
+    note(988, 0.1, 0.22, 'square', 0.3);
+  },
+  win() {
+    [523, 659, 784, 1047].forEach((f, i) => note(f, i * 0.1, 0.22, 'square', 0.4));
+  },
+  gameover() {
+    [392, 330, 262, 196].forEach((f, i) => note(f, i * 0.14, 0.3, 'saw', 0.35));
+  },
+};
+
+function playSound(name) {
+  // Replaying a shared link is silent: it would otherwise fire every effect in
+  // the run at once.
+  if (!soundEnabled || (state && state.replaying) || !sfx[name]) return;
+  try {
+    sfx[name]();
+  } catch (err) {
+    // A blocked or missing audio context must never break the game.
+    soundEnabled = false;
+    updateSoundToggle();
+  }
+}
+
+function setSoundEnabled(on) {
+  soundEnabled = !!on;
+  if (soundEnabled) ensureAudio();
+  updateSoundToggle();
+}
+
+function updateSoundToggle() {
+  if (!soundToggleEl) return;
+  soundToggleEl.textContent = soundEnabled ? 'sound on' : 'sound off';
+  soundToggleEl.setAttribute('aria-pressed', String(soundEnabled));
+}
+
+// The first click or keypress of the session unlocks audio. Listeners remove
+// themselves so this only ever runs once.
+function armAudio() {
+  if (soundEnabled) ensureAudio();
+  document.removeEventListener('pointerdown', armAudio);
+  document.removeEventListener('keydown', armAudio);
+}
+
+document.addEventListener('pointerdown', armAudio);
+document.addEventListener('keydown', armAudio);
+
 /* ---- Keyboard ----
    1-9 pick a choice at the current stop, O consults the Oracle, ENTER presses
    the last button in the current card (Continue, the zone gate, Play Again).
@@ -1719,6 +1881,13 @@ function onKeyDown(e) {
   if (e.ctrlKey || e.altKey || e.metaKey) return;
   const tag = e.target && e.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+
+  // The sound toggle is a real button, so Enter/Space on it works natively.
+  if (e.key === 'm' || e.key === 'M') {
+    e.preventDefault();
+    setSoundEnabled(!soundEnabled);
+    return;
+  }
 
   const entry = currentCard();
 
@@ -1744,6 +1913,11 @@ function onKeyDown(e) {
 document.addEventListener('keydown', onKeyDown);
 
 /* ---- Boot ---- */
+
+if (soundToggleEl) {
+  soundToggleEl.addEventListener('click', () => setSoundEnabled(!soundEnabled));
+  updateSoundToggle();
+}
 
 renderZoneMarkers();
 

@@ -54,7 +54,13 @@ bar** as you get closer to forty.
 ## Playing
 
 Click through, or use the keyboard: `1`–`4` pick a choice, `O` consults the Oracle, `ENTER`
-presses the last button (Continue, a zone gate, Play Again).
+presses the last button (Continue, a zone gate, Play Again), `M` mutes.
+
+There are sound effects — a blip when you choose, a falling buzz when you stumble, a
+rising pair when something heals, a chime at a zone gate, and a short tune either way at
+the end. They're synthesised in the browser with the Web Audio API, so there are no sound
+files to download and it all still works offline. Muting is via `M` or the little
+**sound on** button next to the key hints.
 
 Every run is recorded in the address bar as `#seed=…&choices=…`, so you can:
 

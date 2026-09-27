@@ -840,7 +840,7 @@ const CONFIG = {
 const ZONES = [
   { id: 1, name: 'Childhood, 1986 to 2001', min: 0, max: 13 },
   { id: 2, name: 'The Teenage Years, 2000 to 2005', min: 14, max: 26 },
-  { id: 3, name: 'Grown Up, 2006 to 2012', min: 27, max: 40 },
+  { id: 3, name: 'Grown Up, 2006 to 2020', min: 27, max: 40 },
 ];
 
 // The Oracle's possible hints. Each time she is consulted, one entry is picked
@@ -1028,7 +1028,7 @@ const LOCATIONS = [
       { label: 'Sing it looking at one person you trust', outcome: { type: 'heal', text: 'PLACEHOLDER: one person. The rest of the stadium is a blur afterwards.' } },
     ],
   },
-  // --- Zone 3: Grown Up, 2006 to 2012 (27-40) ---
+  // --- Zone 3: Grown Up, 2006 to 2020 (27-40) ---
   {
     id: 'loc_stonehillToEmerson', name: 'Stonehill to Emerson', image: 'images/loc_stonehillToEmerson.svg',
     description: 'PLACEHOLDER: January 2007. Accepted to Emerson College, transferring from Stonehill, in creative writing. You had been writing for years; this was the first time the writing was the point.',
@@ -1057,6 +1057,26 @@ const LOCATIONS = [
       { label: 'Write about patient leaders, for patient leaders', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: April 2012, Somerville. The Monitor article. There is a copy of the magazine.' } },
       { label: 'Write the press release instead', outcome: { type: 'penalty', text: 'PLACEHOLDER: it goes out. Nobody has to think about it, which was never the point.' } },
       { label: 'Let a patient leader read it before it runs', outcome: { type: 'heal', text: 'PLACEHOLDER: they change two sentences. Both of them are better.' } },
+    ],
+  },
+  {
+    id: 'loc_spindrift', name: 'Spindrift, and Watertown', image: 'images/loc_spindrift.svg',
+    description: 'PLACEHOLDER: 2017, twice over. You started working at Spindrift Beverage Company, and later the same year you moved to Watertown, Massachusetts.',
+    zone: 3, weight: 1,
+    choices: [
+      { label: 'Take the job at Spindrift, and move to Watertown', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: a new job, and a new town later in the same year. Both of them 2017.' } },
+      { label: 'Turn the offer down and stay where you are', outcome: { type: 'penalty', text: 'PLACEHOLDER: the offer goes to somebody else. So, more or less, does Watertown.' } },
+      { label: 'Take the job and commute from where you already live', outcome: { type: 'heal', text: 'PLACEHOLDER: you keep the postcode you know, and learn the job twice as fast.' } },
+    ],
+  },
+  {
+    id: 'loc_belmontFamily', name: 'Belmont, 2020', image: 'images/loc_belmontFamily.svg',
+    description: 'PLACEHOLDER: 2020. You started a family, and moved to Belmont, Massachusetts.',
+    zone: 3, weight: 1,
+    choices: [
+      { label: 'Start a family, and move to Belmont', oracleCorrect: true, outcome: { type: 'normal', text: 'PLACEHOLDER: 2020, two enormous things at once, and a new postcode to learn on the way.' } },
+      { label: 'Wait a year, and do one thing at a time', outcome: { type: 'penalty', text: 'PLACEHOLDER: the year goes differently. Belmont happens without you.' } },
+      { label: 'Move first, and let the rest follow', outcome: { type: 'heal', text: 'PLACEHOLDER: you learn the town while there is nothing else on your mind.' } },
     ],
   },
 ];

@@ -7,12 +7,13 @@ and nothing to compile.
 ## The game
 
 A journey in three eras — **Childhood, 1986 to 2001**, **The Teenage Years, 2000 to
-2005**, and **Grown Up, 2006 to 2012** — across 15 stops drawn from the actual life: the
+2005**, and **Grown Up, 2006 to 2020** — across 17 stops drawn from the actual life: the
 first house in Rochester, a talent show there's video of, a Velveteen Rabbit with the
-playbill to prove it, a train from Philadelphia to make a prize, a degree, and a magazine
-article. Each step you pick one of 2–3 choices; every choice has a fixed, determined
-outcome, and only the distance you travel is random. Travel 40 steps to reach the far side
-and win. Three stumbles (red Xs in the HUD) and the journey ends early.
+playbill to prove it, a train from Philadelphia to make a prize, a degree, a magazine
+article, a job at Spindrift and a move to Watertown, and Belmont. Each step you pick one
+of 2–3 choices; every choice has a fixed, determined outcome, and only the distance you
+travel is random. Travel 40 steps to reach the far side and win. Three stumbles (red Xs in
+the HUD) and the journey ends early.
 
 Every location has one choice marked `oracleCorrect` — the one that really happened. The
 others are the roads not taken.
@@ -43,7 +44,7 @@ lives in the **CONTENT SECTION** near the top of the `<script>` block in `index.
 - `ORACLE_HINTS` — hint texts the Oracle can give, and how often she's right.
 - `INTRO_LOCATION` — the fixed location every game starts at.
 - `INTRO_SEQUENCE` — the pixel-art panels that play after "Begin the journey".
-- `LOCATIONS` — the 15 places you can land, each with a `zone`, a `weight`, and choices.
+- `LOCATIONS` — the 17 places you can land, each with a `zone`, a `weight`, and choices.
 - `END_TEXT` — win and game-over titles and messages.
 
 The **ENGINE SECTION** below it (selection, state, rendering) shouldn't need changes
@@ -94,7 +95,7 @@ journey, with the ones you never reached greyed out.
 ## Images
 
 `images/` is done for the intro, the birth cutscene, the win card, and the game-over card
-(real pixel art — leave those alone unless you want to redraw her). The 15 mid-game
+(real pixel art — leave those alone unless you want to redraw her). The 17 mid-game
 locations have generated placeholder cards instead — a dithered gradient in their era's
 colour, the year, and the location name. Drop a real photo in under the same filename and
 the game picks it up with no code change. Regenerate the placeholders after editing the
@@ -155,7 +156,7 @@ cards match.
 
 ### 2. Drop in the photographs
 
-The 15 mid-game locations have generated placeholder cards. Each is named after its
+The 17 mid-game locations have generated placeholder cards. Each is named after its
 location `id` — put a real photo at that filename and nothing else needs to change.
 Keep the wide aspect ratio the placeholders use and keep files small; the whole point is
 that it opens instantly from disk. `index.html?debug=true` shows every one at once.

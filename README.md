@@ -51,6 +51,21 @@ card (waving on the road under a giant "40"), on the win card with a cake and co
 the game-over card under a cold moon, and as a 24x31 sprite who **walks along the progress
 bar** as you get closer to forty.
 
+## Playing
+
+Click through, or use the keyboard: `1`–`4` pick a choice, `O` consults the Oracle, `ENTER`
+presses the last button (Continue, a zone gate, Play Again).
+
+Every run is recorded in the address bar as `#seed=…&choices=…`, so you can:
+
+- **share a run** — copy the URL and it replays exactly, same stops, same distances,
+  same Oracle hints
+- **resume** a run by reopening that URL
+- **fix a seed** with `index.html?seed=1234` to replay the same journey every time
+
+The end card lists the run's seed and shows a *View the album* button: every stop in the
+journey, with the ones you never reached greyed out.
+
 ## Images
 
 `images/` is done for the intro, win, and game-over cards (real pixel art — leave those

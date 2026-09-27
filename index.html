@@ -125,6 +125,19 @@
     margin: 10px 0 0;
   }
 
+  .keyhints {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: #00cccc;
+    margin: 8px 0 0;
+  }
+
+  .keyhints b {
+    color: var(--magenta);
+  }
+
   /* ---- HUD ---- */
   #hud {
     background: var(--panel);
@@ -146,7 +159,9 @@
   }
 
   /* Amanda rides the leading edge of the progress fill. Position comes from
-     updateProgressBar() in the engine, so keep the two in step. */
+     updateProgressBar() in the engine, so keep the two in step. Three frames
+     are stacked; only .is-walking animates them, so she marches while the
+     bar moves and stands still when it doesn't. */
   .progress-walker {
     position: absolute;
     left: 0;
@@ -156,6 +171,29 @@
     transform: translateX(-50%);
     image-rendering: pixelated;
     pointer-events: none;
+  }
+
+  .progress-walker img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 31px;
+    opacity: 0;
+  }
+
+  .progress-walker img:first-child { opacity: 1; }
+
+  .progress-walker.is-walking img {
+    animation: walk-cycle 0.42s linear infinite;
+  }
+
+  .progress-walker.is-walking img:nth-child(2) { animation-delay: 0.14s; }
+  .progress-walker.is-walking img:nth-child(3) { animation-delay: 0.28s; }
+
+  @keyframes walk-cycle {
+    0%, 32% { opacity: 1; }
+    33%, 100% { opacity: 0; }
   }
 
   .progress-track {
@@ -556,6 +594,88 @@
     color: var(--text);
   }
 
+  /* Link back to this exact run, so a run can be shared or resumed. */
+  .share-line {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: #000066;
+    background: #e8e8e8;
+    border: 1px inset var(--silver-light);
+    padding: 6px 8px;
+    margin: 0 0 14px;
+    word-break: break-all;
+    text-align: left;
+  }
+
+  /* ---- Photo album (opened from the end card) ---- */
+  .album-entry {
+    margin: 40px 0 8px;
+    padding: 14px 16px 18px;
+    background: var(--panel);
+    border: 3px outset var(--silver-light);
+  }
+
+  .album-title {
+    margin: 0 0 2px;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-shadow: 2px 2px 0 var(--magenta);
+  }
+
+  .album-subtitle {
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: #333333;
+  }
+
+  .album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .album-item {
+    border: 2px inset var(--silver-dark);
+    background: #ffffff;
+    padding: 4px;
+  }
+
+  .album-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--bg-dark);
+    image-rendering: pixelated;
+  }
+
+  .album-name {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  /* Places she never reached stay in the album, but greyed out. */
+  .album-item-unseen {
+    background: #d4d0c8;
+  }
+
+  .album-item-unseen .album-image {
+    filter: brightness(0.12) contrast(0.6);
+  }
+
+  .album-item-unseen .album-name {
+    color: #6a6a6a;
+    font-weight: normal;
+    font-style: italic;
+  }
+
   .primary-btn {
     background: var(--silver);
     border: 2px outset var(--silver-light);
@@ -607,6 +727,16 @@
     .choice-btn.oracle-highlight {
       animation: none;
     }
+    .progress-walker.is-walking img {
+      animation: none;
+    }
+    .progress-walker img:first-child,
+    .progress-walker.is-walking img:nth-child(2) {
+      opacity: 1;
+    }
+    .progress-walker img:nth-child(3) {
+      opacity: 0;
+    }
     .progress-fill,
     .choice-fill {
       transition: none;
@@ -634,11 +764,17 @@
           <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
           <div id="zone-markers"></div>
         </div>
-        <img class="progress-walker" id="progress-walker" src="images/walker.svg" alt="" aria-hidden="true">
+        <span class="progress-walker" id="progress-walker" aria-hidden="true">
+          <img src="images/walker_0.svg" alt="">
+          <img src="images/walker_1.svg" alt="">
+          <img src="images/walker_2.svg" alt="">
+        </span>
       </div>
       <div class="penalty-points" id="penalty-points"></div>
     </div>
   </div>
+
+  <p class="keyhints">1&ndash;4 choose &middot; <b>ENTER</b> continue &middot; <b>O</b> consult the Oracle</p>
 
   <p class="colophon">Best viewed in Netscape Navigator 4.0 at 800&#215;600 &#183; hand-coded in Notepad &#183; no cookies, no tracking, no server</p>
 </div>
@@ -845,9 +981,109 @@ function isDebugMode() {
   return new URLSearchParams(window.location.search).get('debug') === 'true';
 }
 
-function newGame() {
+// Seeded PRNG (mulberry32). Every random decision in a run goes through
+// state.rng() rather than Math.random(), so a run is fully described by its
+// seed plus the list of choices made -- which is what makes the shareable
+// URL in the address bar work.
+function makeRng(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6D2B79F5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function randomSeed() {
+  return (Math.random() * 4294967296) >>> 0;
+}
+
+// The shareable run: #seed=<n>&choices=<i>.<i>.o.<i> -- one token per
+// action, where a number is the index of the choice picked at that stop,
+// "o" is a visit to the Oracle, and "f"/"v" are the offering and the oath at
+// a zone gate. Oracle visits and gate choices have to be in there too:
+// consulting her draws from the same random stream, and a gate has to be
+// passed to get any further.
+const MAX_LOG_TOKENS = 200;
+const GATE_TOKENS = { f: 0, v: 1 };
+
+function readRunFromHash() {
+  const hash = window.location.hash.replace(/^#/, '');
+  if (!hash) return null;
+
+  const params = new URLSearchParams(hash);
+  if (params.get('seed') === null) return null;
+
+  const tokens = (params.get('choices') || '')
+    .split('.')
+    .filter(t => t !== '')
+    .slice(0, MAX_LOG_TOKENS)
+    .map(t => (t === 'o' || t in GATE_TOKENS ? t : Number(t)))
+    .filter(t => typeof t === 'string' || (!Number.isNaN(t) && t >= 0));
+
+  return { seed: Number(params.get('seed')) >>> 0, choices: tokens };
+}
+
+// Rewrites the hash in place (no new history entry) after every action, so
+// copying the address bar at any moment shares the run as played so far.
+function syncHash() {
+  const hash = '#seed=' + state.seed + '&choices=' + state.log.join('.');
+  try {
+    history.replaceState(null, '', hash);
+  } catch (err) {
+    window.location.hash = hash.slice(1);
+  }
+}
+
+function getLocationById(id) {
+  if (id === INTRO_LOCATION.id) return INTRO_LOCATION;
+  return LOCATIONS.find(loc => loc.id === id) || null;
+}
+
+// Replays a shared run's action list. Because the RNG is seeded, feeding the
+// same actions back in reproduces the same stops, distances and outcomes, so
+// the whole journey is rebuilt rather than just the final position.
+function replayLog(tokens) {
+  for (const token of tokens) {
+    if (state.ended) break;
+
+    if (token === 'o') {
+      // Clicking the real button keeps the hint, the highlight and the stats
+      // identical to the original run.
+      const entry = state.currentEntry;
+      const oracleBtn = entry && entry.querySelector('.oracle-btn');
+      if (oracleBtn && !oracleBtn.disabled) oracleBtn.click();
+      continue;
+    }
+
+    if (token in GATE_TOKENS) {
+      const gate = state.currentGate;
+      if (gate) {
+        const btns = gate.querySelectorAll('.primary-btn');
+        const btn = btns[GATE_TOKENS[token]];
+        if (btn && !btn.disabled) btn.click();
+      }
+      continue;
+    }
+
+    const location = getLocationById(state.currentLocationId);
+    const entry = state.currentEntry;
+    const choice = location && location.choices[token];
+    if (!choice || !entry) break;
+
+    resolveChoice(choice, entry, true);
+  }
+}
+
+function newGame(options) {
+  const opts = options || {};
+  const debug = isDebugMode();
+
   // The game always starts at the predefined intro location, not a random
   // zone-1 location.
+  const seed = opts.seed !== undefined ? opts.seed : randomSeed();
   state = {
     progress: 0,
     penaltyPoints: 0,
@@ -857,23 +1093,32 @@ function newGame() {
     leftOffering: false,
     oracleConsultCount: 0,
     oracleCorrectCount: 0,
+    seed: seed,
+    rng: makeRng(seed),
+    log: [],
+    currentEntry: null,
+    currentGate: null,
   };
   sceneFeedEl.innerHTML = '';
   appendLocationEntry(INTRO_LOCATION);
   updateHud();
 
-  if (isDebugMode()) {
+  if (debug) {
     appendDebugGallery();
+    return;
   }
+
+  if (opts.choices && opts.choices.length > 0) replayLog(opts.choices);
+  syncHash();
 }
 
 function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(state.rng() * (max - min + 1)) + min;
 }
 
 function pickWeighted(items, weightFn) {
   const total = items.reduce((sum, item) => sum + weightFn(item), 0);
-  let roll = Math.random() * total;
+  let roll = state.rng() * total;
   for (const item of items) {
     roll -= weightFn(item);
     if (roll <= 0) return item;
@@ -932,12 +1177,22 @@ function getCorrectChoice(location) {
   return best;
 }
 
-function resolveChoice(choice, entryEl) {
+// `instant` is used only when replaying a shared run: it applies the choice
+// and moves straight on, skipping the Continue button and the travel
+// animation, so a whole journey rebuilds in one pass.
+function resolveChoice(choice, entryEl, instant) {
   if (state.ended) return;
 
   const distance = randomInt(CONFIG.minTravel, CONFIG.maxTravel);
   const outcome = choice.outcome;
   const prevZone = getZoneForProgress(state.progress);
+
+  const currentLocation = getLocationById(state.currentLocationId);
+  const choiceIndex = currentLocation ? currentLocation.choices.indexOf(choice) : -1;
+  if (choiceIndex >= 0) {
+    state.log.push(choiceIndex);
+    syncHash();
+  }
 
   state.progress = Math.min(state.progress + distance, CONFIG.winDistance);
 
@@ -982,7 +1237,7 @@ function resolveChoice(choice, entryEl) {
     } else {
       appendLocationEntry(next);
     }
-  });
+  }, instant);
 }
 
 // Appends the outcome text (plus a penalty detail line) and a Continue
@@ -990,7 +1245,10 @@ function resolveChoice(choice, entryEl) {
 // instead of a modal. Continuing (for any non-gameover outcome) plays the
 // "You walk N steps..." status via playTravelStatus before running
 // onContinue; a gameover outcome runs onContinue immediately.
-function appendConsequence(entryEl, outcome, distance, onContinue) {
+//
+// In `instant` mode (replaying a shared run) the same box is rendered but
+// without the button, and onContinue runs straight away.
+function appendConsequence(entryEl, outcome, distance, onContinue, instant) {
   const body = entryEl.querySelector('.entry-body');
 
   const consequence = el('div', 'consequence');
@@ -1010,6 +1268,12 @@ function appendConsequence(entryEl, outcome, distance, onContinue) {
 
   if (outcome.type === 'penalty') {
     box.appendChild(el('p', 'consequence-detail', "(that's a penalty point)"));
+  }
+
+  if (instant) {
+    body.appendChild(consequence);
+    onContinue();
+    return;
   }
 
   const continueBtn = el('button', 'primary-btn', outcome.type === 'gameover' ? 'Game Over' : 'Continue');
@@ -1106,6 +1370,7 @@ function appendZoneTransitionEntry(zone, onContinue) {
   actions.appendChild(smallBtn);
 
   sceneFeedEl.appendChild(entry);
+  state.currentGate = entry;
   scrollFeedToBottom();
 
   function choose(buttonEl) {
@@ -1118,8 +1383,19 @@ function appendZoneTransitionEntry(zone, onContinue) {
     onContinue();
   }
 
-  largeBtn.addEventListener('click', () => { state.leftOffering = true; choose(largeBtn); });
-  smallBtn.addEventListener('click', () => choose(smallBtn));
+  // Both gate buttons are logged ('f' for the offering, 'v' for the oath) so a
+  // shared run can be replayed through the zone change.
+  largeBtn.addEventListener('click', () => {
+    state.leftOffering = true;
+    state.log.push('f');
+    syncHash();
+    choose(largeBtn);
+  });
+  smallBtn.addEventListener('click', () => {
+    state.log.push('v');
+    syncHash();
+    choose(smallBtn);
+  });
 }
 
 function endGame(type, message) {
@@ -1134,7 +1410,8 @@ function scrollFeedToBottom() {
 }
 
 // Appends a new location card (image, name, description, choices, Oracle)
-// to the bottom of the scrolling feed.
+// to the bottom of the scrolling feed. Remembers the entry on state, which
+// is how the keyboard handler and the run replay find the current stop.
 function appendLocationEntry(location) {
   const { entry, body } = buildEntryCard('location-entry', location.image, location.name,
     location.name, location.description);
@@ -1158,6 +1435,7 @@ function appendLocationEntry(location) {
   });
 
   renderOracle(location, buttonMap, oracleEl);
+  state.currentEntry = entry;
   scrollFeedToBottom();
 }
 
@@ -1177,6 +1455,7 @@ function computeStats() {
     penaltyPoints: state.penaltyPoints,
     oracleConsultCount: state.oracleConsultCount,
     oracleAccuracyPct,
+    seed: state.seed,
   };
 }
 
@@ -1189,10 +1468,37 @@ function buildStatsBox(stats) {
     `Penalty points: ${stats.penaltyPoints}`,
     `Local Oracle consultations: ${stats.oracleConsultCount}`,
     `Local Oracle accuracy: ${accuracyText}`,
+    `Run seed: ${stats.seed}`,
   ].forEach(text => list.appendChild(el('li', null, text)));
   box.appendChild(list);
 
   return box;
+}
+
+// Photo album: every stop in the journey, with the ones she never reached
+// greyed out. Built from LOCATIONS + state.visited, so it needs no new data
+// and no changes to the content section.
+function appendAlbum() {
+  const seenCount = [INTRO_LOCATION, ...LOCATIONS].filter(l => state.visited.has(l.id)).length;
+
+  const wrap = el('div', 'album-entry');
+  wrap.appendChild(el('h2', 'album-title', 'The Album'));
+  wrap.appendChild(el('p', 'album-subtitle',
+    `${seenCount} of ${LOCATIONS.length + 1} stops found this run`));
+
+  const grid = el('div', 'album-grid');
+  [INTRO_LOCATION, ...LOCATIONS].forEach(location => {
+    const seen = state.visited.has(location.id);
+    const item = el('div', seen ? 'album-item' : 'album-item album-item-unseen');
+    item.appendChild(img('album-image', location.image, location.name));
+    item.appendChild(el('span', 'album-name', seen ? location.name : 'not this time'));
+    grid.appendChild(item);
+  });
+  wrap.appendChild(grid);
+
+  sceneFeedEl.appendChild(wrap);
+  scrollFeedToBottom();
+  return wrap;
 }
 
 // Appends the win/game-over result to the bottom of the feed, styled like
@@ -1205,8 +1511,24 @@ function appendEndEntry(type, message) {
 
   body.appendChild(buildStatsBox(computeStats()));
 
+  // The address bar always holds this run, so the end card just says so.
+  body.appendChild(el('p', 'share-line',
+    'share or resume this run from the address bar:  #' +
+    'seed=' + state.seed + '&choices=' + state.log.join('.')));
+
+  // Album first, Play Again last: the keyboard's ENTER picks the last button
+  // in the card, so ENTER should restart rather than open the album.
+  const albumBtn = el('button', 'primary-btn', 'View the album');
+  albumBtn.addEventListener('click', () => {
+    albumBtn.remove();
+    appendAlbum();
+  });
+  body.appendChild(albumBtn);
+
   const restartBtn = el('button', 'primary-btn', 'Play Again');
-  restartBtn.addEventListener('click', newGame);
+  // Wrapped, not passed by reference: newGame() takes an options object, and a
+  // bare listener would hand it the click event instead.
+  restartBtn.addEventListener('click', () => newGame());
   body.appendChild(restartBtn);
 
   sceneFeedEl.appendChild(entry);
@@ -1282,8 +1604,7 @@ function renderOracle(location, buttonMap, oracleEl) {
   oracleEl.classList.add('hidden');
 
   if (location.choices.length < 2) return;
-  if (Math.random() >= CONFIG.oracleAppearChance) return;
-
+  if (state.rng() >= CONFIG.oracleAppearChance) return;
   oracleEl.classList.remove('hidden');
 
   const btn = el('button', 'oracle-btn');
@@ -1295,7 +1616,10 @@ function renderOracle(location, buttonMap, oracleEl) {
   btn.addEventListener('click', () => {
     const hint = pickWeighted(ORACLE_HINTS, h => h.weight || 1);
     const correct = getCorrectChoice(location);
-    const isAccurate = Math.random() < hint.accuracy;
+    const isAccurate = state.rng() < hint.accuracy;
+
+    state.log.push('o');
+    syncHash();
 
     let highlighted = correct;
     if (!isAccurate) {
@@ -1341,12 +1665,23 @@ function renderZoneMarkers() {
   });
 }
 
+// How long Amanda keeps marching after the bar last moved.
+const WALK_STOP_MS = 700;
+let walkStopTimer;
+
 function updateProgressBar() {
   const pct = Math.min(100, (state.progress / CONFIG.winDistance) * 100);
   progressFillEl.style.width = pct + '%';
   // Amanda stands on the leading edge of the fill. The clamp keeps her fully
   // inside the panel at 0% and 100% instead of hanging off either end.
   progressWalkerEl.style.left = 'clamp(12px, ' + pct + '%, calc(100% - 12px))';
+
+  // ...and marches while the bar is moving, then settles.
+  progressWalkerEl.classList.add('is-walking');
+  clearTimeout(walkStopTimer);
+  walkStopTimer = setTimeout(() => {
+    progressWalkerEl.classList.remove('is-walking');
+  }, WALK_STOP_MS);
 }
 
 function updatePenaltyHud() {
@@ -1362,8 +1697,59 @@ function updateHud() {
   updatePenaltyHud();
 }
 
+/* ---- Keyboard ----
+   1-9 pick a choice at the current stop, O consults the Oracle, ENTER presses
+   the last button in the current card (Continue, the zone gate, Play Again).
+   Keys act on whatever is at the bottom of the feed, and only ever click a
+   button that isn't disabled, so every existing guard still applies. */
+function currentCard() {
+  return sceneFeedEl.lastElementChild;
+}
+
+function pressKeyTarget(entry, selector, index) {
+  if (!entry) return false;
+  const btns = entry.querySelectorAll(selector);
+  const btn = index === undefined ? btns[btns.length - 1] : btns[index];
+  if (!btn || btn.disabled) return false;
+  btn.click();
+  return true;
+}
+
+function onKeyDown(e) {
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+  const tag = e.target && e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+
+  const entry = currentCard();
+
+  if (/^[1-9]$/.test(e.key)) {
+    if (pressKeyTarget(entry, '.choice-btn', Number(e.key) - 1)) e.preventDefault();
+    return;
+  }
+
+  if (e.key === 'o' || e.key === 'O') {
+    if (pressKeyTarget(entry, '.oracle-btn', 0)) e.preventDefault();
+    return;
+  }
+
+  if (e.key === 'Enter' || e.key === ' ') {
+    // A focused button already handles Enter/Space itself; clicking it here
+    // too would fire the action twice.
+    const active = document.activeElement;
+    if (active && active.tagName === 'BUTTON') return;
+    if (pressKeyTarget(entry, '.primary-btn')) e.preventDefault();
+  }
+}
+
+document.addEventListener('keydown', onKeyDown);
+
+/* ---- Boot ---- */
+
 renderZoneMarkers();
-newGame();
+
+// A shared link replays the run it points at; otherwise start a fresh one.
+const sharedRun = isDebugMode() ? null : readRunFromHash();
+newGame(sharedRun || undefined);
 </script>
 </body>
 </html>

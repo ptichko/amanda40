@@ -29,13 +29,43 @@ should be rejected, or the change should include a migration of the whole repo.
 ## Run / verify
 
 - Play: open `index.html`. There is nothing to install and nothing to start.
+- Play with the keyboard: `1`–`9` pick a choice, `O` consults the Oracle, `ENTER`
+  presses the last button in the current card.
 - Eyeball all artwork at once: `index.html?debug=true` dumps every location plus both
   end screens into the feed on load. Use this after touching images.
+- Replay or share a run: every run has a seed, and the address bar always holds
+  `#seed=…&choices=…`. Open that URL (or `index.html?seed=1234` for a fixed seed) to
+  reproduce the run exactly. Debug mode ignores both.
 - No test suite exists and none is expected. Verification is manual: open the page,
   click through, confirm the console is clean.
 
 If you make a change to the engine, at minimum play one full run to a win **and** one
-run that ends in game over.
+run that ends in game over, then reload the run's share link and confirm the replayed
+journey is identical.
+
+### How a run is recorded (don't break this)
+
+The address bar is the save file. `state.log` holds one token per action —
+
+| token | meaning |
+| --- | --- |
+| `0`, `1`, `2`… | index of the choice picked at that stop |
+| `o` | the Oracle was consulted there |
+| `f` / `v` | offering / oath at a zone gate |
+
+— and `state.seed` seeds a mulberry32 PRNG in `state.rng()`. Replaying a link feeds
+those tokens back through the same code, so the whole journey (stops, distances,
+outcomes, Oracle hints and highlights) is reproduced. Three consequences:
+
+- **Every random draw must go through `state.rng()`, never `Math.random()`.** A stray
+  `Math.random()` won't break the game, it will silently break replay.
+- **Every player action that touches the RNG or the state must log a token**, in the
+  handler that performs it (see `resolveChoice`, `renderOracle`'s click handler, and
+  `appendZoneTransitionEntry`'s two buttons). An action that isn't logged can't be
+  replayed; one that logs but doesn't draw from the RNG just makes the link longer.
+- `syncHash()` rewrites the hash with `history.replaceState` after each action, with a
+  `location.hash` fallback for environments where that throws. Keep it called from the
+  same place as the `state.log.push`.
 
 ## Architecture
 
@@ -48,7 +78,7 @@ run that ends in game over.
 Game flow, in order:
 
 1. `newGame()` resets `state` and renders `INTRO_LOCATION` (fixed start, never
-   re-picked, has no `zone`).
+   re-picked, has no `zone`). If the URL hash names a run, that run is replayed instead.
 2. A choice at a location resolves to a **fixed** `outcome` — no randomness in *what*
    happens. Only the distance travelled is random (`CONFIG.minTravel`..`maxTravel`).
 3. Outcome text is appended inline into the location card (not a modal) with a
@@ -59,7 +89,8 @@ Game flow, in order:
 5. Crossing a `ZONES` boundary inserts a zone-transition card (offering / oath) and
    remembers the choice in `state.leftOffering`, which selects the win message.
 6. Reaching `CONFIG.winDistance` wins; `state.penaltyPoints >= CONFIG.maxPenaltyPoints`
-   or a `gameover` outcome loses. The end card shows journey stats and a Play Again button.
+   or a `gameover` outcome loses. The end card shows journey stats, a shareable run
+   link, an album button, and Play Again.
 
 Outcome types — the only four legal values of `outcome.type`:
 
@@ -144,7 +175,7 @@ non-location assets:
 | `loc_intro.svg` | intro card | **final** — pixel-art Amanda on the road under the "40" |
 | `win.svg` | win card | **final** — pixel-art Amanda, cake, confetti |
 | `gameover.svg` | game-over card | **final** — pixel-art Amanda under a cold moon |
-| `walker.svg` | the sprite that rides the progress bar | **final** — same character, 24x31 |
+| `walker_0..2.svg` | the three-frame sprite that rides the progress bar | **final** — same character, 24x31 |
 | `bg-tile.svg` | tiled starfield behind the page | **final** — referenced from the stylesheet, don't rename |
 | `loc_*.svg` (the other six) | one per mid-game location | **placeholders** — replace these |
 
@@ -159,14 +190,19 @@ browser scales it.
 
 ### The progress walker
 
-`images/walker.svg` is a DOM element, not a background: `#progress-walker` inside
-`.progress-wrap`, positioned from `updateProgressBar()` in the engine. Its `left` is
-clamped so she stays inside the panel at 0% and 100%. Two things to know:
+`images/walker_0..2.svg` are a DOM element, not a background: `#progress-walker` inside
+`.progress-wrap` is a `<span>` stacking all three frames, positioned from
+`updateProgressBar()` in the engine. Its `left` is clamped so she stays inside the panel
+at 0% and 100%. Three things to know:
 
 - If you change the progress bar's height, check `.progress-walker` still lines up — the
   sprite is 24x31 and deliberately pokes a few pixels above the track.
 - Don't "fix" her by moving her into `.progress-track`; the track has `overflow: hidden`
   and would clip her at both ends.
+- The cycle is CSS only: `.is-walking` (added by `updateProgressBar`, removed
+  `WALK_STOP_MS` after the bar settles) drives a `steps`-style opacity animation across
+  the three frames. Add a fourth frame and you must extend both the HTML and the
+  `walk-cycle` keyframes.
 
 ## Look and feel
 
@@ -191,6 +227,11 @@ any CSS, read this list — each item is load-bearing:
 - **CRT scanlines** come from `body::after` at low opacity. Don't raise it much.
 - **The pixel sprite in the HUD** is scaled 1:1 (24x31) with `image-rendering: pixelated`.
   Don't apply a transform scale to it.
+- **Keyboard controls** are a single `keydown` listener that clicks real buttons in the
+  last feed child, so it inherits every existing `disabled` guard. Keep it that way —
+  synthesising state changes directly would bypass the guards. Note `ENTER` is ignored
+  when a button already has focus, otherwise the browser's own activation would fire the
+  action twice.
 - `prefers-reduced-motion: reduce` switches off the marquee, flicker, glow, and
   transitions. Keep that block working.
 

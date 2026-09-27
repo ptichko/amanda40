@@ -4,6 +4,10 @@ A single-page, no-build, no-server text/image adventure, made as a birthday gift
 Amanda. Open `index.html` in a browser to play — there is no server, no install step,
 and nothing to compile.
 
+The text you'll want to change lives in one spreadsheet, `content/content.csv`; see
+[Working on it](#working-on-it). Editing it runs a small Python step that pastes the new
+words into `index.html`. Playing still needs nothing at all.
+
 ## The game
 
 A journey in three eras — **Childhood, 1986 to 2001**, **The Teenage Years, 2000 to
@@ -35,23 +39,24 @@ The engine is complete and playable, and the **structure is real** — the three
 15 stops, the years, the artefacts (video, playbill, CD, certificate, letter, newspaper
 article, magazine) and the true/wrong choice on every location are all in place. What is
 still placeholder is the **wording**: every description, caption and outcome is a first
-draft, marked `PLACEHOLDER:` in the source. 71 lines to go. `test_content.js` reports the
+draft, marked `PLACEHOLDER:` in the source. 78 lines to go. `test_content.js` reports the
 count on every run, and it should be zero before this is given to anyone.
 
 Swap in the real memories, keeping the years and the facts. Everything you'd want to write
-lives in the **CONTENT SECTION** near the top of the `<script>` block in `index.html`:
+lives in **`content/content.csv`** — one spreadsheet, edited directly:
 
-- `CONFIG` — total steps to win, stumble limit, travel range, Oracle appearance rate.
-- `ZONES` — the three eras, each with its year span.
-- `ORACLE_HINTS` — hint texts the Oracle can give, and how often she's right.
-- `INTRO_LOCATION` — the fixed location every game starts at.
-- `INTRO_SEQUENCE` — the pixel-art panels that play after "Begin the journey".
-- `LOCATIONS` — the 17 places you can land, each with a `zone`, a `weight`, and choices.
-- `END_TEXT` — win and game-over titles and messages.
+- the three eras (zones) and their year spans,
+- the Oracle's hints and how often she's right,
+- the intro card and the cutscene panels,
+- each of the 17 places you can land — its name, picture, and description,
+- every choice at every stop, and what happens when you pick it,
+- the win and game-over cards.
 
-The **ENGINE SECTION** below it (selection, state, rendering) shouldn't need changes
-for content edits. See [AGENTS.md](AGENTS.md) for the full content recipe, the
-invariants to preserve, and the conventions for ids/images/tone.
+Edit the CSV, run `python tools\build_content.py`, reload the page. See
+**Working on it** below for the loop, or [content/README.md](content/README.md) for the
+column reference. The **ENGINE SECTION** of `index.html` (selection, state, rendering)
+isn't involved and shouldn't need changes. See [AGENTS.md](AGENTS.md) for the full content
+recipe, the invariants to preserve, and the conventions for ids/images/tone.
 
 ## Look and feel
 
@@ -108,13 +113,46 @@ screens into the feed.
 
 ## Working on it
 
+### Editing the words
+
+All the text in the game lives in one spreadsheet: **`content/content.csv`**. Zone names,
+the Oracle's hints, the intro card and cutscene, every location, every choice and what
+happens when you pick it, and both end cards.
+
+1. Open `content/content.csv` and change what you want. Save it.
+2. Run `python tools\build_content.py`.
+3. Reload `index.html`.
+
+That's the whole loop. One row per value, in five columns — `kind, parent, index, field,
+value` — and the order of the rows is the order things appear in the game.
+**[content/README.md](content/README.md)** is the full reference: every `kind`, every
+field, and the two rules that will bite you (exactly one choice per location needs
+`oracle_correct`, and the zone ranges have to tile the journey without gaps).
+
+The step 2 is not optional. The game reads its words out of `index.html`, because a
+browser will not let a page opened from `file://` fetch a neighbouring file — and this
+game has to keep working as a single file you can double-click, offline, forever. So the
+CSV is the source and `index.html` is the build output. Edit the CSV, never the block
+inside `index.html`; if you do edit it by hand the tool will notice and refuse to
+overwrite you.
+
+Other flags:
+
+```powershell
+python tools\build_content.py --check    # fail if index.html is out of date (a test does this)
+python tools\build_content.py --export   # go the other way: rebuild the CSV from index.html
+python tools\build_content.py --force    # apply, discarding hand-edits to the block
+```
+
+### Everything else
+
 `tools/` holds dev-only helpers. Nothing in there is loaded by the page, and the game
 still runs if you delete the folder — but it's what makes the project maintainable.
 
-**Tests.** 212 checks over the engine and the content, no browser required:
+**Tests.** 441 checks over the engine and the content, no browser required:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all six files
+powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all seven files
 node tools\test_replay.js                                     # just one
 ```
 
@@ -140,11 +178,13 @@ invariants a change must preserve, and the rules for keeping replay and sound wo
 
 The structure is done. What's left is the writing and the photographs.
 
-### 1. Replace the 71 `PLACEHOLDER:` lines
+### 1. Replace the 78 `PLACEHOLDER:` lines
 
-`grep -n PLACEHOLDER index.html` is the worklist. Everything it lists is a first draft
-written from the facts — the years, the schools, the towns, the artefacts and who did what
-are all correct, but the voice is generic. Go through it and make it hers.
+`test_content.js` prints the worklist on every run, and it's the same 78 rows in
+`content/content.csv` — search that file for `PLACEHOLDER`. Everything it finds is a first
+draft written from the facts — the years, the schools, the towns, the artefacts and who
+did what are all correct, but the voice is generic. Go through it and make it hers, then
+run `python tools\build_content.py` and reload.
 
 Two things to preserve while you do:
 

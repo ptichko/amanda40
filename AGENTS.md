@@ -12,13 +12,16 @@ birthday quest for Amanda. Open `index.html` in a browser and play.
 ```
 index.html            the entire game: styles, content, engine
 images/               every asset the page loads (see "Images")
+content/              content.csv + README.md -- the editable source of the game's words
 tools/                dev-only. Never loaded by the page. See "Tests".
 AGENTS.md             this file
 README.md             what it is, how to play, what to do next
 ```
 
 `index.html` and `images/` are the whole game. Deleting `tools/` breaks nothing that
-matters — only the ability to regenerate art and run the tests.
+matters — only the ability to regenerate art and run the tests. `content/` is the
+editing surface for text: `index.html` is generated from it, but the game never reads
+it at runtime (see "Where to edit content").
 
 ## Hard constraints — do not break these
 
@@ -29,6 +32,11 @@ should be rejected, or the change should include a migration of the whole repo.
    `file://`. No npm, no bundler, no framework, no `fetch()` of local data files. Nothing
    in `tools/` is loaded by the page — those scripts are for authoring and testing, and
    the game works with the whole directory deleted except `index.html` and `images/`.
+   The one authoring step that does exist is baking `content/content.csv` into
+   `index.html` (`python tools/build_content.py`); it needs Python and produces no extra
+   artifacts, because the shipped game is still that single hand-openable file. It is a
+   text-substitution pass, not a compile — the rule it serves is that the page must open
+   offline, and reading the CSV in the browser would break exactly that.
 2. **No network access at runtime.** No CDN links, no web fonts, no remote images.
    Every asset is a relative path under `images/` (including `images/bg-tile.svg`,
    which the page background tiles). There are also no sound files: every effect is
@@ -39,7 +47,8 @@ should be rejected, or the change should include a migration of the whole repo.
 4. **No ES modules.** The script is a classic inline `<script>`; `import`/`export`
    will fail under `file://` because of CORS.
 5. **Single file.** The game is intentionally not split up. Do not introduce
-   `src/`, modules, or a build output.
+   `src/`, modules, or a build output. `content/content.csv` is not a build output and
+   not loaded at runtime — it is the editable source for one region of `index.html`.
 6. **No secrets, no tracking, no analytics.**
 
 ## Run / verify
@@ -90,19 +99,21 @@ node tools\test_replay.js                                     # one file
 ```
 
 (`-ExecutionPolicy Bypass` is only needed if your machine blocks local scripts;
-`node tools\test_*.js` always works. Requires Node. The game itself needs neither Node
-nor Python — the suite is the only thing that does.)
+`node tools\test_*.js` always works. Requires Node, and — for `test_content_csv.js` only —
+Python. The game itself needs neither Node nor Python; the suite is the only thing that does.)
 
 | file | what it protects |
 | --- | --- |
 | `tools/dom_stub.js` | the harness: pulls the inline script out of `index.html` and runs it against a DOM stub with synchronous timers, plus a fake `AudioContext` that records notes |
 | `tools/test_content.js` | content invariants — unique `loc_*` ids, every `zone` in `ZONES`, contiguous zones, `winDistance` == last zone max, legal `outcome.type`s, every zone non-punishing, and **every image path exists on disk** |
+| `tools/test_content_csv.js` | that `index.html` still matches `content/content.csv` (it shells out to `build_content.py --check`), that the generated block is fenced and hashed, and that `CONFIG` is emitted as numbers |
 | `tools/test_styles.js` | balanced braces, no `@font-face` or remote assets, the reduced-motion block, a style rule for every class the engine creates, CSS assets on disk |
 | `tools/test_playthrough.js` | a safe run reaches a win at 100%, a reckless one ends early, every strategy terminates, the log has one token per action, replaying a finished run lands on the same end card |
 | `tools/test_replay.js` | replay determinism, fingerprint by fingerprint including Oracle hints and highlights; a malformed hash still yields a playable game |
 | `tools/test_keyboard.js` | a full run played with `1`/`O`/`ENTER` only, stray keys inert, the `M` mute and the album button |
 | `tools/test_sound.js` | every effect's notes and pitch bends, silence before the first gesture, mute, and that a replay makes no sound |
 | `tools/make_art.py` | regenerates the pixel art (see "Regenerating the art") |
+| `tools/build_content.py` | bakes `content/content.csv` into the CONTENT SECTION of `index.html` (see "Where to edit content") |
 | `tools/art_preview.html` | contact sheet of every image at 1x and zoomed — open it after touching art |
 
 `test_content.js` also prints how many lines still contain `PLACEHOLDER:` — that
@@ -128,7 +139,8 @@ reading a stale `AGENTS.md` is worse off than one reading nothing.
 1. **Tests are green.** `powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1`
    passes. If you touched the engine, you added or updated a test alongside it. If you
    touched `tools/make_art.py` or anything in `images/`, `python tools\make_art.py --check`
-   passes too.
+   passes too. If you touched `content/content.csv`, `index.html` has been rebuilt from it
+   (`python tools\build_content.py`) so the two are committed together.
 2. **Documentation is updated.** See the table below for what goes where. This is the step
    everyone skips, and it is the step that makes the *next* change safe — a future agent
    trusts `AGENTS.md` completely, so anything you leave stale in it becomes a wrong turn
@@ -144,8 +156,13 @@ reading a stale `AGENTS.md` is worse off than one reading nothing.
 | something a player can see, hear, or press | `README.md` — Playing, and the Look and feel paragraph if it's visual |
 | an asset in `images/` | the table in **Images** above, including whether it is final or a placeholder |
 | a file in `tools/` | the table in **Tests** above, and `README.md`'s "Working on it" |
-| a symbol in the CONTENT SECTION | the table in **Where to edit content** |
+| a symbol in the CONTENT SECTION | the table in **Where to edit content** (edit the CSV, then rebuild) |
 | the next stage of the work | the checklist in `README.md`'s "Next steps" |
+
+Note the trap this workflow invites: `index.html` is generated, so a content change is
+really **two** files — `content/content.csv` *and* the rebuilt `index.html`. Committing
+one without the other leaves the page disagreeing with its own source, and
+`test_content_csv.js` will say so.
 
 Two traps, both hit already in this repo:
 
@@ -160,9 +177,11 @@ Two traps, both hit already in this repo:
 
 `index.html` is two blocks inside one `<script>`:
 
-- **CONTENT SECTION** (near the top) — all the data. Everything a writer touches.
+- **CONTENT SECTION** (near the top) — all the data. Generated from
+  `content/content.csv`; fenced by the BEGIN/END GENERATED CONTENT markers so the tool
+  knows what it owns. Everything a writer touches.
 - **ENGINE SECTION** (below it) — state, selection, rendering. Should not need
-  changes for content work.
+  changes for content work. Hand-written, and `build_content.py` never touches it.
 
 Game flow, in order:
 
@@ -194,17 +213,51 @@ Outcome types — the only four legal values of `outcome.type`:
 
 ## Where to edit content
 
-Everything below lives in the CONTENT SECTION of `index.html`:
+**Edit `content/content.csv`, not `index.html`.** All the text below is generated into
+the CONTENT SECTION of `index.html` by `python tools/build_content.py`. The full column
+reference is in `content/README.md`; the short version is one row per field —
+`kind, parent, index, field, value` — where order of the rows is the order things play.
 
-| symbol | purpose |
-| --- | --- |
-| `CONFIG` | `winDistance`, `maxPenaltyPoints`, `minTravel`/`maxTravel`, `oracleAppearChance` |
-| `ZONES` | the progress ranges (`min`/`max`) locations are grouped into. Three eras, each named with its years: **Childhood, 1986 to 2001** (0–13), **The Teenage Years, 2000 to 2005** (14–26), **Grown Up, 2006 to 2020** (27–40) |
-| `ORACLE_HINTS` | hint texts the Oracle can give, each with an `accuracy` and optional `weight` |
-| `INTRO_LOCATION` | the fixed location every game starts at |
-| `INTRO_SEQUENCE` | pixel-art panels that play once after "Begin the journey", before zone 1 — see "The intro sequence" below |
-| `LOCATIONS` | the 17 places the player can land, in date order within each zone |
-| `END_TEXT` | `win` (with `goodMessage`/`badMessage`) and `gameover` titles, messages, images |
+The game can't read the CSV while running, and that is deliberate: browsers block
+`fetch()` on `file://`, so a runtime read would break hard constraint 1. The CSV is the
+source, `index.html` is the build output.
+
+```powershell
+python tools\build_content.py            # bake the CSV into index.html
+python tools\build_content.py --check    # fail if index.html is stale (a test does this)
+python tools\build_content.py --export   # rebuild the CSV from index.html
+python tools\build_content.py --force    # apply, discarding hand-edits to the block
+```
+
+Two safeguards, both worth preserving:
+
+- The generated region is fenced by `/* == BEGIN GENERATED CONTENT … == */` and
+  `/* == END GENERATED CONTENT == */` and carries a `/* content-hash: … */` comment.
+  If the block is edited by hand the hash stops matching, and the tool **refuses to
+  overwrite** it (exit 1) rather than silently discarding the edit. `--force` overrides.
+- `tools/test_content_csv.js` runs `--check`, so a CSV edit that was never baked fails
+  the suite. Don't let that test go stale.
+
+The generated block is `CONFIG`, `ZONES`, `ORACLE_HINTS`, `INTRO_LOCATION`,
+`INTRO_SEQUENCE`, `LOCATIONS` and `END_TEXT`:
+
+| symbol | `kind` in the CSV | purpose |
+| --- | --- | --- |
+| `CONFIG` | `config` | `winDistance`, `maxPenaltyPoints`, `minTravel`/`maxTravel`, `oracleAppearChance` |
+| `ZONES` | `zone` | the progress ranges (`min`/`max`) locations are grouped into. Three eras, each named with its years: **Childhood, 1986 to 2001** (0–13), **The Teenage Years, 2000 to 2005** (14–26), **Grown Up, 2006 to 2020** (27–40) |
+| `ORACLE_HINTS` | `hint` | hint texts the Oracle can give, each with an `accuracy` and optional `weight` |
+| `INTRO_LOCATION` | `intro` | the fixed location every game starts at |
+| `INTRO_SEQUENCE` | `intro_panel` | pixel-art panels that play once after "Begin the journey", before zone 1 — see "The intro sequence" below |
+| `LOCATIONS` | `location` + `choice` | the 17 places the player can land, in date order within each zone, and what you can do at each |
+| `END_TEXT` | `end` | `win` (with `goodMessage`/`badMessage`) and `gameover` titles, messages, images |
+
+Two traps when editing the CSV:
+
+- **Exactly one choice per location needs `oracle_correct` = `true`.** That is the choice
+  that really happened, and it is the one the Oracle points at. `test_content.js`
+  enforces one per location.
+- **`location` ids are load-bearing.** `images/loc_<id>.svg` is looked up from the id, so
+  renaming an id without renaming its picture breaks the asset test.
 
 The years in the `ZONES` names are the only place the eras' date spans are recorded, and
 they have to be kept in step with the locations: adding a 2017 stop means the third zone's

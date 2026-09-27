@@ -24,7 +24,7 @@ intro,,,description,"PLACEHOLDER: forty years, in three parts. The Oracle has ha
 intro,,,choice_label,Begin the journey
 intro,,,choice_outcome_type,normal
 intro,,,choice_outcome_text,The path opens.
-intro_panel,,0,image,images/cutscene_birth.svg
+intro_panel,,0,image,images/cutscene_birth.jpg
 intro_panel,,0,title,"PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986"
 intro_panel,,0,caption,"PLACEHOLDER: the first room you were ever in, and then the long drive home to Rochester with a new person in the back seat."
 intro_panel,,0,button,Continue

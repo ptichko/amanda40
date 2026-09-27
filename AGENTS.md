@@ -376,7 +376,7 @@ non-location assets:
 | file | role | status |
 | --- | --- | --- |
 | `loc_intro.svg` | intro card | **final** — pixel-art Amanda in a birthday hat, waving on the road under the "40" |
-| `cutscene_birth.svg` | the first intro panel | **final** — a hospital room in Dover NH, 1986 |
+| `cutscene_birth.jpg` | the first intro panel | **photograph** — Wentworth-Douglass Hospital at dusk, from `wentworth_douglas_hospital.jpg`; it replaced a pixel-art version that `make_art.py` no longer generates |
 | `win.svg` | win card | **final** — pixel-art Amanda, cake, confetti |
 | `gameover.svg` | game-over card | **final** — dejected pixel-art Amanda, arms down, beside the dropped birthday cake under a cold moon |
 | `walker_0..2.svg` | the three-frame sprite that rides the progress bar | **final** — same character, 24x31 |
@@ -393,7 +393,7 @@ add its image too (or re-run `--placeholders`, below).
 ### Photograph cards
 
 Nine of the sixteen mid-game stops now use a real photograph instead of a generated
-placeholder. `tools/make_photos.py` owns them:
+placeholder, and the birth cutscene panel is a tenth. `tools/make_photos.py` owns them:
 
 ```powershell
 python tools/make_photos.py            # (re)build every card image from its source
@@ -413,6 +413,13 @@ Three photos had more than one plausible stop and the choices are recorded in `M
 the Bishop Brady sign went to the National Anthem (her graduation) rather than the
 leadership conference; Stonehill illustrated the transfer and Emerson the degree; the
 Strafford sign went to the move, leaving the talent show with the Bette Midler single.
+
+`MAPPING` is source photo -> **filename stem**, not location id, because one entry is not a
+location at all: `wentworth_douglas_hospital.jpg` becomes `cutscene_birth.jpg` for the
+birth cutscene panel. That panel used to be generated pixel art and was in `make_art.py`'s
+`JOBS`; it is not any more, and `scene_birth()` was deleted rather than left unreachable.
+Its source is a 13.9-megapixel phone photo at 11.6 MB, cut down to 122 KB — which is the
+point of the tool, since the page is meant to open instantly from disk.
 
 `--check` re-renders each source and compares **decoded pixels**, not file bytes, so a
 Pillow upgrade that changes the encoder doesn't cause a false failure while a swapped or
@@ -451,8 +458,9 @@ as "a bit further down the road" and keeps it clear of the bottom edge of the ca
 ### Regenerating the art
 
 Six of the files above are **generated** by `tools/make_art.py`: `loc_intro.svg`,
-`win.svg`, `gameover.svg` and `walker_0/1/2.svg`. (`bg-tile.svg` is hand-written and is
-*not* in that list.)
+`win.svg`, `gameover.svg` and `walker_0/1/2.svg`. (`bg-tile.svg` is hand-written, and the
+`loc_*.jpg` / `cutscene_birth.jpg` photographs are built by `make_photos.py` — none of them
+are in that list.)
 
 ```powershell
 python tools/make_art.py            # rewrite all six files it owns

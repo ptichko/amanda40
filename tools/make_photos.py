@@ -37,26 +37,30 @@ CARD_W, CARD_H = 1200, 675
 NAVY = (0x00, 0x00, 0x40)          # --bg-dark
 JPEG_QUALITY = 88
 
-# source photo in images/  ->  location id it illustrates
+# source photo in images/  ->  target filename stem in images/ (gets .jpg)
 #
-# The two school photos and the Strafford sign each had more than one plausible
-# stop; these were the choices. A stop with no photo keeps its generated
-# placeholder, so this list is deliberately partial.
+# The stems are the ids the content section already refers to, so a card keeps
+# its conventional filename and index.html's asset lookup still works. A stop
+# with no photo keeps its generated placeholder, so this list is deliberately
+# partial.
 MAPPING = [
-    ('DARE.jpg',                      'loc_theDareSpeech'),
+    ('DARE.jpg',                       'loc_theDareSpeech'),
     ('strafford_elementary_school.jpg', 'loc_theMoveToStrafford'),
-    ('wind_beneath_my_wings.jpg',     'loc_theTalentShow'),
-    ('velveteen_rabbit.jpg',          'loc_piscataquaYouthPlayers'),
-    ('stories_are_made_that_way.jpg', 'loc_storiesAreMadeThatWay'),
-    ('bishop_brady_high_school.jpg',  'loc_theNationalAnthem'),
-    ('stonehill_college.jpg',         'loc_stonehillToEmerson'),
-    ('emerson_college.jpg',           'loc_magnaCumLaude'),
-    ('spindrift.jpg',                 'loc_spindrift'),
+    ('wind_beneath_my_wings.jpg',      'loc_theTalentShow'),
+    ('velveteen_rabbit.jpg',           'loc_piscataquaYouthPlayers'),
+    ('stories_are_made_that_way.jpg',  'loc_storiesAreMadeThatWay'),
+    ('bishop_brady_high_school.jpg',   'loc_theNationalAnthem'),
+    ('stonehill_college.jpg',          'loc_stonehillToEmerson'),
+    ('emerson_college.jpg',            'loc_magnaCumLaude'),
+    ('spindrift.jpg',                  'loc_spindrift'),
+    # the birth cutscene panel, which is a final pixel-art file in make_art.py
+    # and becomes a photograph here
+    ('wentworth_douglas_hospital.jpg', 'cutscene_birth'),
 ]
 
 
-def target_for(loc_id):
-    return os.path.join(IMAGES, loc_id + '.jpg')
+def target_for(stem):
+    return os.path.join(IMAGES, stem + '.jpg')
 
 
 def render(src_path):
@@ -85,13 +89,13 @@ def process(src_path, out_path):
 
 def rebuild():
     missing = []
-    for src, loc_id in MAPPING:
+    for src, stem in MAPPING:
         src_path = os.path.join(IMAGES, src)
         if not os.path.exists(src_path):
             missing.append(src)
             continue
-        size = process(src_path, target_for(loc_id))
-        print('  %-34s -> %-28s %6.1f KB' % (src, loc_id + '.jpg', size / 1024.0))
+        size = process(src_path, target_for(stem))
+        print('  %-34s -> %-28s %6.1f KB' % (src, stem + '.jpg', size / 1024.0))
     if missing:
         print('error: missing source photo(s): %s' % ', '.join(missing), file=sys.stderr)
         return 1
@@ -107,27 +111,27 @@ def check():
     re-cropped source photo does.
     """
     bad = []
-    for src, loc_id in MAPPING:
+    for src, stem in MAPPING:
         src_path = os.path.join(IMAGES, src)
-        out = target_for(loc_id)
+        out = target_for(stem)
         if not os.path.exists(src_path):
             bad.append('%s: source photo is gone' % src)
             continue
         if not os.path.exists(out):
-            bad.append('%s: card image has not been generated' % loc_id)
+            bad.append('%s: card image has not been generated' % stem)
             continue
         with Image.open(out) as on_disk:
             on_disk = on_disk.convert('RGB')
             if on_disk.size != (CARD_W, CARD_H):
                 bad.append('%s: is %dx%d, expected %dx%d'
-                           % (loc_id, on_disk.size[0], on_disk.size[1], CARD_W, CARD_H))
+                           % (stem, on_disk.size[0], on_disk.size[1], CARD_W, CARD_H))
                 continue
             # JPEG is lossy, so the file can't be compared with the uncompressed
             # render -- put both through the same encoder first, then diff pixels.
             expected = Image.open(encode(render(src_path))).convert('RGB')
             if ImageChops.difference(on_disk, expected).getbbox() is not None:
                 bad.append('%s: does not match %s -- the photo changed since it was built'
-                           % (loc_id, src))
+                           % (stem, src))
     if bad:
         print('FAIL: photo card images are out of date', file=sys.stderr)
         for b in bad:
@@ -139,9 +143,9 @@ def check():
 
 
 def show():
-    for src, loc_id in MAPPING:
+    for src, stem in MAPPING:
         exists = 'ok ' if os.path.exists(os.path.join(IMAGES, src)) else 'MISSING'
-        print('  %-7s %-34s -> %s.jpg' % (exists, src, loc_id))
+        print('  %-7s %-34s -> %s.jpg' % (exists, src, stem))
     return 0
 
 

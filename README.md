@@ -101,11 +101,11 @@ The end card lists the run's seed and shows a *View the album* button: every sto
 journey, with the ones you never reached greyed out.
 
 ## Images
-
-`images/` is done for the intro, the birth cutscene, the win card, and the game-over card
-(real pixel art - leave those alone unless you want to redraw her). Of the 16 mid-game
-locations, **9 now use a real photograph** and the remaining 7 have generated placeholder
-cards - a dithered gradient in their era's colour, the year, and the location name.
+`images/` is done for the intro, the win card, and the game-over card (real pixel art -
+leave those alone unless you want to redraw her). Of the 16 mid-game locations, **9 now use
+a real photograph** and the remaining 7 have generated placeholder cards - a dithered
+gradient in their era's colour, the year, and the location name. The birth cutscene is a
+photograph too: Wentworth-Douglass Hospital at dusk.
 
 The photographs are the actual artefacts: the Velveteen Rabbit title page, the Bette
 Midler single, the D.A.R.E. logo, the CD, the school signs, a wall of Spindrift cans. They

@@ -574,7 +574,7 @@ def scene_intro():
     ground(g, 31, ('F', 'f', 'C'), tufts=26, seed=3)
     g.hline(0, W - 1, 30, 'c')
     # She wears the hat here, which makes the sprite HAT_PAD cells taller, so
-    # she is blitted higher to keep her boots on the same line of ground — plus
+    # she is blitted higher to keep her boots on the same line of ground â€” plus
     # one extra row so the pom-pom isn't flush against the top of the card.
     g.blit(amanda(0, hat=True), 12, 13 - HAT_PAD)
     return g
@@ -665,76 +665,17 @@ def scene_gameover():
     return g
 
 
-# ---------------------------------------------------------------- intro panel
-def scene_birth():
-    """The first intro panel: a hospital room in Dover NH, 1986.
-
-    Reads left to right: the night outside the window, the sign on the wall, the
-    bed, and the new person on it. No lettering in the picture -- the card's
-    title and caption carry the words, and the scene should just be the room
-    before the story starts.
-    """
-    g = Grid(W, H)
-    sky(g, [(0.0, 'v'), (0.5, 'N'), (0.75, 'F'), (1.0, 'k')])   # wall, dim
-
-    # window, with the night behind it
-    g.rect(4, 5, 20, 24, 'k')
-    g.rect(5, 6, 19, 23, 'v')
-    for sx, sy in ((8, 9), (15, 8), (11, 14), (17, 18), (7, 20)):
-        g.px(sx, sy, 'w')
-    g.disc(15, 11, 3, 'g')          # moon
-    g.vline(12, 5, 24, 'k')          # glazing bars
-    g.hline(4, 20, 15, 'k')
-
-    # sign on the wall
-    g.rect(25, 7, 35, 8, 'r')
-    g.rect(29, 3, 31, 12, 'r')
-
-    # floor
-    g.hline(0, W - 1, 30, 'N')
-    g.hline(0, W - 1, 31, 'F')
-
-    # the bed, side on: headboard, mattress, legs
-    g.rect(66, 19, 70, 30, 'k')     # headboard
-    g.rect(30, 26, 66, 29, 'w')     # mattress
-    g.hline(30, 66, 26, 'g')
-    g.hline(30, 70, 30, 'k')        # frame
-    g.vline(32, 31, 33, 'k')        # legs
-    g.vline(66, 31, 33, 'k')
-    g.rect(33, 26, 42, 28, 'g')     # pillow
-
-    # The new person. Deliberately the same blonde as Amanda, and with a bow,
-    # so the first thing in the game is recognisably her.
-    g.rect(45, 24, 60, 29, 'm')      # blanket
-    g.hline(45, 60, 24, 'L')         # highlight along the blanket
-    g.hline(59, 60, 19, 'w')         # a bow
-    g.hline(56, 63, 20, 'H')         # hair, darker at the sides
-    g.hline(57, 62, 20, 'h')         # hair, blonde on top
-    g.hline(57, 62, 21, 's')         # forehead
-    g.px(56, 21, 'H')
-    g.px(63, 21, 'H')
-    g.hline(57, 62, 22, 's')         # face
-    g.px(56, 22, 'H')
-    g.px(63, 22, 'H')
-    g.px(58, 22, 'e')                # eyes
-    g.px(61, 22, 'e')
-    g.hline(58, 61, 23, 's')         # chin
-
-    # lamp, and the light it puts on the blanket
-    g.rect(73, 20, 77, 21, 'k')     # shade
-    g.vline(75, 22, 30, 'k')        # stem
-    g.rect(74, 30, 76, 31, 'k')     # base
-    g.disc(75, 19, 2, 'y')
-    return g
-
-
 def walker(frame=0):
     """24x31, drawn small enough to ride the progress bar."""
     return amanda(frame)
 
 
-# Every file this script owns. The six placeholder loc_*.svg files in images/
-# are NOT in here -- those are meant to be replaced with real art by hand.
+# Every file this script owns. The placeholder loc_*.svg files in images/ are
+# NOT in here -- those are meant to be replaced with real art by hand.
+#
+# cutscene_birth was in this list once. The birth cutscene panel now uses a real
+# photograph of Wentworth-Douglass Hospital (built by tools/make_photos.py), so
+# the pixel-art version is gone and this script no longer owns that file.
 JOBS = [
     ('loc_intro.svg', scene_intro, CELL, 'v',
      'Pixel art: Amanda in a birthday hat, waving on the road beneath a starry sky and the number 40'),
@@ -742,8 +683,6 @@ JOBS = [
      'Pixel art: Amanda at her fortieth birthday, cake and confetti'),
     ('gameover.svg', scene_gameover, CELL, 'v',
      'Pixel art: Amanda with her arms down beside the dropped birthday cake, on a cold moonlit road'),
-    ('cutscene_birth.svg', scene_birth, CELL, None,
-     'Pixel art: a hospital room in Dover New Hampshire in 1986, and a blonde baby with a bow on the bed'),
     ('walker_0.svg', lambda: walker(0), 1, None,
      'Pixel art sprite of Amanda, blonde hair and teal jacket, standing'),
     ('walker_1.svg', lambda: walker(1), 1, None,

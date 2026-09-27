@@ -16,14 +16,16 @@ Usage
     python tools/make_art.py                  # regenerate every image
     python tools/make_art.py --list           # show what it would write
     python tools/make_art.py --preview        # print the sprite as ASCII
+    python tools/make_art.py --check          # fail if images/ is out of date
     python tools/make_art.py win.svg          # regenerate just one file
 
 Editing the character
 ---------------------
 Change `amanda()` for the sprite (hair colour is 'h'/'H'/'L' in PAL, the
 jacket is 't'/'T', the scarf 'm'/'M'), then re-run and look at
-`index.html?debug=true`. Change the scenes to move her around or restage a
-background. Nothing else in the repo needs to know.
+`index.html?debug=true`. `amanda(hat=True)` is the taller variant with the
+striped party hat, used by the intro card. Change the scenes to move her
+around or restage a background. Nothing else in the repo needs to know.
 """
 import io
 import os
@@ -213,10 +215,38 @@ def text(layer, s, x, y, scale, main='w', shadow='p', shadow_off=3, outline='o')
 
 
 # ---------------------------------------------------------------- the sprite
-def amanda(frame=0):
+# Vertical headroom added when she wears the birthday hat, in cells. The cone
+# occupies rows 0..HAT_PAD-1, the brim sits on row HAT_PAD, and the brim lands on
+# the top outline row of the bare sprite -- so her boots end up on the same line
+# of ground in both variants.
+HAT_PAD = 11
+
+# Party hat, drawn top-down as (row, x0, x1). It leans to her left, away from the
+# waving hand: the left edge steps left and the right edge steps in, so the cone
+# reads as tilted rather than as a right triangle.
+HAT_CONE = [
+    (10, 10, 17),
+    (9, 10, 16),
+    (8, 9, 15),
+    (7, 9, 14),
+    (6, 8, 13),
+    (5, 8, 12),
+    (4, 7, 11),
+    (3, 7, 10),
+    (2, 6, 8),
+]
+HAT_POM = [(0, 4, 8), (1, 5, 7)]
+HAT_BRIM = (7, 17)   # x0, x1 on row HAT_PAD
+
+
+def amanda(frame=0, hat=False):
     """24x31 character grid: blonde, teal jacket, magenta scarf, waving.
 
     frame 0 standing, frame 1 mid-step (one-pixel bob), frame 2 a wider stride.
+
+    hat=True adds a striped party hat with a lime pom-pom. It needs headroom, so
+    that variant comes back HAT_PAD cells taller with everything drawn in the
+    extra space.
     """
     g = Grid(24, 31)
     # head
@@ -231,7 +261,8 @@ def amanda(frame=0):
     g.rect(11, 12, 12, 13, 's')     # neck
     # right arm goes up first, so the shoulder reads as in front of the hair
     g.rect(18, 4, 19, 14, 't')
-    g.rect(18, 1, 20, 3, 's')       # hand, waving above her head
+    g.rect(18, 1, 20, 2, 's')       # hand, waving above her head
+    g.hline(18, 19, 3, 's')          # ...with a notch, so it reads as fingers
     # body
     g.rect(8, 13, 17, 21, 't')      # jacket
     g.vline(8, 14, 21, 'T')
@@ -260,7 +291,25 @@ def amanda(frame=0):
         # one-pixel bob: everything above the boots lifts, feet stay planted
         g.blit(g.crop(0, 27), 0, -1)
     g.outline()
-    return g
+
+    if not hat:
+        return g
+
+    tall = Grid(24, 31 + HAT_PAD)
+    tall.blit(g, 0, HAT_PAD)
+
+    # pom-pom first, so the cone's tip tucks under it
+    for i, (row, x0, x1) in enumerate(HAT_POM):
+        tall.hline(x0, x1, row, 'l')
+    tall.px(5, 0, 'y')
+    tall.px(6, 0, 'y')
+    # striped cone, magenta and white
+    for i, (row, x0, x1) in enumerate(HAT_CONE):
+        tall.hline(x0, x1, row, 'w' if i % 2 else 'm')
+    # brim, over the top of her hair
+    tall.hline(HAT_BRIM[0], HAT_BRIM[1], HAT_PAD, 'w')
+    tall.outline()
+    return tall
 
 
 # ---------------------------------------------------------------- scenes
@@ -327,7 +376,10 @@ def scene_intro():
     text(g, '40', 45, 3, 3, 'w', 'p', 3)
     ground(g, 31, ('F', 'f', 'C'), tufts=26, seed=3)
     g.hline(0, W - 1, 30, 'c')
-    g.blit(amanda(), 12, 12)
+    # She wears the hat here, which makes the sprite HAT_PAD cells taller, so
+    # she is blitted higher to keep her boots on the same line of ground — plus
+    # one extra row so the pom-pom isn't flush against the top of the card.
+    g.blit(amanda(0, hat=True), 12, 13 - HAT_PAD)
     return g
 
 
@@ -377,7 +429,7 @@ def walker(frame=0):
 # are NOT in here -- those are meant to be replaced with real art by hand.
 JOBS = [
     ('loc_intro.svg', scene_intro, CELL, 'v',
-     'Pixel art: Amanda waving on the road beneath a starry sky and the number 40'),
+     'Pixel art: Amanda in a birthday hat, waving on the road beneath a starry sky and the number 40'),
     ('win.svg', scene_win, CELL, None,
      'Pixel art: Amanda at her fortieth birthday, cake and confetti'),
     ('gameover.svg', scene_gameover, CELL, 'v',
@@ -403,11 +455,32 @@ def main(argv):
             amanda(frame).show()
         return
 
+    # --check renders everything in memory and compares with what's committed,
+    # without writing. It catches the art and this script drifting apart -- the
+    # failure mode where someone edits the SVG by hand, or commits art without
+    # committing the change that generated it.
+    if '--check' in argv:
+        stale = []
+        for name, build, scale, bg, label in JOBS:
+            if wanted and name not in wanted:
+                continue
+            path = os.path.join(OUT, name)
+            expected = build().to_svg(scale, bg=bg, label=label)
+            actual = ''
+            if os.path.exists(path):
+                with io.open(path, encoding='utf-8') as f:
+                    actual = f.read()
+            if actual != expected:
+                stale.append(name)
+        if stale:
+            print('art is stale, re-run: python tools/make_art.py  (%s)'
+                  % ', '.join(stale))
+            sys.exit(1)
+        print('art matches tools/make_art.py (%d files)' % len(JOBS))
+        return
+
     for name, build, scale, bg, label in JOBS:
         if wanted and name not in wanted:
-            continue
-        if '--list' in argv:
-            print('%-16s %s' % (name, label))
             continue
         path = os.path.join(OUT, name)
         with io.open(path, 'w', encoding='utf-8', newline='\n') as f:

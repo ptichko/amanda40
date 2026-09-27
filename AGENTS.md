@@ -126,7 +126,9 @@ as the change**, never as a follow-up: docs drift from code within a day, and a 
 reading a stale `AGENTS.md` is worse off than one reading nothing.
 
 1. **Tests are green.** `powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1`
-   passes. If you touched the engine, you added or updated a test alongside it.
+   passes. If you touched the engine, you added or updated a test alongside it. If you
+   touched `tools/make_art.py` or anything in `images/`, `python tools\make_art.py --check`
+   passes too.
 2. **Documentation is updated.** See the table below for what goes where. This is the step
    everyone skips, and it is the step that makes the *next* change safe — a future agent
    trusts `AGENTS.md` completely, so anything you leave stale in it becomes a wrong turn
@@ -261,7 +263,7 @@ non-location assets:
 
 | file | role | status |
 | --- | --- | --- |
-| `loc_intro.svg` | intro card | **final** — pixel-art Amanda on the road under the "40" |
+| `loc_intro.svg` | intro card | **final** — pixel-art Amanda in a birthday hat, waving on the road under the "40" |
 | `win.svg` | win card | **final** — pixel-art Amanda, cake, confetti |
 | `gameover.svg` | game-over card | **final** — pixel-art Amanda under a cold moon |
 | `walker_0..2.svg` | the three-frame sprite that rides the progress bar | **final** — same character, 24x31 |
@@ -287,6 +289,7 @@ Six of the files above are **generated** by `tools/make_art.py`: `loc_intro.svg`
 python tools/make_art.py            # rewrite all six files it owns
 python tools/make_art.py --list     # what it would write
 python tools/make_art.py --preview  # print the sprite as ASCII
+python tools/make_art.py --check    # fail if images/ is out of date
 python tools/make_art.py win.svg    # just one
 ```
 
@@ -296,6 +299,21 @@ only the ability to re-render art that is already committed. To restyle her, edi
 `amanda()` in that file (hair is `h`/`H`/`L`, jacket `t`/`T`, scarf `m`/`M` in `PAL`) and
 re-run. The output is deterministic: the same code always produces byte-identical SVGs, so
 a regeneration with no art change leaves `git status` clean.
+
+Two shapes of the sprite come out of that one function:
+
+- `amanda(frame)` — 24x31, used by the walker frames, the win card and the game-over card.
+- `amanda(frame, hat=True)` — 24x(31+`HAT_PAD`), the striped party hat with a lime
+  pom-pom, leaning away from her waving hand. Only the intro card uses it. The hat needs
+  headroom, which is why that variant is taller: `HAT_CONE`, `HAT_POM` and `HAT_BRIM`
+  describe it cell by cell, and `scene_intro()` blits her `HAT_PAD` cells higher so her
+  boots stay on the same line of ground as in the other two cards. **If you change
+  `HAT_PAD` or the brim row, check the pom-pom isn't flush against the top of the card.**
+
+`--check` is the guard against drift: it renders every file in memory and fails if
+`images/` doesn't match, which catches both hand-edited SVGs and art committed without
+the script change that generated it. Run it before committing anything that touches
+either.
 
 ### The progress walker
 

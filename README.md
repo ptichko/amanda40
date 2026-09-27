@@ -52,9 +52,9 @@ and cyan that a dark background wanted.
 
 **Amanda appears as pixel art** — a blonde character in a teal jacket and magenta scarf,
 drawn on an 8px grid with `crispEdges` so she stays blocky at any zoom. She's on the intro
-card (waving on the road under a giant "40"), on the win card with a cake and confetti, on
-the game-over card under a cold moon, and as a 24x31 sprite who **walks along the progress
-bar** as you get closer to forty.
+card in a striped birthday hat, waving on the road under a giant "40"; on the win card
+with a cake and confetti; on the game-over card under a cold moon; and as a 24x31 sprite
+who **walks along the progress bar** as you get closer to forty.
 
 ## Playing
 
@@ -106,6 +106,7 @@ redrawing pixels by hand. `tools/make_art.py` rewrites the six files it owns:
 ```powershell
 python tools/make_art.py --preview    # print the sprite as ASCII
 python tools/make_art.py              # rewrite the art
+python tools/make_art.py --check      # fail if images/ is out of date
 ```
 
 Open `tools/art_preview.html` afterwards to eyeball every image at once, zoomed.

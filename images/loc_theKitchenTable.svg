@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="ZONE 1 placeholder">
+  <rect width="640" height="360" fill="#241a33"/>
+  <rect x="16" y="16" width="608" height="328" fill="none" stroke="#c9a05a" stroke-width="3" stroke-dasharray="14 10"/>
+  <circle cx="320" cy="150" r="46" fill="none" stroke="#c9a05a" stroke-width="3"/>
+  <text x="320" y="162" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#c9a05a" text-anchor="middle">ZONE 1</text>
+  <text x="320" y="248" font-family="Georgia, 'Times New Roman', serif" font-size="19" fill="#c9a05a" opacity="0.75" text-anchor="middle">placeholder art</text>
+  <text x="320" y="278" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#c9a05a" opacity="0.55" text-anchor="middle">replace this file, keep the name</text>
+</svg>

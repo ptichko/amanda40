@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fourth Decade</title>
+<style>
+  :root {
+    --bg: #120e18;
+    --panel: #1f1830;
+    --panel-border: #4b3a63;
+    --text: #f1e6d2;
+    --text-dim: #c3b0d6;
+    --accent: #d9b46a;
+    --accent-dim: #8a6d3a;
+    --danger: #b23a3a;
+    --danger-bg: #f1ddd4;
+    --danger-text-dim: #7a4a42;
+    --penalty-empty: #42284a;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  #app {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 16px;
+    min-height: 100vh;
+  }
+
+  h1.title {
+    text-align: center;
+    font-size: 1.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 4px 0 16px;
+  }
+
+  /* ---- HUD ---- */
+  #hud {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+
+  .hud-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .progress-wrap {
+    flex: 1;
+  }
+
+  .progress-track {
+    position: relative;
+    background: #100c09;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    height: 14px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+    transition: width 0.4s ease;
+  }
+
+  .zone-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--text);
+    opacity: 0.55;
+  }
+
+  .penalty-points {
+    font-size: 2rem;
+    white-space: nowrap;
+    letter-spacing: 2px;
+  }
+
+  .penalty-mark-full { color: var(--danger); }
+  .penalty-mark-empty { color: var(--penalty-empty); }
+
+
+  /* ---- Scene (scrolling adventure feed) ---- */
+  #scene {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 68vh;
+    scroll-behavior: smooth;
+    margin-bottom: 16px;
+    scrollbar-width: auto;
+    scrollbar-color: var(--accent-dim) #100c09;
+  }
+
+  #scene::-webkit-scrollbar {
+    width: 16px;
+  }
+
+  #scene::-webkit-scrollbar-track {
+    background: #100c09;
+    border-radius: 999px;
+  }
+
+  #scene::-webkit-scrollbar-thumb {
+    background-color: var(--accent-dim);
+    background-clip: padding-box;
+    border: 4px solid var(--panel);
+    border-radius: 999px;
+  }
+
+  #scene::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent);
+  }
+
+  #scene-feed {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .location-entry + .location-entry {
+    border-top: 1px dashed var(--accent-dim);
+    margin-top: 48px;
+    padding-top: 48px;
+  }
+
+  .entry-image {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #100c09;
+  }
+
+  .entry-body {
+    padding: 16px;
+  }
+
+  .entry-name {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    color: var(--accent);
+  }
+
+  .entry-description {
+    margin: 0 0 16px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .entry-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .choice-btn {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #1c150f;
+    border: 1px solid var(--accent-dim);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 10px 14px;
+    border-radius: 6px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .choice-btn:hover {
+    background: #2a2018;
+    border-color: var(--accent);
+  }
+
+  .choice-btn:disabled {
+    cursor: default;
+  }
+
+  .choice-label {
+    position: relative;
+  }
+
+  .choice-fill {
+    position: absolute;
+    inset: 0;
+    width: 0%;
+    background: rgba(202, 161, 93, 0.35);
+    transition: width 0.5s linear;
+  }
+
+  .choice-fill.choice-fill-active {
+    width: 100%;
+  }
+
+  .choice-btn.choice-selected {
+    border-width: 3px;
+    border-color: var(--accent);
+  }
+
+  .choice-btn.oracle-highlight {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-dim) inset;
+  }
+
+  .oracle-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--accent);
+  }
+
+  .oracle-icon svg {
+    display: block;
+  }
+
+  .entry-oracle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  .oracle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: transparent;
+    border: 1px dashed var(--accent-dim);
+    color: var(--accent);
+    font-family: inherit;
+    font-style: italic;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .oracle-btn:hover {
+    border-color: var(--accent);
+  }
+
+  .oracle-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .oracle-hint {
+    font-style: italic;
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin: 6px 0 0;
+  }
+
+  /* ---- Inline choice consequence ---- */
+  .consequence {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--accent-dim);
+    text-align: center;
+  }
+
+  /* Penalty/game-over messages get a lightened box instead of sitting
+     directly on the dark panel, since --danger red has poor contrast
+     against the dark brown background. */
+  .consequence-box-penalty,
+  .consequence-box-gameover {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+
+  .consequence-image {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 6px;
+    margin: 0 auto 12px;
+  }
+
+  .consequence-message {
+    color: var(--text-dim);
+    margin: 0 0 6px;
+    line-height: 1.5;
+  }
+
+  .consequence-box-penalty .consequence-message,
+  .consequence-box-gameover .consequence-message {
+    color: var(--danger);
+    font-weight: bold;
+  }
+
+  .consequence-detail {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin: 0 0 14px;
+  }
+
+  .consequence-box-penalty .consequence-detail,
+  .consequence-box-gameover .consequence-detail {
+    color: var(--danger-text-dim);
+  }
+
+  /* "Wandering ... N steps" always renders below/outside the penalty box
+     (it's a sibling of .consequence-box, not a child), with generous
+     space above it and left-justified rather than centered. */
+  .travel-status {
+    margin-top: 28px;
+    text-align: left;
+  }
+
+  /* Dot slots are always present (reserving their width) and just toggle
+     visibility, so "Travelling" never shifts position as the ellipsis
+     fills in. */
+  .travel-dot {
+    opacity: 0;
+  }
+
+  .travel-dot.travel-dot-visible {
+    opacity: 1;
+  }
+
+  /* ---- Inline zone-transition (appears directly in the scrolling feed,
+     demarcated with generous vertical spacing + a double "===" divider,
+     instead of a modal) ---- */
+  .zone-transition {
+    margin: 64px 0;
+    text-align: center;
+  }
+
+  .zone-divider {
+    font-family: 'Courier New', monospace;
+    color: var(--accent-dim);
+    line-height: 1.4;
+    letter-spacing: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .zone-transition-title {
+    color: var(--accent);
+    margin: 16px 0 8px;
+    font-size: 1.2rem;
+  }
+
+  .zone-transition-message {
+    color: var(--text-dim);
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+
+  .zone-transition-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .zone-transition-actions .primary-btn {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .zone-transition-choice {
+    margin-top: 12px;
+    font-style: italic;
+    color: var(--text-dim);
+  }
+
+  /* ---- End entry (win/game-over, rendered as a location entry) ---- */
+  .end-entry {
+    text-align: center;
+  }
+
+  .end-entry .entry-description {
+    margin-bottom: 20px;
+  }
+
+  .stats-box {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 0 0 20px;
+    text-align: left;
+  }
+
+  .stats-title {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+
+  .stats-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--text-dim);
+  }
+
+  .primary-btn {
+    background: var(--accent);
+    color: #1b1410;
+    border: none;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .primary-btn:hover {
+    background: #e0b96e;
+  }
+
+  .primary-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1 class="title">The Fourth Decade</h1>
+
+  <div id="scene">
+    <div id="scene-feed"></div>
+  </div>
+
+  <div id="hud">
+    <div class="hud-row">
+      <div class="progress-wrap">
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+          <div id="zone-markers"></div>
+        </div>
+      </div>
+      <div class="penalty-points" id="penalty-points"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   CONTENT SECTION
+   ---------------------------------------------------------------------
+   Everything in this section is placeholder content meant to be replaced.
+   Names, descriptions, images, and choice labels can all be edited here
+   without touching the engine below.
+   ========================================================================= */
+
+const CONFIG = {
+  winDistance: 40,    // total steps needed to win (thematically: forty)
+  maxPenaltyPoints: 3, // stumbles (red Xs) that end the game
+  minTravel: 2,       // min steps gained per action
+  maxTravel: 4,       // max steps gained per action
+  oracleAppearChance: 0.6 // odds the "Consult the Oracle" option shows up at a location
+};
+
+// The journey is divided into three zones by progress. Each location
+// belongs to exactly one zone (see LOCATIONS below), and only locations in
+// the player's current zone are eligible to be picked next. Boundaries are
+// also drawn as markers on the progress bar.
+const ZONES = [
+  { id: 1, name: 'The Long Way Round', min: 0, max: 13 },
+  { id: 2, name: 'The Turning Point', min: 14, max: 26 },
+  { id: 3, name: 'The Far Shore', min: 27, max: 40 },
+];
+
+// The Oracle's possible hints. Each time the Oracle is consulted, one entry
+// is picked (weighted by optional `weight`, default 1 if omitted), and
+// `accuracy` is the probability that the Oracle ends up highlighting the
+// location's actual "correct" choice (see getCorrectChoice below) rather
+// than a random wrong one. Edit text/accuracy/weight freely, and add or
+// remove entries.
+const ORACLE_HINTS = [
+  { text: 'PLACEHOLDER: the Oracle is certain.', accuracy: 0.9 },
+  { text: 'PLACEHOLDER: the Oracle hedges, but only a little.', accuracy: 0.6 },
+  { text: 'PLACEHOLDER: the Oracle is talking to somebody else.', accuracy: 0.3 },
+  { text: 'PLACEHOLDER: the Oracle buries her face in her hands.', accuracy: 0.1 },
+];
+
+// Each choice has a single, fixed outcome (no randomness in *what*
+// happens — only *how far* the player travels stays random). outcome.type
+// is one of:
+//   'normal'   -> flavor text only
+//   'penalty'  -> gain 1 stumble point (a red X); 3 points ends the game
+//   'heal'     -> remove 1 stumble point (floor of 0)
+//   'gameover' -> the journey ends immediately, regardless of stumble points
+// outcome.text is shown inline, right in the scrolling feed, after the
+// choice is made. outcome.image is optional — set it to show a picture
+// inside the outcome box.
+
+// The player always starts here, before any zone locations. It has no
+// `zone` and lives outside LOCATIONS, so it's never picked by the normal
+// zone-based selection (pickNextLocation) — newGame() always sends the
+// player here first.
+const INTRO_LOCATION = {
+  id: 'loc_intro', name: 'Happy 40th, Amanda!', image: 'images/loc_intro.svg',
+  description: 'PLACEHOLDER: the Oracle reads your horoscope card aloud. "Forty is a door, not a wall. Walk through it."',
+  choices: [
+    { label: 'Begin the journey', outcome: { type: 'normal', text: 'The path opens.' } },
+  ],
+};
+
+// Locations the player can land on. Each has a `zone` (1, 2, or 3 — see
+// ZONES above) and only locations in the player's current zone are
+// eligible to be picked next. `weight` controls relative likelihood among
+// locations within the same zone. Each choice carries a fixed
+// `outcome: { type, text }` (type is one of the four listed above).
+//
+// PLACEHOLDER SET: the six locations below are stand-ins so the game runs
+// out of the box. Replace names/descriptions/images with real places from
+// Amanda's life; see AGENTS.md for the recipe.
+const LOCATIONS = [
+  // --- Zone 1: The Long Way Round (0-13) ---
+  {
+    id: 'loc_theFrontPorch', name: 'The Front Porch', image: 'images/loc_theFrontPorch.svg',
+    description: 'PLACEHOLDER: a porch you know by heart. The swing still creaks in the same place.',
+    zone: 1, weight: 1,
+    choices: [
+      { label: 'Sit down and let the years catch up', outcome: { type: 'heal', text: 'Something loosens in your chest.' } },
+      { label: 'Start arguing with the swing again', outcome: { type: 'penalty', text: 'The swing wins, as usual.' } },
+      { label: 'Go to the front steps and count them', outcome: { type: 'normal', text: 'Thirty-nine. You lose count. You start again.' } },
+    ],
+  },
+  {
+    id: 'loc_theKitchenTable', name: 'The Kitchen Table', image: 'images/loc_theKitchenTable.svg',
+    description: 'PLACEHOLDER: the table is set for one more than the usual number of people.',
+    zone: 1, weight: 1,
+    choices: [
+      { label: 'Set an extra place anyway', outcome: { type: 'normal', text: 'The chair stays pulled out all evening.' } },
+      { label: 'Clear the table instead', outcome: { type: 'penalty', text: 'You drop a stack of plates. Loudly.' } },
+    ],
+  },
+  // --- Zone 2: The Turning Point (14-26) ---
+  {
+    id: 'loc_theOldApartment', name: 'The Old Apartment', image: 'images/loc_theOldApartment.svg',
+    description: 'PLACEHOLDER: the walk-up with the bad radiator. Every window holds a different decade.',
+    zone: 2, weight: 1,
+    choices: [
+      { label: 'Climb the stairs slowly', outcome: { type: 'normal', text: 'Four flights. You are fitter than the year you moved in.' } },
+      { label: 'Take them at a run, for no reason', outcome: { type: 'penalty', text: 'The radiator, of all things, wins the argument.' } },
+    ],
+  },
+  {
+    id: 'loc_theCornerDiner', name: 'The Corner Diner', image: 'images/loc_theCornerDiner.svg',
+    description: 'PLACEHOLDER: the same booth, the same sticky menu, a different decade on the calendar.',
+    zone: 2, weight: 1,
+    choices: [
+      { label: 'Order the usual', outcome: { type: 'normal', text: 'They do not even ask. That is the whole point.' } },
+      { label: 'Read the entire menu twice', outcome: { type: 'normal', text: 'You order the usual anyway. The waitress smiles.' } },
+      { label: 'Attempt the experimental special', outcome: { type: 'penalty', text: 'It is a lot of chili. A great deal of chili.' } },
+    ],
+  },
+  // --- Zone 3: The Far Shore (27-40) ---
+  {
+    id: 'loc_theGiftShop', name: 'The Gift Shop', image: 'images/loc_theGiftShop.svg',
+    description: 'PLACEHOLDER: a small shop that only seems to open on birthdays.',
+    zone: 3, weight: 1,
+    choices: [
+      { label: 'Buy something for yourself', outcome: { type: 'heal', text: 'Forty years old and you know what you want. Progress.' } },
+      { label: 'Buy something for everyone else', outcome: { type: 'normal', text: 'The bag gets heavier every block.' } },
+      { label: 'Take the exit sign down and keep it', outcome: { type: 'penalty', text: 'The Oracle says that is not how doors work.' } },
+    ],
+  },
+  {
+    id: 'loc_theLookoutPoint', name: 'The Lookout Point', image: 'images/loc_theLookoutPoint.svg',
+    description: 'PLACEHOLDER: the last stop. The Oracle is here, and she is not smiling.',
+    zone: 3, weight: 1,
+    choices: [
+      { label: 'Ask what happens at forty', outcome: { type: 'normal', text: '"Nothing," she says. "That is the entire plot."' } },
+      { label: 'Ask what she is guarding', outcome: { type: 'gameover', text: 'The Oracle looks at you for a long moment, and then the path ends here.', image: 'images/gameover.svg' } },
+    ],
+  },
+];
+
+const END_TEXT = {
+  win: {
+    title: 'The Fourth Decade',
+    goodMessage: 'PLACEHOLDER: Amanda reaches the Lookout Point at forty, chooses the oath, and the Oracle steps aside without being asked. The view is better than the last twenty times she has seen it.',
+    badMessage: 'PLACEHOLDER: Amanda reaches the Lookout Point at forty, leaves a coin at the shrine out of habit, and is asked to move the shrine for the next traveller. She does it anyway. It is very funny.',
+    image: 'images/win.svg',
+  },
+  gameover: {
+    title: 'The journey ends',
+    message: 'PLACEHOLDER: too many stumbles. The Oracle recommends rest, tea, and a second attempt.',
+    image: 'images/gameover.svg',
+  },
+};
+
+/* =========================================================================
+   ENGINE SECTION
+   ---------------------------------------------------------------------
+   Game state and logic. Shouldn't need to change this to edit content.
+   ========================================================================= */
+
+// Frequently-used DOM anchors, looked up once.
+const sceneEl = document.getElementById('scene');
+const sceneFeedEl = document.getElementById('scene-feed');
+const progressFillEl = document.getElementById('progress-fill');
+const penaltyPointsEl = document.getElementById('penalty-points');
+const zoneMarkersEl = document.getElementById('zone-markers');
+
+// Creates an element, optionally setting its className and textContent.
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function img(className, src, alt) {
+  const node = el('img', className);
+  node.src = src;
+  node.alt = alt;
+  return node;
+}
+
+// Builds the "image, title, description" card shared by location entries,
+// end screens, and the debug outcome-image gallery. Callers append
+// whatever else belongs in the body (choices, buttons, ...).
+function buildEntryCard(entryClassName, imageSrc, imageAlt, title, description) {
+  const entry = el('div', entryClassName);
+  entry.appendChild(img('entry-image', imageSrc, imageAlt));
+
+  const body = el('div', 'entry-body');
+  body.appendChild(el('h2', 'entry-name', title));
+  body.appendChild(el('p', 'entry-description', description));
+  entry.appendChild(body);
+
+  return { entry, body };
+}
+
+let state;
+
+// Debug mode (?debug=true in the URL) dumps every location plus both end
+// screens into the feed on load, so all the artwork can be eyeballed at
+// once without playing through the whole game.
+function isDebugMode() {
+  return new URLSearchParams(window.location.search).get('debug') === 'true';
+}
+
+function newGame() {
+  // The game always starts at the predefined intro location, not a random
+  // zone-1 location.
+  state = {
+    progress: 0,
+    penaltyPoints: 0,
+    currentLocationId: INTRO_LOCATION.id,
+    visited: new Set([INTRO_LOCATION.id]),
+    ended: false,
+    leftOffering: false,
+    oracleConsultCount: 0,
+    oracleCorrectCount: 0,
+  };
+  sceneFeedEl.innerHTML = '';
+  appendLocationEntry(INTRO_LOCATION);
+  updateHud();
+
+  if (isDebugMode()) {
+    appendDebugGallery();
+  }
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function pickWeighted(items, weightFn) {
+  const total = items.reduce((sum, item) => sum + weightFn(item), 0);
+  let roll = Math.random() * total;
+  for (const item of items) {
+    roll -= weightFn(item);
+    if (roll <= 0) return item;
+  }
+  return items[items.length - 1];
+}
+
+function getZoneForProgress(progress) {
+  return ZONES.find(z => progress >= z.min && progress <= z.max) || ZONES[ZONES.length - 1];
+}
+
+function pickNextLocation(excludeId) {
+  const zone = getZoneForProgress(state.progress);
+  const zoneLocations = LOCATIONS.filter(loc => loc.zone === zone.id);
+
+  // Prefer locations in this zone the player hasn't seen yet.
+  let eligible = zoneLocations.filter(loc => !state.visited.has(loc.id));
+  if (eligible.length === 0) {
+    // Every location in this zone has already been visited. Repeating one
+    // is unavoidable at that point, but still avoid an immediate repeat of
+    // the current room if there's any other option.
+    eligible = zoneLocations;
+    if (eligible.length > 1 && excludeId) {
+      const withoutCurrent = eligible.filter(l => l.id !== excludeId);
+      if (withoutCurrent.length > 0) eligible = withoutCurrent;
+    }
+  }
+  if (eligible.length === 0) {
+    // Fallback in case a zone has no locations defined at all.
+    eligible = LOCATIONS;
+  }
+  return pickWeighted(eligible, l => l.weight);
+}
+
+// Desirability ranking of outcome types, best first. Used by
+// getCorrectChoice to pick the "best" choice at a location automatically.
+const OUTCOME_RANK = { heal: 3, normal: 2, penalty: 1, gameover: 0 };
+
+// Determines which choice at a location counts as "correct" for Oracle's
+// purposes. A choice can be marked explicitly with `oracleCorrect: true`;
+// otherwise the choice with the most desirable determined outcome type
+// (see OUTCOME_RANK) wins.
+function getCorrectChoice(location) {
+  const explicit = location.choices.find(c => c.oracleCorrect);
+  if (explicit) return explicit;
+
+  let best = location.choices[0];
+  let bestRank = -Infinity;
+  location.choices.forEach(choice => {
+    const rank = OUTCOME_RANK[choice.outcome.type] ?? 0;
+    if (rank > bestRank) {
+      bestRank = rank;
+      best = choice;
+    }
+  });
+  return best;
+}
+
+function resolveChoice(choice, entryEl) {
+  if (state.ended) return;
+
+  const distance = randomInt(CONFIG.minTravel, CONFIG.maxTravel);
+  const outcome = choice.outcome;
+  const prevZone = getZoneForProgress(state.progress);
+
+  state.progress = Math.min(state.progress + distance, CONFIG.winDistance);
+
+  if (outcome.type === 'penalty') {
+    state.penaltyPoints += 1;
+  } else if (outcome.type === 'heal') {
+    state.penaltyPoints = Math.max(state.penaltyPoints - 1, 0);
+  }
+
+  // The progress bar itself shouldn't move until whatever comes next
+  // (the next location, a zone transition, or an end screen) actually
+  // appears, so only the penalty marks update here.
+  updatePenaltyHud();
+
+  appendConsequence(entryEl, outcome, distance, () => {
+    updateProgressBar();
+
+    if (outcome.type === 'gameover') {
+      // The choice's own flavor text was already shown inline via
+      // appendConsequence just above; the end screen itself should show
+      // the game's overall defeat message (END_TEXT.gameover.message),
+      // not a repeat of that same choice text.
+      endGame('gameover');
+      return;
+    }
+    if (state.penaltyPoints >= CONFIG.maxPenaltyPoints) {
+      endGame('gameover', 'Too many stumbles. The Oracle calls it here. Try again?');
+      return;
+    }
+    if (state.progress >= CONFIG.winDistance) {
+      endGame('win', state.leftOffering ? END_TEXT.win.badMessage : END_TEXT.win.goodMessage);
+      return;
+    }
+
+    const next = pickNextLocation(state.currentLocationId);
+    state.currentLocationId = next.id;
+    state.visited.add(next.id);
+
+    const newZone = getZoneForProgress(state.progress);
+    if (newZone.id !== prevZone.id) {
+      appendZoneTransitionEntry(newZone, () => appendLocationEntry(next));
+    } else {
+      appendLocationEntry(next);
+    }
+  });
+}
+
+// Appends the outcome text (plus a penalty detail line) and a Continue
+// button right into the location entry the player just chose from,
+// instead of a modal. Continuing (for any non-gameover outcome) plays the
+// "You walk N steps..." status via playTravelStatus before running
+// onContinue; a gameover outcome runs onContinue immediately.
+function appendConsequence(entryEl, outcome, distance, onContinue) {
+  const body = entryEl.querySelector('.entry-body');
+
+  const consequence = el('div', 'consequence');
+
+  // The message/detail/button live in their own box so that a later
+  // appended "You walk N steps..." status (a sibling of this box, not a
+  // child of it) renders below/outside the penalty highlight instead of
+  // inside it.
+  const box = el('div', 'consequence-box consequence-box-' + outcome.type);
+  consequence.appendChild(box);
+
+  if (outcome.image) {
+    box.appendChild(img('consequence-image', outcome.image, outcome.text));
+  }
+
+  box.appendChild(el('p', 'consequence-message', outcome.text));
+
+  if (outcome.type === 'penalty') {
+    box.appendChild(el('p', 'consequence-detail', "(that's a penalty point)"));
+  }
+
+  const continueBtn = el('button', 'primary-btn', outcome.type === 'gameover' ? 'Game Over' : 'Continue');
+  continueBtn.addEventListener('click', () => {
+    continueBtn.disabled = true;
+
+    if (outcome.type === 'gameover') {
+      onContinue();
+      return;
+    }
+
+    continueBtn.remove();
+    playTravelStatus(consequence, distance, onContinue);
+  });
+  box.appendChild(continueBtn);
+
+  body.appendChild(consequence);
+  scrollFeedToBottom();
+}
+
+// "Travelling ..." plays first, dots filling in quickly. Once
+// MILES_REVEAL_DELAY_MS has passed, " N steps" is appended to the end: the
+// full text then lingers for TRAVEL_LINGER_MS before onDone runs.
+const DOT_COUNT = 6;
+const DOT_INTERVAL_MS = 150;
+const MILES_REVEAL_DELAY_MS = 1500;
+const TRAVEL_LINGER_MS = 500;
+
+function playTravelStatus(container, distance, onDone) {
+  const statusEl = el('p', 'consequence-detail travel-status');
+  statusEl.appendChild(el('span', null, 'Wandering'));
+
+  // All dot slots are rendered (and take up their layout space) from the
+  // start, just invisible — that way the reserved width never changes as
+  // dots turn on, so the label doesn't recenter/shift mid-animation.
+  const dotEls = [];
+  for (let i = 0; i < DOT_COUNT; i++) {
+    const dot = el('span', 'travel-dot', '.');
+    statusEl.appendChild(dot);
+    dotEls.push(dot);
+  }
+
+  const stepsEl = el('span');
+  statusEl.appendChild(stepsEl);
+
+  container.appendChild(statusEl);
+  scrollFeedToBottom();
+
+  let shown = 0;
+  const dotTimer = setInterval(() => {
+    if (shown < dotEls.length) {
+      dotEls[shown].classList.add('travel-dot-visible');
+      shown += 1;
+    } else {
+      clearInterval(dotTimer);
+    }
+  }, DOT_INTERVAL_MS);
+
+  setTimeout(() => {
+    stepsEl.textContent = ` ${distance} steps`;
+    scrollFeedToBottom();
+  }, MILES_REVEAL_DELAY_MS);
+
+  setTimeout(() => {
+    clearInterval(dotTimer);
+    onDone();
+  }, MILES_REVEAL_DELAY_MS + TRAVEL_LINGER_MS);
+}
+
+// Shown once whenever the player's progress crosses into a new zone.
+// Purely flavor for now (a gold prompt from the zone's Oracle) — the choice
+// has no gameplay effect yet, beyond being remembered for the win text.
+// Rendered directly into the scrolling feed (rather than a modal),
+// demarcated with generous vertical spacing and a double "===" divider.
+function appendZoneTransitionEntry(zone, onContinue) {
+  const divider = '='.repeat(48);
+
+  const entry = el('div', 'zone-transition');
+
+  [1, 2].forEach(() => {
+    entry.appendChild(el('div', 'zone-divider', divider));
+  });
+
+  entry.appendChild(el('h2', 'zone-transition-title', 'Entering new territory'));
+  entry.appendChild(el('p', 'zone-transition-message',
+    'The Oracle taps the map. "New territory. Breathe."'));
+
+  const actions = el('div', 'zone-transition-actions');
+  entry.appendChild(actions);
+
+  const largeBtn = el('button', 'primary-btn', 'Leave an offering at the shrine');
+  const smallBtn = el('button', 'primary-btn', 'Say an oath');
+  actions.appendChild(largeBtn);
+  actions.appendChild(smallBtn);
+
+  sceneFeedEl.appendChild(entry);
+  scrollFeedToBottom();
+
+  function choose(buttonEl) {
+    largeBtn.disabled = true;
+    smallBtn.disabled = true;
+
+    entry.appendChild(el('p', 'zone-transition-choice', `You chose: ${buttonEl.textContent}`));
+
+    scrollFeedToBottom();
+    onContinue();
+  }
+
+  largeBtn.addEventListener('click', () => { state.leftOffering = true; choose(largeBtn); });
+  smallBtn.addEventListener('click', () => choose(smallBtn));
+}
+
+function endGame(type, message) {
+  state.ended = true;
+  appendEndEntry(type, message);
+}
+
+/* ---- Rendering ---- */
+
+function scrollFeedToBottom() {
+  sceneEl.scrollTop = sceneEl.scrollHeight;
+}
+
+// Appends a new location card (image, name, description, choices, Oracle)
+// to the bottom of the scrolling feed.
+function appendLocationEntry(location) {
+  const { entry, body } = buildEntryCard('location-entry', location.image, location.name,
+    location.name, location.description);
+
+  const choicesEl = el('div', 'entry-choices');
+  body.appendChild(choicesEl);
+
+  const oracleEl = el('div', 'entry-oracle hidden');
+  body.appendChild(oracleEl);
+
+  sceneFeedEl.appendChild(entry);
+
+  const buttonMap = new Map();
+  location.choices.forEach(choice => {
+    const btn = el('button', 'choice-btn');
+    btn.appendChild(el('span', 'choice-label', choice.label));
+    btn.appendChild(el('span', 'choice-fill'));
+    btn.addEventListener('click', () => selectChoice(choice, btn, buttonMap, entry));
+    choicesEl.appendChild(btn);
+    buttonMap.set(choice, btn);
+  });
+
+  renderOracle(location, buttonMap, oracleEl);
+  scrollFeedToBottom();
+}
+
+// Locations visited, penalty points, Oracle consults, and Oracle accuracy
+// (the fraction of consults where the highlighted choice was the actually
+// correct one), for display on the end screen.
+function computeStats() {
+  const total = LOCATIONS.length;
+  const visited = LOCATIONS.filter(loc => state.visited.has(loc.id)).length;
+  const oracleAccuracyPct = state.oracleConsultCount > 0
+    ? Math.round((state.oracleCorrectCount / state.oracleConsultCount) * 100)
+    : null;
+
+  return {
+    visited,
+    total,
+    penaltyPoints: state.penaltyPoints,
+    oracleConsultCount: state.oracleConsultCount,
+    oracleAccuracyPct,
+  };
+}
+
+function buildStatsBox(stats) {
+  const box = el('div', 'stats-box');
+  const list = el('ul', 'stats-list');
+  const accuracyText = stats.oracleAccuracyPct === null ? '—' : stats.oracleAccuracyPct + '%';
+  [
+    `Locations visited: ${stats.visited}/${stats.total}`,
+    `Penalty points: ${stats.penaltyPoints}`,
+    `Local Oracle consultations: ${stats.oracleConsultCount}`,
+    `Local Oracle accuracy: ${accuracyText}`,
+  ].forEach(text => list.appendChild(el('li', null, text)));
+  box.appendChild(list);
+
+  return box;
+}
+
+// Appends the win/game-over result to the bottom of the feed, styled like
+// a location entry (image, title, message) but with a "Play Again" button
+// in place of choices, so the player's full journey stays visible above it.
+function appendEndEntry(type, message) {
+  const info = END_TEXT[type];
+  const { entry, body } = buildEntryCard('location-entry end-entry', info.image, info.title,
+    info.title, message || info.message);
+
+  body.appendChild(buildStatsBox(computeStats()));
+
+  const restartBtn = el('button', 'primary-btn', 'Play Again');
+  restartBtn.addEventListener('click', newGame);
+  body.appendChild(restartBtn);
+
+  sceneFeedEl.appendChild(entry);
+  scrollFeedToBottom();
+}
+
+// Appends every location plus both end screens right after the intro, so
+// every image can be reviewed in one scroll. See isDebugMode above.
+function appendDebugGallery() {
+  LOCATIONS.forEach(appendLocationEntry);
+  appendEndEntry('win', END_TEXT.win.goodMessage);
+  appendEndEntry('gameover', END_TEXT.gameover.message);
+  appendOutcomeImageGallery();
+}
+
+// Appends one entry per choice outcome that has its own image, so those
+// (e.g. a gameover twist image) can be eyeballed alongside the location
+// and end-screen artwork above.
+function appendOutcomeImageGallery() {
+  LOCATIONS.forEach(location => {
+    location.choices.forEach(choice => {
+      const outcome = choice.outcome;
+      if (!outcome.image) return;
+
+      const { entry } = buildEntryCard('location-entry', outcome.image, outcome.text,
+        location.name + ' — ' + choice.label, outcome.text);
+      sceneFeedEl.appendChild(entry);
+    });
+  });
+}
+
+// How long the pulse + fill-bar animation plays before the consequence
+// (and any state changes) actually appears.
+const CHOICE_SELECT_ANIMATION_MS = 500;
+
+// Plays the "selected" visual (thicker border + fill bar sweeping across
+// the button) on the clicked choice, locks out further input in this
+// entry, then resolves the choice once the animation has finished.
+function selectChoice(choice, btn, buttonMap, entryEl) {
+  if (state.ended || btn.disabled) return;
+
+  buttonMap.forEach(b => { b.disabled = true; });
+  const oracleBtn = entryEl.querySelector('.oracle-btn');
+  if (oracleBtn) oracleBtn.disabled = true;
+
+  btn.classList.add('choice-selected');
+  const fill = btn.querySelector('.choice-fill');
+  if (fill) fill.classList.add('choice-fill-active');
+
+  setTimeout(() => resolveChoice(choice, entryEl), CHOICE_SELECT_ANIMATION_MS);
+}
+
+// Small inline icon marking Oracle's recommended choice.
+const ORACLE_ICON_SVG = `
+<svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="6" cy="6" r="3" fill="currentColor"/>
+  <circle cx="18" cy="6" r="3" fill="currentColor"/>
+  <circle cx="12" cy="13" r="8" fill="currentColor"/>
+  <circle cx="9" cy="11" r="1.1" fill="#1b1410"/>
+  <circle cx="15" cy="11" r="1.1" fill="#1b1410"/>
+  <ellipse cx="12" cy="15" rx="3.5" ry="2.5" fill="#1b1410"/>
+  <circle cx="12" cy="15" r="0.8" fill="currentColor"/>
+</svg>`.trim();
+
+function makeOracleIcon() {
+  const icon = el('span', 'oracle-icon');
+  icon.innerHTML = ORACLE_ICON_SVG;
+  return icon;
+}
+
+function renderOracle(location, buttonMap, oracleEl) {
+  oracleEl.innerHTML = '';
+  oracleEl.classList.add('hidden');
+
+  if (location.choices.length < 2) return;
+  if (Math.random() >= CONFIG.oracleAppearChance) return;
+
+  oracleEl.classList.remove('hidden');
+
+  const btn = el('button', 'oracle-btn');
+  btn.appendChild(el('span', null, 'Consult the local Oracle'));
+  btn.appendChild(makeOracleIcon());
+
+  const hintText = el('p', 'oracle-hint');
+
+  btn.addEventListener('click', () => {
+    const hint = pickWeighted(ORACLE_HINTS, h => h.weight || 1);
+    const correct = getCorrectChoice(location);
+    const isAccurate = Math.random() < hint.accuracy;
+
+    let highlighted = correct;
+    if (!isAccurate) {
+      const others = location.choices.filter(c => c !== correct);
+      if (others.length > 0) highlighted = others[randomInt(0, others.length - 1)];
+    }
+
+    state.oracleConsultCount += 1;
+    if (highlighted === correct) state.oracleCorrectCount += 1;
+
+    hintText.textContent = hint.text;
+    buttonMap.forEach(buttonEl => {
+      buttonEl.classList.remove('oracle-highlight');
+      const existingIcon = buttonEl.querySelector('.oracle-icon');
+      if (existingIcon) existingIcon.remove();
+    });
+    const targetBtn = buttonMap.get(highlighted);
+    if (targetBtn) {
+      targetBtn.classList.add('oracle-highlight');
+      targetBtn.appendChild(makeOracleIcon());
+    }
+    btn.disabled = true;
+
+    // The hint can land below the current scroll position (e.g. if the
+    // player scrolled up to reread the description), so bring it into
+    // view instead of leaving it to be scrolled to manually.
+    hintText.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  oracleEl.appendChild(btn);
+  oracleEl.appendChild(hintText);
+}
+
+// Draws a tick on the progress bar at the start of each zone after the
+// first (zone boundaries never move, so this only needs to run once).
+function renderZoneMarkers() {
+  zoneMarkersEl.innerHTML = '';
+  ZONES.slice(1).forEach(zone => {
+    const marker = el('div', 'zone-marker');
+    marker.style.left = (zone.min / CONFIG.winDistance) * 100 + '%';
+    marker.title = `${zone.name} begins`;
+    zoneMarkersEl.appendChild(marker);
+  });
+}
+
+function updateProgressBar() {
+  const pct = Math.min(100, (state.progress / CONFIG.winDistance) * 100);
+  progressFillEl.style.width = pct + '%';
+}
+
+function updatePenaltyHud() {
+  penaltyPointsEl.innerHTML = '';
+  for (let i = 0; i < CONFIG.maxPenaltyPoints; i++) {
+    const className = i < state.penaltyPoints ? 'penalty-mark-full' : 'penalty-mark-empty';
+    penaltyPointsEl.appendChild(el('span', className, '✗'));
+  }
+}
+
+function updateHud() {
+  updateProgressBar();
+  updatePenaltyHud();
+}
+
+renderZoneMarkers();
+newGame();
+</script>
+</body>
+</html>

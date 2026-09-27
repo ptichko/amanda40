@@ -15,10 +15,10 @@
      as period-correct. Don't "fix" this by adding Google Fonts.
      =============================================================== */
   :root {
-    --bg: #c9e4dc;            /* pale mint, the wallpaper's base tone */
-    --page-ink: #0a3a37;      /* deep teal: text that sits on the wallpaper */
-    --page-ink-dim: #2c6b66;
-    --page-pink: #c2185b;     /* hot pink, for accents on the wallpaper */
+    --bg: #f7f7f4;            /* the cup: near-white, matches the tile ground */
+    --page-ink: #123c3a;      /* deep teal: text that sits on the wallpaper */
+    --page-ink-dim: #4a6f6c;
+    --page-accent: #3a2785;   /* the Jazz indigo, for accents on the wallpaper */
     --bg-dark: #000040;
     --silver: #c0c0c0;         /* Win95 button face */
     --silver-light: #dfdfdf;
@@ -48,6 +48,8 @@
     padding: 0;
     background-color: var(--bg);
     background-image: url('images/bg-tile.svg');
+    background-size: 300px 300px;
+    background-repeat: repeat;
     color: var(--text);
     font-family: var(--font-body);
     font-size: 15px;
@@ -83,7 +85,7 @@
     color: var(--page-ink);
     margin: 4px 0 2px;
     text-shadow:
-      3px 3px 0 var(--page-pink),
+      3px 3px 0 var(--page-accent),
       -2px -2px 0 #ffffff;
     animation: title-flicker 5s linear infinite;
   }
@@ -137,7 +139,7 @@
   }
 
   .keyhints b {
-    color: var(--page-pink);
+    color: var(--page-accent);
   }
 
   /* Sound on/off, sitting inline in the key hints. */

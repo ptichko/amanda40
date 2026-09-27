@@ -7,6 +7,19 @@ Guidance for coding agents (and humans) working in this repo.
 A single-file, no-build, no-server text/image adventure: **The Fourth Decade**, a
 birthday quest for Amanda. Open `index.html` in a browser and play.
 
+## Repository layout
+
+```
+index.html            the entire game: styles, content, engine
+images/               every asset the page loads (see "Images")
+tools/                dev-only. Never loaded by the page. See "Tests".
+AGENTS.md             this file
+README.md             what it is, how to play, what to do next
+```
+
+`index.html` and `images/` are the whole game. Deleting `tools/` breaks nothing that
+matters — only the ability to regenerate art and run the tests.
+
 ## Hard constraints — do not break these
 
 These are the reason the project is pleasant to work on. Any change that violates them
@@ -23,11 +36,11 @@ should be rejected, or the change should include a migration of the whole repo.
 3. **No `@font-face`, no Google Fonts.** The 1990s look depends on fonts that are
    already installed locally — see "Look and feel" below. Adding a webfont would
    both break the no-network rule and defeat the period styling.
-3. **No ES modules.** The script is a classic inline `<script>`; `import`/`export`
+4. **No ES modules.** The script is a classic inline `<script>`; `import`/`export`
    will fail under `file://` because of CORS.
-4. **Single file.** The game is intentionally not split up. Do not introduce
+5. **Single file.** The game is intentionally not split up. Do not introduce
    `src/`, modules, or a build output.
-5. **No secrets, no tracking, no analytics.**
+6. **No secrets, no tracking, no analytics.**
 
 ## Run / verify
 
@@ -35,13 +48,15 @@ should be rejected, or the change should include a migration of the whole repo.
 - Play with the keyboard: `1`–`9` pick a choice, `O` consults the Oracle, `ENTER`
   presses the last button in the current card, `M` mutes the sound.
 - Eyeball all artwork at once: `index.html?debug=true` dumps every location plus both
-  end screens into the feed on load. Use this after touching images.
+  end screens into the feed on load. Use this after touching images. Debug mode ignores
+  the seed and the run in the URL.
 - Replay or share a run: every run has a seed, and the address bar always holds
-  `#seed=…&choices=…`. Open that URL (or `index.html?seed=1234` for a fixed seed) to
-  reproduce the run exactly. Debug mode ignores both.
+  `#seed=…&choices=…`. Open that URL and the run replays itself, exactly.
+- Pin a run from the start: `index.html?seed=1234` always begins the same journey. A
+  `?seed=` in the query string wins over the hash, which is how the test suite gets a
+  reproducible run.
 
-There **is** a test suite now — see "Tests" below. Run it before you claim anything
-works.
+There **is** a test suite — see "Tests" below. Run it before you claim anything works.
 
 ### How a run is recorded (don't break this)
 
@@ -97,6 +112,13 @@ When you change the engine, add or update a test in the same commit. The stub is
 deliberately small; if a test needs behaviour the stub lacks (say `lastElementChild`),
 extend `dom_stub.js` rather than reaching into the game from a test.
 
+**Do not hardcode a seed.** A run's path depends on its seed, so a test that asserts "a
+stumble is on offer" or "this run crosses a zone gate" will start failing the moment the
+content changes. Use `findSeedRun(pred)` from `dom_stub.js`: it walks seeds from 1 upward,
+drives each with the keyboard, and hands back the first page *stopped at the moment the
+predicate held*. That way a content edit changes which seed is used instead of breaking
+the test. `test_replay.js` and `test_sound.js` both work this way.
+
 ## Architecture
 
 `index.html` is two blocks inside one `<script>`:
@@ -108,7 +130,9 @@ extend `dom_stub.js` rather than reaching into the game from a test.
 Game flow, in order:
 
 1. `newGame()` resets `state` and renders `INTRO_LOCATION` (fixed start, never
-   re-picked, has no `zone`). If the URL hash names a run, that run is replayed instead.
+   re-picked, has no `zone`). On load, `readRunFromUrl()` decides what to do: a
+   `?seed=` starts that seed from the beginning, otherwise a `#seed=…&choices=…` hash
+   replays the run it names, otherwise a fresh random run. Debug mode skips all of it.
 2. A choice at a location resolves to a **fixed** `outcome` — no randomness in *what*
    happens. Only the distance travelled is random (`CONFIG.minTravel`..`maxTravel`).
 3. Outcome text is appended inline into the location card (not a modal) with a
@@ -220,7 +244,9 @@ browser scales it.
 
 ### Regenerating the art
 
-The four "final" files above are **generated** by `tools/make_art.py`:
+Six of the files above are **generated** by `tools/make_art.py`: `loc_intro.svg`,
+`win.svg`, `gameover.svg` and `walker_0/1/2.svg`. (`bg-tile.svg` is hand-written and is
+*not* in that list.)
 
 ```powershell
 python tools/make_art.py            # rewrite all six files it owns

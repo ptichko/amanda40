@@ -8,8 +8,8 @@ and nothing to compile.
 
 A journey in three zones: **The Long Way Round**, **The Turning Point**, and **The Far
 Shore**. Each step you pick one of 2–4 choices; every choice has a fixed, determined
-outcome, and only the distance you travel is random. Travel 40 steps to reach the
-Lookout Point and win. Three stumbles (red Xs in the HUD) and the journey ends early.
+outcome, and only the distance you travel is random. Travel 40 steps to reach the far side
+and win. Three stumbles (red Xs in the HUD) and the journey ends early.
 
 An **Oracle** turns up at most locations. Consult her and she'll highlight one of your
 choices — she's right some of the time, and the odds depend on which hint she draws.
@@ -53,7 +53,7 @@ bar** as you get closer to forty.
 
 ## Playing
 
-Click through, or use the keyboard: `1`–`4` pick a choice, `O` consults the Oracle, `ENTER`
+Click through, or use the keyboard: `1`–`9` pick a choice, `O` consults the Oracle, `ENTER`
 presses the last button (Continue, a zone gate, Play Again), `M` mutes.
 
 There are sound effects — a blip when you choose, a falling buzz when you stumble, a
@@ -67,7 +67,7 @@ Every run is recorded in the address bar as `#seed=…&choices=…`, so you can:
 - **share a run** — copy the URL and it replays exactly, same stops, same distances,
   same Oracle hints
 - **resume** a run by reopening that URL
-- **fix a seed** with `index.html?seed=1234` to replay the same journey every time
+- **fix a seed** with `index.html?seed=1234` to start the same journey every time
 
 The end card lists the run's seed and shows a *View the album* button: every stop in the
 journey, with the ones you never reached greyed out.
@@ -80,26 +80,38 @@ placeholders: replace those files in place, keeping the filenames, and the game 
 the new art with no code change. To see everything at once without playing through, open
 `index.html?debug=true` — it dumps every location and both end screens into the feed.
 
-The finished pixel art is generated, not hand-drawn: `tools/make_art.py` rewrites those
-four files. It's an offline dev tool — the game never calls it, and there's still no
-install step — but it means the character can be restyled (hair, outfit, a new pose)
-without redrawing pixels by hand:
+## Working on it
+
+`tools/` holds dev-only helpers. Nothing in there is loaded by the page, and the game
+still runs if you delete the folder — but it's what makes the project maintainable.
+
+**Tests.** 212 checks over the engine and the content, no browser required:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all six files
+node tools\test_replay.js                                     # just one
+```
+
+`test_content.js` also reports how many lines still say `PLACEHOLDER:` — that number
+should be zero before this is given to anyone.
+
+**The art** is generated, not hand-drawn, so the character can be restyled without
+redrawing pixels by hand. `tools/make_art.py` rewrites the six files it owns:
 
 ```powershell
 python tools/make_art.py --preview    # print the sprite as ASCII
 python tools/make_art.py              # rewrite the art
 ```
 
-There's also a small test suite for the engine and the content, so changes can be
-checked without a browser:
+Open `tools/art_preview.html` afterwards to eyeball every image at once, zoomed.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1
-```
+[AGENTS.md](AGENTS.md) has the longer version: architecture, the content recipe, the
+invariants a change must preserve, and the rules for keeping replay and sound working.
 
 ## Next steps
 
-Ordered, roughly by dependency. Steps 1–3 are the actual gift; 4–6 are polish.
+Ordered, roughly by dependency. Steps 1–3 are the actual gift; 4–5 are polish. The engine
+is finished — everything below is content and art.
 
 ### 1. Brainstorm the places (outside the code)
 
@@ -151,7 +163,11 @@ Play several full runs by hand, both outcomes. Things to look for:
 ### 5. Ship it
 
 - [ ] Commit, then open `index.html` on the machine it'll be played on (a `file://`
-      path works; no server, nothing to install).
+      path works; no server, nothing to install). If she'll play it on a phone, serve it
+      for a minute with `python -m http.server 8000 --directory .` and open
+      `http://<your-pc-ip>:8000` — phones can't open `file://` paths.
+- [ ] Run `tools\run_tests.ps1` one last time; it should be green and report zero
+      `PLACEHOLDER:` lines.
 - [ ] Check the `<title>` and `<h1>` still suit, and add a dedication line to
       `INTRO_LOCATION` if you want her name in the first thing she reads.
 - [ ] If the intro mentions a year, remember it goes stale next year.

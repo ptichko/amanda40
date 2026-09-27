@@ -74,6 +74,16 @@ placeholders: replace those files in place, keeping the filenames, and the game 
 the new art with no code change. To see everything at once without playing through, open
 `index.html?debug=true` — it dumps every location and both end screens into the feed.
 
+The finished pixel art is generated, not hand-drawn: `tools/make_art.py` rewrites those
+four files. It's an offline dev tool — the game never calls it, and there's still no
+install step — but it means the character can be restyled (hair, outfit, a new pose)
+without redrawing pixels by hand:
+
+```powershell
+python tools/make_art.py --preview    # print the sprite as ASCII
+python tools/make_art.py              # rewrite the art
+```
+
 ## Next steps
 
 Ordered, roughly by dependency. Steps 1–3 are the actual gift; 4–6 are polish.

@@ -13,7 +13,8 @@ These are the reason the project is pleasant to work on. Any change that violate
 should be rejected, or the change should include a migration of the whole repo.
 
 1. **No server, no build step, no dependencies.** One `index.html` that runs from
-   `file://`. No npm, no bundler, no framework, no `fetch()` of local data files.
+   `file://`. No npm, no bundler, no framework, no `fetch()` of local data files. The one
+   script in `tools/` is an offline art generator and is never loaded by the page.
 2. **No network access at runtime.** No CDN links, no web fonts, no remote images.
    Every asset is a relative path under `images/` (including `images/bg-tile.svg`,
    which the page background tiles).
@@ -187,6 +188,24 @@ The pixel art is deliberately 8px-cell chunky with `shape-rendering="crispEdges"
 swap in a photo for one of the final files, that's fine — but keep
 `image-rendering: pixelated` in mind for any new sprite, or it will look blurry when the
 browser scales it.
+
+### Regenerating the art
+
+The four "final" files above are **generated** by `tools/make_art.py`:
+
+```powershell
+python tools/make_art.py            # rewrite all six files it owns
+python tools/make_art.py --list     # what it would write
+python tools/make_art.py --preview  # print the sprite as ASCII
+python tools/make_art.py win.svg    # just one
+```
+
+`tools/make_art.py` is a **dev tool, not part of the game**. Nothing in `index.html`
+invokes it, Python is not a dependency, and deleting `tools/` would not break the page —
+only the ability to re-render art that is already committed. To restyle her, edit
+`amanda()` in that file (hair is `h`/`H`/`L`, jacket `t`/`T`, scarf `m`/`M` in `PAL`) and
+re-run. The output is deterministic: the same code always produces byte-identical SVGs, so
+a regeneration with no art change leaves `git status` clean.
 
 ### The progress walker
 

@@ -103,13 +103,28 @@ journey, with the ones you never reached greyed out.
 ## Images
 
 `images/` is done for the intro, the birth cutscene, the win card, and the game-over card
-(real pixel art — leave those alone unless you want to redraw her). The 17 mid-game
-locations have generated placeholder cards instead — a dithered gradient in their era's
-colour, the year, and the location name. Drop a real photo in under the same filename and
-the game picks it up with no code change. Regenerate the placeholders after editing the
-content with `python tools/make_art.py --placeholders`. To see everything at once without
-playing through, open `index.html?debug=true` — it dumps every location and both end
-screens into the feed.
+(real pixel art - leave those alone unless you want to redraw her). Of the 16 mid-game
+locations, **9 now use a real photograph** and the remaining 7 have generated placeholder
+cards - a dithered gradient in their era's colour, the year, and the location name.
+
+The photographs are the actual artefacts: the Velveteen Rabbit title page, the Bette
+Midler single, the D.A.R.E. logo, the CD, the school signs, a wall of Spindrift cans. They
+are letterboxed to 16:9 with navy bars rather than cropped, so nothing gets cut off -
+`object-fit: cover` would have reduced the Bette Midler cover to a band of hair. That
+means a tall photo sits fairly small in a wide frame.
+
+To swap one, replace the source photo (keep the name) and run:
+
+```powershell
+python tools/make_photos.py            # rebuild the card images
+python tools/make_photos.py --list     # which photo goes with which stop
+python tools/make_photos.py --check    # fail if a card image is stale
+```
+
+To fill in one of the remaining placeholders, drop a photo in under the same filename
+(`images/loc_<id>.jpg`, where `<id>` is in `content/content.csv`) and point that row at
+it - no code change. To see everything at once without playing through, open
+`index.html?debug=true` - it dumps every location and both end screens into the feed.
 
 ## Working on it
 
@@ -149,10 +164,10 @@ python tools\build_content.py --force    # apply, discarding hand-edits to the b
 `tools/` holds dev-only helpers. Nothing in there is loaded by the page, and the game
 still runs if you delete the folder — but it's what makes the project maintainable.
 
-**Tests.** 449 checks over the engine and the content, no browser required:
+**Tests.** 455 checks over the engine, the content and the images, no browser required:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all eight files
+powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all nine files
 node tools\test_replay.js                                     # just one
 ```
 
@@ -197,16 +212,18 @@ Two things to preserve while you do:
 If you add or remove a location, re-run `python tools/make_art.py --placeholders` so the
 cards match.
 
-### 2. Drop in the photographs
+### 2. Drop in the remaining photographs
 
-The 17 mid-game locations have generated placeholder cards. Each is named after its
-location `id` — put a real photo at that filename and nothing else needs to change.
-Keep the wide aspect ratio the placeholders use and keep files small; the whole point is
-that it opens instantly from disk. `index.html?debug=true` shows every one at once.
+Nine are in. The other seven stops still have generated placeholder cards: the first
+house in Rochester, St. Elizabeth Seton, Disney World / Jellystone / Poland Springs,
+Destination Imagination, the Washington DC conference, WEGO Health, and Belmont. Each is
+named after its location `id` - put a photo at `images/loc_<id>.jpg`, point that row in
+`content/content.csv` at it, and nothing else needs to change. `index.html?debug=true`
+shows every one at once.
 
-The obvious candidates are the things you already have: the talent show video, the
-playbill and the original Velveteen Rabbit script, the DARE speech in your own
-handwriting, the CD, the newspaper clipping, the certificate, the letter, the magazine.
+The obvious candidates are the things you already have: the playbill and the original
+Velveteen Rabbit script, the newspaper clipping, the poetry certificate, the
+leadership-conference letter, the Monitor magazine article.
 
 ### 3. Playtest
 

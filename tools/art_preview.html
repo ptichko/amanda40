@@ -70,17 +70,20 @@
 </figure>
 
 <figure>
-  <figcaption>the six mid-game placeholders (replace these)</figcaption>
+  <figcaption>the mid-game location cards &mdash; real photographs, and the generated placeholders still to be replaced</figcaption>
   <div class="row" id="placeholders"></div>
 </figure>
 
 <script>
-  // The placeholder locations come from the content section, so this sheet stays
-  // in step with index.html instead of hardcoding a list.
+  // The location cards come from the content section, so this sheet stays in
+  // step with index.html instead of hardcoding a list. The content section is
+  // generated (tools/build_content.py) and writes JSON string literals, so
+  // match either quote style -- and include the real photographs, not just the
+  // generated placeholders.
   fetch('../index.html')
     .then(r => r.text())
     .then(html => {
-      const paths = [...new Set([...html.matchAll(/image:\s*'([^']+\.svg)'/g)].map(m => m[1]))]
+      const paths = [...new Set([...html.matchAll(/image:\s*["']([^"']+\.(?:svg|jpg))["']/g)].map(m => m[1]))]
         .filter(p => p !== 'images/loc_intro.svg');
       const row = document.getElementById('placeholders');
       paths.forEach(p => {

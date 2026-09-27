@@ -59,7 +59,7 @@ choice,loc_stElizabethSeton,2,label,Learn the names of everyone in both rooms
 choice,loc_stElizabethSeton,2,outcome_type,heal
 choice,loc_stElizabethSeton,2,outcome_text,PLACEHOLDER: first grade ends with thirty names and nobody missing.
 location,loc_theMoveToStrafford,,name,The Move to Strafford
-location,loc_theMoveToStrafford,,image,images/loc_theMoveToStrafford.svg
+location,loc_theMoveToStrafford,,image,images/loc_theMoveToStrafford.jpg
 location,loc_theMoveToStrafford,,zone,1
 location,loc_theMoveToStrafford,,weight,1
 location,loc_theMoveToStrafford,,description,"PLACEHOLDER: 1993. Rochester to Strafford, in a car with more boxes than seats. Strafford Elementary from kindergarten all the way through eighth grade — the longest address you ever had."
@@ -74,7 +74,7 @@ choice,loc_theMoveToStrafford,2,label,Introduce yourself to a neighbour before y
 choice,loc_theMoveToStrafford,2,outcome_type,heal
 choice,loc_theMoveToStrafford,2,outcome_text,PLACEHOLDER: by Sunday you have a house key that is not yours.
 location,loc_theTalentShow,,name,The Strafford Talent Show
-location,loc_theTalentShow,,image,images/loc_theTalentShow.svg
+location,loc_theTalentShow,,image,images/loc_theTalentShow.jpg
 location,loc_theTalentShow,,zone,1
 location,loc_theTalentShow,,weight,1
 location,loc_theTalentShow,,description,"PLACEHOLDER: Strafford Elementary picked you to sing ""Wind Beneath My Wings"" in the talent show. There is video: the whole song, an audience, and a child taking it extremely seriously."
@@ -89,7 +89,7 @@ choice,loc_theTalentShow,2,label,Hold the microphone with both hands
 choice,loc_theTalentShow,2,outcome_type,heal
 choice,loc_theTalentShow,2,outcome_text,PLACEHOLDER: somehow it steadies you. The room goes quiet.
 location,loc_theDareSpeech,,name,The DARE Speech
-location,loc_theDareSpeech,,image,images/loc_theDareSpeech.svg
+location,loc_theDareSpeech,,image,images/loc_theDareSpeech.jpg
 location,loc_theDareSpeech,,zone,1
 location,loc_theDareSpeech,,weight,1
 location,loc_theDareSpeech,,description,"PLACEHOLDER: sixth grade, DARE graduation. The class asked you to give the speech on their behalf, and you wrote it out first. You still have the paper, and the video of you reading it."
@@ -104,7 +104,7 @@ choice,loc_theDareSpeech,2,label,End on the line you were most afraid to say
 choice,loc_theDareSpeech,2,outcome_type,heal
 choice,loc_theDareSpeech,2,outcome_text,PLACEHOLDER: the last line is the one people remember.
 location,loc_piscataquaYouthPlayers,,name,The Piscataqua Youth Players
-location,loc_piscataquaYouthPlayers,,image,images/loc_piscataquaYouthPlayers.svg
+location,loc_piscataquaYouthPlayers,,image,images/loc_piscataquaYouthPlayers.jpg
 location,loc_piscataquaYouthPlayers,,zone,1
 location,loc_piscataquaYouthPlayers,,weight,1
 location,loc_piscataquaYouthPlayers,,description,"PLACEHOLDER: four years before the Velveteen Rabbit you were Lucy Oopma Loompa in Charlie and the Chocolate Factory. December 1996: the Rabbit, with a playbill, and an original script with your handwriting in the margins."
@@ -149,7 +149,7 @@ choice,loc_destinationImagination,2,label,Carry the trophy home down the aisle y
 choice,loc_destinationImagination,2,outcome_type,heal
 choice,loc_destinationImagination,2,outcome_text,"PLACEHOLDER: trophy on your lap, Portland to Philadelphia. Nobody says a word the whole way."
 location,loc_storiesAreMadeThatWay,,name,"""Stories Are Made That Way"""
-location,loc_storiesAreMadeThatWay,,image,images/loc_storiesAreMadeThatWay.svg
+location,loc_storiesAreMadeThatWay,,image,images/loc_storiesAreMadeThatWay.jpg
 location,loc_storiesAreMadeThatWay,,zone,2
 location,loc_storiesAreMadeThatWay,,weight,1
 location,loc_storiesAreMadeThatWay,,description,"PLACEHOLDER: 1 April 2002. The musical CD comes out, and you sing several of the tracks with the other children. You still have the CD."
@@ -194,7 +194,7 @@ choice,loc_editorsChoicePoetry,2,label,Read one poem out loud at the ceremony
 choice,loc_editorsChoicePoetry,2,outcome_type,heal
 choice,loc_editorsChoicePoetry,2,outcome_text,"PLACEHOLDER: your own, not the one that won. It goes over well."
 location,loc_theNationalAnthem,,name,"Singing the National Anthem, June 2005"
-location,loc_theNationalAnthem,,image,images/loc_theNationalAnthem.svg
+location,loc_theNationalAnthem,,image,images/loc_theNationalAnthem.jpg
 location,loc_theNationalAnthem,,zone,2
 location,loc_theNationalAnthem,,weight,1
 location,loc_theNationalAnthem,,description,"PLACEHOLDER: June 2005, Bishop Brady High School graduation. You sang the National Anthem. Nobody who loves you knew you were going to do it."
@@ -209,7 +209,7 @@ choice,loc_theNationalAnthem,2,label,Sing it looking at one person you trust
 choice,loc_theNationalAnthem,2,outcome_type,heal
 choice,loc_theNationalAnthem,2,outcome_text,PLACEHOLDER: one person. The rest of the stadium is a blur afterwards.
 location,loc_stonehillToEmerson,,name,Stonehill to Emerson
-location,loc_stonehillToEmerson,,image,images/loc_stonehillToEmerson.svg
+location,loc_stonehillToEmerson,,image,images/loc_stonehillToEmerson.jpg
 location,loc_stonehillToEmerson,,zone,3
 location,loc_stonehillToEmerson,,weight,1
 location,loc_stonehillToEmerson,,description,"PLACEHOLDER: January 2007. Accepted to Emerson College, transferring from Stonehill, in creative writing. You had been writing for years; this was the first time the writing was the point."
@@ -224,7 +224,7 @@ choice,loc_stonehillToEmerson,2,label,"Write something before you go, to prove y
 choice,loc_stonehillToEmerson,2,outcome_type,heal
 choice,loc_stonehillToEmerson,2,outcome_text,"PLACEHOLDER: you finish it on the train. It is not very good, and you go anyway."
 location,loc_magnaCumLaude,,name,Magna Cum Laude
-location,loc_magnaCumLaude,,image,images/loc_magnaCumLaude.svg
+location,loc_magnaCumLaude,,image,images/loc_magnaCumLaude.jpg
 location,loc_magnaCumLaude,,zone,3
 location,loc_magnaCumLaude,,weight,1
 location,loc_magnaCumLaude,,description,"PLACEHOLDER: you graduated from Emerson, Magna Cum Laude, with a BFA in creative writing and a concentration in creative non-fiction and poetry. Both halves of it, in one degree."
@@ -254,7 +254,7 @@ choice,loc_wegoHealth,2,label,Let a patient leader read it before it runs
 choice,loc_wegoHealth,2,outcome_type,heal
 choice,loc_wegoHealth,2,outcome_text,PLACEHOLDER: they change two sentences. Both of them are better.
 location,loc_spindrift,,name,"Spindrift, and Watertown"
-location,loc_spindrift,,image,images/loc_spindrift.svg
+location,loc_spindrift,,image,images/loc_spindrift.jpg
 location,loc_spindrift,,zone,3
 location,loc_spindrift,,weight,1
 location,loc_spindrift,,description,"PLACEHOLDER: 2017, twice over. You started working at Spindrift Beverage Company, and later the same year you moved to Watertown, Massachusetts."

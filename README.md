@@ -53,8 +53,8 @@ and cyan that a dark background wanted.
 **Amanda appears as pixel art** — a blonde character in a teal jacket and magenta scarf,
 drawn on an 8px grid with `crispEdges` so she stays blocky at any zoom. She's on the intro
 card in a striped birthday hat, waving on the road under a giant "40"; on the win card
-with a cake and confetti; on the game-over card under a cold moon with the cake knocked
-over on the ground beside her; and as a 24x31 sprite who **walks along the progress bar**
+with a cake and confetti; on the game-over card with her arms down beside the cake she
+knocked over, under a cold moon; and as a 24x31 sprite who **walks along the progress bar**
 as you get closer to forty.
 
 ## Playing

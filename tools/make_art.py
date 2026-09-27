@@ -239,14 +239,19 @@ HAT_POM = [(0, 4, 8), (1, 5, 7)]
 HAT_BRIM = (7, 17)   # x0, x1 on row HAT_PAD
 
 
-def amanda(frame=0, hat=False):
-    """24x31 character grid: blonde, teal jacket, magenta scarf, waving.
+def amanda(frame=0, hat=False, pose='wave'):
+    """24x31 character grid: blonde, teal jacket, magenta scarf.
 
     frame 0 standing, frame 1 mid-step (one-pixel bob), frame 2 a wider stride.
 
     hat=True adds a striped party hat with a lime pom-pom. It needs headroom, so
     that variant comes back HAT_PAD cells taller with everything drawn in the
     extra space.
+
+    pose 'wave' (the default) has her right arm up, waving, and a smile. pose
+    'slump' is for losing: both arms down, shoulders sloping, and a frown. Only
+    the game-over card uses it -- the win card and the walker keep the wave,
+    because a dejected sprite marching along the progress bar would be grim.
     """
     g = Grid(24, 31)
     # head
@@ -257,23 +262,40 @@ def amanda(frame=0, hat=False):
     g.rect(9, 5, 14, 6, 'h')        # fringe
     g.px(10, 8, 'e')                # eyes
     g.px(13, 8, 'e')
-    g.hline(11, 12, 10, 'S')        # smile
+    g.hline(11, 12, 10, 'S')        # mouth
+    if pose == 'slump':
+        # a frown: the middle of the mouth sits above its corners
+        g.px(10, 11, 'S')
+        g.px(13, 11, 'S')
     g.rect(11, 12, 12, 13, 's')     # neck
-    # right arm goes up first, so the shoulder reads as in front of the hair
-    g.rect(18, 4, 19, 14, 't')
-    g.rect(18, 1, 20, 2, 's')       # hand, waving above her head
-    g.hline(18, 19, 3, 's')          # ...with a notch, so it reads as fingers
-    # body
-    g.rect(8, 13, 17, 21, 't')      # jacket
-    g.vline(8, 14, 21, 'T')
-    g.vline(17, 14, 21, 'T')
+
+    if pose == 'slump':
+        # shoulders slope, because the top row of the jacket is drawn a cell
+        # narrower on each side
+        g.rect(9, 13, 16, 13, 't')
+        g.rect(8, 14, 17, 21, 't')  # jacket
+        g.vline(8, 15, 21, 'T')
+        g.vline(17, 15, 21, 'T')
+        g.rect(6, 15, 7, 21, 't')   # left arm, hanging
+        g.hline(6, 7, 22, 's')      # hand
+        g.rect(18, 15, 19, 21, 't')  # right arm, also down
+        g.hline(18, 19, 22, 's')    # hand
+    else:
+        # right arm goes up first, so the shoulder reads as in front of the hair
+        g.rect(18, 4, 19, 14, 't')
+        g.rect(18, 1, 20, 2, 's')       # hand, waving above her head
+        g.hline(18, 19, 3, 's')         # ...with a notch, so it reads as fingers
+        g.rect(8, 13, 17, 21, 't')      # jacket
+        g.vline(8, 14, 21, 'T')
+        g.vline(17, 14, 21, 'T')
+        g.rect(6, 14, 7, 20, 't')       # left arm, hanging
+        g.rect(6, 21, 7, 22, 's')       # hand
+
     g.rect(9, 12, 10, 16, 'H')      # hair falling in front, both sides
     g.rect(15, 12, 16, 16, 'H')
     g.hline(11, 15, 13, 'm')        # scarf
     g.vline(14, 14, 17, 'M')
     g.px(15, 15, 'm')
-    g.rect(6, 14, 7, 20, 't')       # left arm, hanging
-    g.rect(6, 21, 7, 22, 's')       # hand
     # legs -- frame 2 takes a wider stride so the cycle has some travel in it
     if frame == 2:
         g.rect(8, 22, 15, 27, 'd')
@@ -460,7 +482,7 @@ def scene_gameover():
         g.disc(cx + r, cy, r, 'f')
     ground(g, 31, ('N', 'n', 'v'), tufts=10, seed=5)
     g.hline(0, W - 1, 30, 'f')
-    g.blit(amanda(), 12, 12)
+    g.blit(amanda(0, pose='slump'), 12, 12)   # arms down, not waving
     # The cake, on the ground beside her. It sits a few rows higher than her
     # boots, which reads as "a bit further down the road" and keeps it clear of
     # the bottom edge of the card.
@@ -481,7 +503,7 @@ JOBS = [
     ('win.svg', scene_win, CELL, None,
      'Pixel art: Amanda at her fortieth birthday, cake and confetti'),
     ('gameover.svg', scene_gameover, CELL, 'v',
-     'Pixel art: Amanda alone on the road under a cold moon'),
+     'Pixel art: Amanda with her arms down beside the dropped birthday cake, on a cold moonlit road'),
     ('walker_0.svg', lambda: walker(0), 1, None,
      'Pixel art sprite of Amanda, blonde hair and teal jacket, standing'),
     ('walker_1.svg', lambda: walker(1), 1, None,

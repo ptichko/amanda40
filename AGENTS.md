@@ -81,6 +81,9 @@ Everything below lives in the CONTENT SECTION of `index.html`:
 
 ## Content recipe
 
+Progress on this is tracked as a checklist in the "Next steps" section of `README.md` —
+check it before starting content work so you don't redo what's already written.
+
 To add a location, append an object to `LOCATIONS`:
 
 ```js

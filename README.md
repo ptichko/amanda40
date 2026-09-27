@@ -43,3 +43,64 @@ invariants to preserve, and the conventions for ids/images/tone.
 `gameover.svg`. Replace the files in place, keeping the filenames, and the game picks up
 the new art with no code change. To see everything at once without playing through,
 open `index.html?debug=true` — it dumps every location and both end screens into the feed.
+
+## Next steps
+
+Ordered, roughly by dependency. Steps 1–3 are the actual gift; 4–6 are polish.
+
+### 1. Brainstorm the places (outside the code)
+
+Make a list of real places, first get-togethers, and recurring spots from Amanda's life
+— ten to fifteen is plenty. For each, note roughly *when* it happened, because that
+decides which zone it belongs in. Decide up front whether real people get named; a
+"we both know who this is" inside joke lands much harder than a stranger's name.
+
+### 2. Fill in the content (`index.html`, CONTENT SECTION only)
+
+Work zone by zone, so the story escalates:
+
+| zone | steps | should feel like |
+| --- | --- | --- |
+| 1 | 0–13 | the beginning — early years, first adventures, the low-stuff |
+| 2 | 14–26 | the middle — growth, trouble, the best and worst stories |
+| 3 | 27–40 | now — leading to the Lookout Point and the win |
+
+For each place: `id` (`loc_<camelCaseOfName>`), `name`, a one-or-two-sentence
+`description` in second person ("you"), `image`, `zone`, `weight`, and 2–4 `choices`
+with a fixed `outcome` each. A run is roughly 13–20 actions, so **3–4 locations per
+zone is about right** — enough that the player rarely sees the same place twice.
+
+Then write, in order: `ORACLE_HINTS` (four hints, descending `accuracy`, in the
+Oracle's voice), `INTRO_LOCATION`'s horoscope, and `END_TEXT` — including the
+`badMessage` branch for players who leave an offering at the shrine.
+
+When the writing is done, `grep -n PLACEHOLDER index.html` should return nothing.
+
+### 3. Swap the art (`images/`)
+
+One image per location, named after its `id` (`loc_theCornerDiner.svg` →
+`images/loc_theCornerDiner.svg`), plus `win.svg` and `gameover.svg`. Keep the same
+wide aspect ratio the placeholders use and keep files small — the whole point is that
+it opens instantly from disk. Check every image at once with `index.html?debug=true`.
+
+### 4. Playtest and tune
+
+Play several full runs by hand, both outcomes. Things to look for:
+
+- a location that never comes up, or one that comes up every run
+- a zone where every choice is a `penalty` — a death sentence rather than a story beat
+- win/lose balance: is the journey ending on the first stumble too often?
+- then tune `CONFIG` (`winDistance`, `minTravel`/`maxTravel`, `maxPenaltyPoints`,
+  `oracleAppearChance`). If you change `winDistance`, **change the `ZONES` `max` values
+  to match** — see the invariants in [AGENTS.md](AGENTS.md).
+
+### 5. Ship it
+
+- [ ] Commit, then open `index.html` on the machine it'll be played on (a `file://`
+      path works; no server, nothing to install).
+- [ ] Check the `<title>` and `<h1>` still suit, and add a dedication line to
+      `INTRO_LOCATION` if you want her name in the first thing she reads.
+- [ ] If the intro mentions a year, remember it goes stale next year.
+- [ ] Optional extras, all content-only: an `outcome.image` on a dramatic game over, a
+      fourth zone (needs the hardcoded three-zone list in `appendZoneTransitionEntry`
+      updated too), or a `weight` bump so the best location shows up more often.

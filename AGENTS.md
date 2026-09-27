@@ -13,8 +13,9 @@ These are the reason the project is pleasant to work on. Any change that violate
 should be rejected, or the change should include a migration of the whole repo.
 
 1. **No server, no build step, no dependencies.** One `index.html` that runs from
-   `file://`. No npm, no bundler, no framework, no `fetch()` of local data files. The one
-   script in `tools/` is an offline art generator and is never loaded by the page.
+   `file://`. No npm, no bundler, no framework, no `fetch()` of local data files. Nothing
+   in `tools/` is loaded by the page — those scripts are for authoring and testing, and
+   the game works with the whole directory deleted except `index.html` and `images/`.
 2. **No network access at runtime.** No CDN links, no web fonts, no remote images.
    Every asset is a relative path under `images/` (including `images/bg-tile.svg`,
    which the page background tiles). There are also no sound files: every effect is
@@ -38,12 +39,9 @@ should be rejected, or the change should include a migration of the whole repo.
 - Replay or share a run: every run has a seed, and the address bar always holds
   `#seed=…&choices=…`. Open that URL (or `index.html?seed=1234` for a fixed seed) to
   reproduce the run exactly. Debug mode ignores both.
-- No test suite exists and none is expected. Verification is manual: open the page,
-  click through, confirm the console is clean.
 
-If you make a change to the engine, at minimum play one full run to a win **and** one
-run that ends in game over, then reload the run's share link and confirm the replayed
-journey is identical.
+There **is** a test suite now — see "Tests" below. Run it before you claim anything
+works.
 
 ### How a run is recorded (don't break this)
 
@@ -68,6 +66,36 @@ outcomes, Oracle hints and highlights) is reproduced. Three consequences:
 - `syncHash()` rewrites the hash with `history.replaceState` after each action, with a
   `location.hash` fallback for environments where that throws. Keep it called from the
   same place as the `state.log.push`.
+
+## Tests
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # everything
+node tools\test_replay.js                                     # one file
+```
+
+(`-ExecutionPolicy Bypass` is only needed if your machine blocks local scripts;
+`node tools\test_*.js` always works. Requires Node. The game itself needs neither Node
+nor Python — the suite is the only thing that does.)
+
+| file | what it protects |
+| --- | --- |
+| `tools/dom_stub.js` | the harness: pulls the inline script out of `index.html` and runs it against a DOM stub with synchronous timers, plus a fake `AudioContext` that records notes |
+| `tools/test_content.js` | content invariants — unique `loc_*` ids, every `zone` in `ZONES`, contiguous zones, `winDistance` == last zone max, legal `outcome.type`s, every zone non-punishing, and **every image path exists on disk** |
+| `tools/test_styles.js` | balanced braces, no `@font-face` or remote assets, the reduced-motion block, a style rule for every class the engine creates, CSS assets on disk |
+| `tools/test_playthrough.js` | a safe run reaches a win at 100%, a reckless one ends early, every strategy terminates, the log has one token per action, replaying a finished run lands on the same end card |
+| `tools/test_replay.js` | replay determinism, fingerprint by fingerprint including Oracle hints and highlights; a malformed hash still yields a playable game |
+| `tools/test_keyboard.js` | a full run played with `1`/`O`/`ENTER` only, stray keys inert, the `M` mute and the album button |
+| `tools/test_sound.js` | every effect's notes and pitch bends, silence before the first gesture, mute, and that a replay makes no sound |
+| `tools/make_art.py` | regenerates the pixel art (see "Regenerating the art") |
+| `tools/art_preview.html` | contact sheet of every image at 1x and zoomed — open it after touching art |
+
+`test_content.js` also prints how many lines still contain `PLACEHOLDER:` — that
+number should be zero before this is given to anyone.
+
+When you change the engine, add or update a test in the same commit. The stub is
+deliberately small; if a test needs behaviour the stub lacks (say `lastElementChild`),
+extend `dom_stub.js` rather than reaching into the game from a test.
 
 ## Architecture
 

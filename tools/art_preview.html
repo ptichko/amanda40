@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+  Art contact sheet -- a dev tool for eyeballing every generated image in one
+  page, at 1x and zoomed, instead of opening nine files.
+
+      start tools\art_preview.html
+
+  Regenerate the art first with:  python tools\make_art.py
+  Nothing here is loaded by the game.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art preview &mdash; dev tool</title>
+<style>
+  body { background: #000040; color: #00ffff; font-family: Consolas, 'Courier New', monospace; margin: 14px; }
+  h1 { font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase; color: #ff00ff; }
+  p.note { color: #00cccc; font-size: 0.8rem; margin: 0 0 16px; }
+  figure { margin: 0 0 22px; }
+  figcaption { padding: 4px 0; font-size: 0.85rem; }
+  img { display: block; image-rendering: pixelated; border: 2px solid #ff00ff; }
+  .scene { width: 640px; }
+  .sprite { width: 24px; height: 31px; }
+  .sprite-4x { width: 96px; height: 124px; }
+  .row { display: flex; gap: 16px; align-items: flex-end; }
+  .missing { color: #ff8080; }
+</style>
+</head>
+<body>
+
+<h1>The Fourth Decade &mdash; art preview</h1>
+<p class="note">dev tool, not part of the game. Anything marked missing is a broken path in index.html or a file that was never generated.</p>
+
+<figure>
+  <figcaption>loc_intro.svg &mdash; intro card (INTRO_LOCATION.image)</figcaption>
+  <img class="scene" src="../images/loc_intro.svg" alt="intro card">
+</figure>
+
+<figure>
+  <figcaption>win.svg &mdash; win card (END_TEXT.win.image)</figcaption>
+  <img class="scene" src="../images/win.svg" alt="win card">
+</figure>
+
+<figure>
+  <figcaption>gameover.svg &mdash; game-over card (END_TEXT.gameover.image)</figcaption>
+  <img class="scene" src="../images/gameover.svg" alt="game-over card">
+</figure>
+
+<figure>
+  <figcaption>walker_0/1/2.svg &mdash; the progress-bar sprite, at 1x, 4x, and on a 30px track</figcaption>
+  <div class="row">
+    <img class="sprite" src="../images/walker_0.svg" alt="frame 0">
+    <img class="sprite" src="../images/walker_1.svg" alt="frame 1">
+    <img class="sprite" src="../images/walker_2.svg" alt="frame 2">
+    <img class="sprite-4x" src="../images/walker_0.svg" alt="frame 0 zoomed">
+    <img class="sprite-4x" src="../images/walker_1.svg" alt="frame 1 zoomed">
+    <img class="sprite-4x" src="../images/walker_2.svg" alt="frame 2 zoomed">
+    <div style="background:#c0c0c0;border:2px outset #dfdfdf;padding:10px;width:300px">
+      <div style="position:relative;background:#000040;border:2px inset #808080;height:30px;overflow:hidden">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:55%;background:repeating-linear-gradient(90deg,#00ffff 0 8px,#00cccc 8px 16px)"></div>
+        <img class="sprite" style="position:absolute;left:55%;bottom:0;transform:translateX(-50%)" src="../images/walker_0.svg" alt="on the bar">
+      </div>
+    </div>
+  </div>
+</figure>
+
+<figure>
+  <figcaption>bg-tile.svg &mdash; the page background, tiled 8&times;</figcaption>
+  <div style="background:#000080 url(../images/bg-tile.svg) repeat;width:320px;height:180px;border:2px solid #ff00ff"></div>
+</figure>
+
+<figure>
+  <figcaption>the six mid-game placeholders (replace these)</figcaption>
+  <div class="row" id="placeholders"></div>
+</figure>
+
+<script>
+  // The placeholder locations come from the content section, so this sheet stays
+  // in step with index.html instead of hardcoding a list.
+  fetch('../index.html')
+    .then(r => r.text())
+    .then(html => {
+      const paths = [...new Set([...html.matchAll(/image:\s*'([^']+\.svg)'/g)].map(m => m[1]))]
+        .filter(p => p !== 'images/loc_intro.svg');
+      const row = document.getElementById('placeholders');
+      paths.forEach(p => {
+        const fig = document.createElement('figure');
+        const cap = document.createElement('figcaption');
+        cap.textContent = p;
+        const img = document.createElement('img');
+        img.className = 'scene';
+        img.style.width = '240px';
+        img.alt = p;
+        img.addEventListener('error', () => { cap.className = 'missing'; cap.textContent += '  MISSING'; });
+        img.src = '../' + p;
+        fig.appendChild(cap);
+        fig.appendChild(img);
+        row.appendChild(fig);
+      });
+    })
+    .catch(() => {
+      // file:// blocks fetch in some browsers; the sheet still works without it.
+      const cap = document.createElement('figcaption');
+      cap.className = 'missing';
+      cap.textContent = 'could not read ../index.html from file:// -- open via a local server, or just open the six files directly';
+      document.getElementById('placeholders').appendChild(cap);
+    });
+</script>
+
+</body>
+</html>

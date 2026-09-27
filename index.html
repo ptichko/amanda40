@@ -1052,6 +1052,18 @@ function readRunFromHash() {
   return { seed: Number(params.get('seed')) >>> 0, choices: tokens };
 }
 
+// What to do on load: an explicit ?seed= in the query string wins (it starts
+// that run from the beginning, which is how you ask for "the same journey every
+// time"), otherwise a shared link replays itself, otherwise a fresh run.
+function readRunFromUrl() {
+  const seedParam = new URLSearchParams(window.location.search).get('seed');
+  if (seedParam !== null) {
+    const seed = Number(seedParam);
+    if (!Number.isNaN(seed)) return { seed: seed >>> 0, choices: [] };
+  }
+  return readRunFromHash();
+}
+
 // Rewrites the hash in place (no new history entry) after every action, so
 // copying the address bar at any moment shares the run as played so far.
 function syncHash() {
@@ -1921,8 +1933,9 @@ if (soundToggleEl) {
 
 renderZoneMarkers();
 
-// A shared link replays the run it points at; otherwise start a fresh one.
-const sharedRun = isDebugMode() ? null : readRunFromHash();
+// A ?seed= starts that run from the top; a shared link replays the run it
+// points at; otherwise a fresh run.
+const sharedRun = isDebugMode() ? null : readRunFromUrl();
 newGame(sharedRun || undefined);
 </script>
 </body>

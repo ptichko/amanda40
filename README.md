@@ -90,6 +90,13 @@ python tools/make_art.py --preview    # print the sprite as ASCII
 python tools/make_art.py              # rewrite the art
 ```
 
+There's also a small test suite for the engine and the content, so changes can be
+checked without a browser:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1
+```
+
 ## Next steps
 
 Ordered, roughly by dependency. Steps 1–3 are the actual gift; 4–6 are polish.

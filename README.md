@@ -16,7 +16,9 @@ travel is random. Travel 40 steps to reach the far side and win. Three stumbles 
 the HUD) and the journey ends early.
 
 Every location has one choice marked `oracleCorrect` — the one that really happened. The
-others are the roads not taken.
+others are the roads not taken. **The three choices are shuffled every time you play**, so
+the right answer isn't always in the same place and you can't beat it by guessing a
+position. The keyboard shortcuts stay positional, so the buttons move under `1`, `2`, `3`.
 
 An **Oracle** turns up at most locations. Consult her and she'll highlight what actually
 happened — she's right some of the time, and the odds depend on which hint she draws. Her

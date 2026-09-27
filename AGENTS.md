@@ -282,8 +282,16 @@ Add as many panels as you like — the array is the whole interface.
   `getCorrectChoice()` falls back to the best-ranked outcome type via `OUTCOME_RANK`
   (`heal` > `normal` > `penalty` > `gameover`), and the Oracle starts pointing at
   whatever is safest rather than at what happened. `test_content.js` enforces this.
-- Adding a zone needs no engine change — `renderZoneMarkers()` and
-  `appendZoneTransitionEntry()` both read `ZONES` — but the new zone's `min`/`max` must
+- The order choices are *shown* in is not the order they're written in. `orderedChoices()`
+  shuffles them with the seeded RNG before rendering, because otherwise the true choice
+  sits at position 1 at all 17 stops and "always click the top button" wins every run.
+  Write the true choice first in the source, where it's easiest to see while writing; the
+  shuffle means that has no effect on play. Two things depend on the shuffle being
+  display-only, so don't "fix" this by sorting the content instead: the Oracle's highlight
+  follows the *choice object* via `buttonMap`, and the run log records the index into
+  `LOCATIONS`, not the position on screen. That's what keeps shared links replaying right.
+- Adding a zone needs no engine change - `renderZoneMarkers()` and
+  `appendZoneTransitionEntry()` both read `ZONES` - but the new zone's `min`/`max` must
   keep the ranges contiguous.
 
 ## Images

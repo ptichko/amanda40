@@ -13,18 +13,22 @@ const { LOCATIONS } = contentObject();
 const byName = new Map(LOCATIONS.map(l => [l.name, l]));
 
 // Plays like a person who knows the story: always takes the choice that really
-// happened. Index 0 in every location is *not* a safe bet any more, so the
-// strategy is read out of the content rather than assumed.
-function trueChoiceIndex(location) {
-  const i = location.choices.findIndex(c => c.oracleCorrect);
-  return i >= 0 ? i : 0;
+// happened. The buttons are matched by *label*, not by position, because the
+// engine shuffles the displayed order.
+function clickChoice(g, card, want) {
+  return g.findIn(card, 'choice-btn').find(b => {
+    const text = ((b.children[0] || {})._text || '').toLowerCase();
+    return want.some(c => c.label.toLowerCase() === text);
+  });
 }
 
-// Plays like a person who gets it wrong every time: takes a stumble wherever
-// one is on offer.
-function wrongChoiceIndex(location) {
-  const i = location.choices.findIndex(c => c.outcome.type === 'penalty');
-  return i >= 0 ? i : 0;
+function trueChoice(location) {
+  return location.choices.filter(c => c.oracleCorrect);
+}
+
+function wrongChoice(location) {
+  const out = location.choices.filter(c => c.outcome.type === 'penalty');
+  return out.length ? out : location.choices;
 }
 
 // Clicks a choice, then presses Continue, the way a player would.
@@ -42,8 +46,8 @@ function step(g, choose) {
   if (choices.length) {
     const heading = g.findIn(card, 'entry-name').map(n => n._text).join('');
     const location = byName.get(heading);
-    const index = location ? choose(location) : 0;
-    choices[Math.min(index, choices.length - 1)].click();
+    const target = location ? clickChoice(g, card, choose(location)) : null;
+    (target || choices[0]).click();
     const conts = g.findIn(card, 'primary-btn').filter(b => !b.disabled && !b.removed);
     if (conts.length) conts[conts.length - 1].click();
     return true;
@@ -70,8 +74,8 @@ function play(choose, maxSteps = 80) {
   };
 }
 
-// Knowing the story: should reach the win.
-const knowing = play(trueChoiceIndex);
+// Plays like a person who knows the story: should reach the win.
+const knowing = play(trueChoice);
 r.check(knowing.ended, 'a run that always takes the true choice reaches an end card');
 r.equal(knowing.progress, '100%', 'and fills the progress bar');
 r.equal(knowing.title, 'The Fourth Decade', 'and wins');
@@ -89,7 +93,7 @@ r.check(knowing.log.split('.').filter(Boolean).every(t => /^\d+$|^o$|^[fv]$/.tes
   'every log token is a choice index, an oracle visit, or a gate');
 
 // Getting it wrong every time: should end early.
-const wrong = play(wrongChoiceIndex);
+const wrong = play(wrongChoice);
 r.check(wrong.ended, 'a run that always takes a stumble reaches an end card');
 r.check(wrong.progress !== '100%', 'and does not reach the end (' + wrong.progress + ')');
 r.equal(wrong.title, 'The journey ends', 'and ends in game over');
@@ -97,9 +101,48 @@ r.check(wrong.steps < knowing.steps, 'having a shorter journey than the run that
 r.check(wrong.penalties > 0, 'having picked up the stumbles');
 
 // A middle strategy: whatever happens, it must terminate, not wedge.
-const middling = play(loc => 1);
+const middling = play(loc => loc.choices.slice(1));
 r.check(middling.ended, 'a middle-choice run reaches an end card');
 r.check(middling.entries > 1, 'the feed kept its history (' + middling.entries + ' cards)');
+
+// The whole point of the shuffle: the true choice must not keep the same
+// position, or "always click the top button" wins every run.
+function firstRealCard(g) {
+  for (let i = 0; i < 6; i++) {
+    const card = g.card();
+    if (!card || card._class.includes('end-entry')) return null;
+    if (card._class.includes('cutscene-entry') || card._class.includes('zone-transition')) {
+      if (!clickForward(g)) return null;
+      continue;
+    }
+    const choices = g.findIn(card, 'choice-btn');
+    if (choices.length > 1) return card;
+    if (choices.length === 1) {
+      choices[0].click();
+      const conts = g.findIn(card, 'primary-btn').filter(b => !b.disabled && !b.removed);
+      if (conts.length) conts[conts.length - 1].click();
+      continue;
+    }
+    if (!clickForward(g)) return null;
+  }
+  return null;
+}
+
+const seen = new Set();
+for (let seed = 1; seed <= 15; seed++) {
+  const g = boot({ search: '?seed=' + seed });
+  const card = firstRealCard(g);
+  if (!card) continue;
+  const location = byName.get(g.findIn(card, 'entry-name').map(n => n._text).join(''));
+  if (!location) continue;
+  const wanted = trueChoice(location).map(c => c.label.toLowerCase());
+  const at = g.findIn(card, 'choice-btn')
+    .findIndex(b => wanted.indexOf(((b.children[0] || {})._text || '').toLowerCase()) >= 0);
+  seen.add(at);
+}
+r.check(seen.size > 1,
+  'the true choice lands in more than one position across seeds (positions seen: ' +
+  [...seen].sort().join(', ') + ')');
 
 // Replaying a finished run must reach the same end card, not a new one.
 const replay = boot({ hash: knowing.hash });

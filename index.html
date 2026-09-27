@@ -1666,6 +1666,26 @@ function scrollFeedToBottom() {
   sceneEl.scrollTop = sceneEl.scrollHeight;
 }
 
+// The order the choices are *shown* in, which is not the order they're written
+// in. Without this the true choice sits at the same position at every single
+// stop, and a player learns "always click the top button" without reading a
+// word. Shuffled here rather than in the content so the source can still list
+// the true choice first, where it's easiest to see while writing.
+//
+// Seeded, so a shared link replays with the same order it was played. Nothing
+// downstream depends on the order: the Oracle's highlight follows the choice
+// object, and the run log records the index in LOCATIONS, not on screen.
+function orderedChoices(location) {
+  const choices = location.choices.slice();
+  for (let i = choices.length - 1; i > 0; i--) {
+    const j = Math.floor(state.rng() * (i + 1));
+    const swap = choices[i];
+    choices[i] = choices[j];
+    choices[j] = swap;
+  }
+  return choices;
+}
+
 // Appends a new location card (image, name, description, choices, Oracle)
 // to the bottom of the scrolling feed. Remembers the entry on state, which
 // is how the keyboard handler and the run replay find the current stop.
@@ -1682,7 +1702,7 @@ function appendLocationEntry(location) {
   sceneFeedEl.appendChild(entry);
 
   const buttonMap = new Map();
-  location.choices.forEach(choice => {
+  orderedChoices(location).forEach(choice => {
     const btn = el('button', 'choice-btn');
     btn.appendChild(el('span', 'choice-label', choice.label));
     btn.appendChild(el('span', 'choice-fill'));

@@ -136,12 +136,37 @@ Conventions that are not enforced by code but matter in practice:
 
 ## Images
 
-`images/` holds one small SVG placeholder per location plus `win.svg` and
-`gameover.svg`. Replace files in place, keeping the filenames, and everything just works.
-Prefer small assets (the originals are photos; keep the page light enough to open
-instantly from disk). If you add a location, add its placeholder too. `bg-tile.svg` is
-the tiled starfield the page background repeats — don't rename it, the stylesheet
-references it by relative path.
+`images/` holds one image per location plus `win.svg`, `gameover.svg`, and two
+non-location assets:
+
+| file | role | status |
+| --- | --- | --- |
+| `loc_intro.svg` | intro card | **final** — pixel-art Amanda on the road under the "40" |
+| `win.svg` | win card | **final** — pixel-art Amanda, cake, confetti |
+| `gameover.svg` | game-over card | **final** — pixel-art Amanda under a cold moon |
+| `walker.svg` | the sprite that rides the progress bar | **final** — same character, 24x31 |
+| `bg-tile.svg` | tiled starfield behind the page | **final** — referenced from the stylesheet, don't rename |
+| `loc_*.svg` (the other six) | one per mid-game location | **placeholders** — replace these |
+
+Replace placeholder files in place, keeping the filenames, and everything just works.
+Prefer small assets so the page still opens instantly from disk. If you add a location,
+add its image too.
+
+The pixel art is deliberately 8px-cell chunky with `shape-rendering="crispEdges"`. If you
+swap in a photo for one of the final files, that's fine — but keep
+`image-rendering: pixelated` in mind for any new sprite, or it will look blurry when the
+browser scales it.
+
+### The progress walker
+
+`images/walker.svg` is a DOM element, not a background: `#progress-walker` inside
+`.progress-wrap`, positioned from `updateProgressBar()` in the engine. Its `left` is
+clamped so she stays inside the panel at 0% and 100%. Two things to know:
+
+- If you change the progress bar's height, check `.progress-walker` still lines up — the
+  sprite is 24x31 and deliberately pokes a few pixels above the track.
+- Don't "fix" her by moving her into `.progress-track`; the track has `overflow: hidden`
+  and would clip her at both ends.
 
 ## Look and feel
 
@@ -164,6 +189,8 @@ any CSS, read this list — each item is load-bearing:
   `steps()`, the marquee loops seamlessly by holding its text twice and sliding `-50%`,
   and the title has a barely-there flicker. Keep motion in that spirit.
 - **CRT scanlines** come from `body::after` at low opacity. Don't raise it much.
+- **The pixel sprite in the HUD** is scaled 1:1 (24x31) with `image-rendering: pixelated`.
+  Don't apply a transform scale to it.
 - `prefers-reduced-motion: reduce` switches off the marquee, flicker, glow, and
   transitions. Keep that block working.
 

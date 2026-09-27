@@ -45,12 +45,19 @@ accents, a scrolling marquee banner, faint CRT scanlines, and stepped (not smoot
 progress animation. All of it is local fonts and CSS — no webfonts, no images beyond
 `images/`, so it still opens instantly and offline.
 
+**Amanda appears as pixel art** — a blonde character in a teal jacket and magenta scarf,
+drawn on an 8px grid with `crispEdges` so she stays blocky at any zoom. She's on the intro
+card (waving on the road under a giant "40"), on the win card with a cake and confetti, on
+the game-over card under a cold moon, and as a 24x31 sprite who **walks along the progress
+bar** as you get closer to forty.
+
 ## Images
 
-`images/` holds a small SVG placeholder for each location plus `win.svg` and
-`gameover.svg`. Replace the files in place, keeping the filenames, and the game picks up
-the new art with no code change. To see everything at once without playing through,
-open `index.html?debug=true` — it dumps every location and both end screens into the feed.
+`images/` is done for the intro, win, and game-over cards (real pixel art — leave those
+alone unless you want to redraw her). The six mid-game locations still hold grey
+placeholders: replace those files in place, keeping the filenames, and the game picks up
+the new art with no code change. To see everything at once without playing through, open
+`index.html?debug=true` — it dumps every location and both end screens into the feed.
 
 ## Next steps
 
@@ -84,12 +91,13 @@ Oracle's voice), `INTRO_LOCATION`'s horoscope, and `END_TEXT` — including the
 
 When the writing is done, `grep -n PLACEHOLDER index.html` should return nothing.
 
-### 3. Swap the art (`images/`)
+### 3. Swap the remaining art (`images/`)
 
-One image per location, named after its `id` (`loc_theCornerDiner.svg` →
-`images/loc_theCornerDiner.svg`), plus `win.svg` and `gameover.svg`. Keep the same
-wide aspect ratio the placeholders use and keep files small — the whole point is that
-it opens instantly from disk. Check every image at once with `index.html?debug=true`.
+The intro, win, and game-over cards are finished pixel art — leave them. The six
+mid-game locations still hold grey placeholders: drop in one image per location, named
+after its `id` (`loc_theCornerDiner.svg` → `images/loc_theCornerDiner.svg`). Keep the
+wide aspect ratio the placeholders use and keep files small — the whole point is that it
+opens instantly from disk. Check every image at once with `index.html?debug=true`.
 
 ### 4. Playtest and tune
 

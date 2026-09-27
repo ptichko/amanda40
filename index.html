@@ -141,14 +141,28 @@
   }
 
   .progress-wrap {
+    position: relative;
     flex: 1;
+  }
+
+  /* Amanda rides the leading edge of the progress fill. Position comes from
+     updateProgressBar() in the engine, so keep the two in step. */
+  .progress-walker {
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 24px;
+    height: 31px;
+    transform: translateX(-50%);
+    image-rendering: pixelated;
+    pointer-events: none;
   }
 
   .progress-track {
     position: relative;
     background: var(--bg-dark);
     border: 2px inset var(--silver-dark);
-    height: 22px;
+    height: 30px;
     overflow: hidden;
   }
 
@@ -620,6 +634,7 @@
           <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
           <div id="zone-markers"></div>
         </div>
+        <img class="progress-walker" id="progress-walker" src="images/walker.svg" alt="" aria-hidden="true">
       </div>
       <div class="penalty-points" id="penalty-points"></div>
     </div>
@@ -787,6 +802,7 @@ const END_TEXT = {
 const sceneEl = document.getElementById('scene');
 const sceneFeedEl = document.getElementById('scene-feed');
 const progressFillEl = document.getElementById('progress-fill');
+const progressWalkerEl = document.getElementById('progress-walker');
 const penaltyPointsEl = document.getElementById('penalty-points');
 const zoneMarkersEl = document.getElementById('zone-markers');
 
@@ -1328,6 +1344,9 @@ function renderZoneMarkers() {
 function updateProgressBar() {
   const pct = Math.min(100, (state.progress / CONFIG.winDistance) * 100);
   progressFillEl.style.width = pct + '%';
+  // Amanda stands on the leading edge of the fill. The clamp keeps her fully
+  // inside the panel at 0% and 100% instead of hanging off either end.
+  progressWalkerEl.style.left = 'clamp(12px, ' + pct + '%, calc(100% - 12px))';
 }
 
 function updatePenaltyHud() {

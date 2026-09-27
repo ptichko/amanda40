@@ -39,11 +39,16 @@ invariants to preserve, and the conventions for ids/images/tone.
 
 ## Look and feel
 
-Deliberately 1990s: a navy starfield, silver beveled panels with square corners, Impact
-display caps, Comic Sans for the Oracle, Courier for the status lines, magenta/cyan/lime
-accents, a scrolling marquee banner, faint CRT scanlines, and stepped (not smooth)
-progress animation. All of it is local fonts and CSS — no webfonts, no images beyond
-`images/`, so it still opens instantly and offline.
+Deliberately 1990s: teal/hot-pink/lime quatrefoil wallpaper, silver beveled panels with
+square corners, Impact display caps, Comic Sans for the Oracle, Courier for the status
+lines, a scrolling marquee banner, faint CRT scanlines, and stepped (not smooth) progress
+animation. All of it is local fonts and CSS — no webfonts, no images beyond `images/`, so
+it still opens instantly and offline.
+
+The wallpaper is the plastic-tableware palette of a 90s kitchen, kept deliberately
+low-contrast so the silver panels stay readable on top of it. The page's own text is
+inked deep teal with hot-pink accents (`--page-ink`, `--page-pink`) rather than the white
+and cyan that a dark background wanted.
 
 **Amanda appears as pixel art** — a blonde character in a teal jacket and magenta scarf,
 drawn on an 8px grid with `crispEdges` so she stays blocky at any zoom. She's on the intro

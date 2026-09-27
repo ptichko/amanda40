@@ -15,7 +15,10 @@
      as period-correct. Don't "fix" this by adding Google Fonts.
      =============================================================== */
   :root {
-    --bg: #000080;            /* deep navy */
+    --bg: #c9e4dc;            /* pale mint, the wallpaper's base tone */
+    --page-ink: #0a3a37;      /* deep teal: text that sits on the wallpaper */
+    --page-ink-dim: #2c6b66;
+    --page-pink: #c2185b;     /* hot pink, for accents on the wallpaper */
     --bg-dark: #000040;
     --silver: #c0c0c0;         /* Win95 button face */
     --silver-light: #dfdfdf;
@@ -77,12 +80,11 @@
     font-size: clamp(1.9rem, 7vw, 3rem);
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #ffffff;
+    color: var(--page-ink);
     margin: 4px 0 2px;
     text-shadow:
-      2px 2px 0 var(--magenta),
-      -2px -2px 0 var(--cyan),
-      0 0 14px rgba(0, 255, 255, 0.5);
+      3px 3px 0 var(--page-pink),
+      -2px -2px 0 #ffffff;
     animation: title-flicker 5s linear infinite;
   }
 
@@ -90,7 +92,7 @@
     text-align: center;
     font-family: var(--font-hand);
     font-size: 0.95rem;
-    color: var(--cyan);
+    color: var(--page-ink);
     margin: 0 0 10px;
   }
 
@@ -121,7 +123,7 @@
     font-size: 0.7rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #00cccc;
+    color: var(--page-ink-dim);
     margin: 10px 0 0;
   }
 
@@ -130,12 +132,12 @@
     font-family: var(--font-mono);
     font-size: 0.72rem;
     letter-spacing: 0.04em;
-    color: #00cccc;
+    color: var(--page-ink);
     margin: 8px 0 0;
   }
 
   .keyhints b {
-    color: var(--magenta);
+    color: var(--page-pink);
   }
 
   /* Sound on/off, sitting inline in the key hints. */

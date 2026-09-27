@@ -690,13 +690,22 @@ def scene_birth():
     g.vline(66, 31, 33, 'k')
     g.rect(33, 26, 42, 28, 'g')     # pillow
 
-    # the new person: a bundle, and a very small face
-    g.rect(45, 24, 60, 29, 'm')     # blanket
-    g.hline(45, 60, 24, 'L')
-    g.rect(57, 21, 62, 25, 's')     # head
-    g.hline(57, 62, 21, 'H')        # hair, maybe
-    g.px(58, 23, 'e')
-    g.px(61, 23, 'e')
+    # The new person. Deliberately the same blonde as Amanda, and with a bow,
+    # so the first thing in the game is recognisably her.
+    g.rect(45, 24, 60, 29, 'm')      # blanket
+    g.hline(45, 60, 24, 'L')         # highlight along the blanket
+    g.hline(59, 60, 19, 'w')         # a bow
+    g.hline(56, 63, 20, 'H')         # hair, darker at the sides
+    g.hline(57, 62, 20, 'h')         # hair, blonde on top
+    g.hline(57, 62, 21, 's')         # forehead
+    g.px(56, 21, 'H')
+    g.px(63, 21, 'H')
+    g.hline(57, 62, 22, 's')         # face
+    g.px(56, 22, 'H')
+    g.px(63, 22, 'H')
+    g.px(58, 22, 'e')                # eyes
+    g.px(61, 22, 'e')
+    g.hline(58, 61, 23, 's')         # chin
 
     # lamp, and the light it puts on the blanket
     g.rect(73, 20, 77, 21, 'k')     # shade
@@ -721,7 +730,7 @@ JOBS = [
     ('gameover.svg', scene_gameover, CELL, 'v',
      'Pixel art: Amanda with her arms down beside the dropped birthday cake, on a cold moonlit road'),
     ('cutscene_birth.svg', scene_birth, CELL, None,
-     'Pixel art: a hospital room in Dover New Hampshire in 1986, a window, and a new arrival'),
+     'Pixel art: a hospital room in Dover New Hampshire in 1986, and a blonde baby with a bow on the bed'),
     ('walker_0.svg', lambda: walker(0), 1, None,
      'Pixel art sprite of Amanda, blonde hair and teal jacket, standing'),
     ('walker_1.svg', lambda: walker(1), 1, None,

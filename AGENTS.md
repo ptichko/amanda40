@@ -119,6 +119,41 @@ drives each with the keyboard, and hands back the first page *stopped at the mom
 predicate held*. That way a content edit changes which seed is used instead of breaking
 the test. `test_replay.js` and `test_sound.js` both work this way.
 
+## Before you commit — and before you push
+
+A change is not finished until all three of these are done. Do them **in the same commit
+as the change**, never as a follow-up: docs drift from code within a day, and a reviewer
+reading a stale `AGENTS.md` is worse off than one reading nothing.
+
+1. **Tests are green.** `powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1`
+   passes. If you touched the engine, you added or updated a test alongside it.
+2. **Documentation is updated.** See the table below for what goes where. This is the step
+   everyone skips, and it is the step that makes the *next* change safe — a future agent
+   trusts `AGENTS.md` completely, so anything you leave stale in it becomes a wrong turn
+   for someone else.
+3. **You can say what you verified.** Name the test, the run, or the screenshot that
+   proves the claim. "Looks right" is not evidence, and if you could not verify something,
+   say that instead of implying you did.
+
+| if you changed | update |
+| --- | --- |
+| a rule the engine depends on, an invariant, a footgun | `AGENTS.md` — the matching section, and **Hard constraints** if it is one |
+| a new function, flag, DOM id, or state field | `AGENTS.md` — Architecture / the relevant section, plus a code comment explaining *why* |
+| something a player can see, hear, or press | `README.md` — Playing, and the Look and feel paragraph if it's visual |
+| an asset in `images/` | the table in **Images** above, including whether it is final or a placeholder |
+| a file in `tools/` | the table in **Tests** above, and `README.md`'s "Working on it" |
+| a symbol in the CONTENT SECTION | the table in **Where to edit content** |
+| the next stage of the work | the checklist in `README.md`'s "Next steps" |
+
+Two traps, both hit already in this repo:
+
+- **Verify any number you write down.** This file has claimed the art generator rewrites
+  "four files" when it writes six, and that the suite has a fixed check count. Both were
+  wrong. Run the command and count.
+- **Check the claim is true before documenting it.** `index.html?seed=1234` was documented
+  in two places for a commit before it was implemented. A documented feature that does
+  nothing is worse than an undocumented one, because people build on it.
+
 ## Architecture
 
 `index.html` is two blocks inside one `<script>`:

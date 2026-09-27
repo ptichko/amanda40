@@ -404,6 +404,50 @@ def scene_win():
     return g
 
 
+def dropped_cake(g, x, y):
+    """The birthday cake, on the ground after a bad run.
+
+    Same colours as the upright cake on the win card -- it's the same cake. A
+    tiered cake knocked over doesn't stay a tidy block, so this is drawn as the
+    big tier on its side with the layers showing at the cut end, the top tier
+    slid off beside it, icing squashed out onto the ground, and the candles
+    lying where they fell.
+    """
+    # the big tier, on its side
+    g.rect(x, y, x + 15, y + 4, 'g')
+    g.hline(x, x + 15, y, 'w')          # icing along the top
+    g.hline(x, x + 15, y + 2, 'm')      # filling
+    g.hline(x, x + 15, y + 4, 'k')      # shadowed underside
+    g.vline(x, y, y + 4, 'w')           # the cut end, layers showing
+    g.vline(x + 1, y + 1, y + 3, 'k')
+    g.vline(x + 2, y + 1, y + 3, 'm')
+
+    # the top tier, slid off to the right
+    g.rect(x + 18, y + 2, x + 25, y + 5, 'g')
+    g.hline(x + 18, x + 25, y + 2, 'w')
+    g.hline(x + 18, x + 25, y + 4, 'm')
+    g.vline(x + 18, y + 2, y + 5, 'w')
+
+    # icing that squashed out of it
+    g.hline(x + 9, x + 14, y + 5, 'w')
+    g.hline(x + 12, x + 16, y + 6, 'm')
+    g.px(x + 17, y + 6, 'w')
+
+    # candles, knocked over, lying between her and the cake. Two rows apart with
+    # a wax tip and a spent wick, so they read as two sticks rather than a smear.
+    g.hline(x - 9, x - 4, y + 6, 'c')
+    g.px(x - 10, y + 6, 'k')
+    g.px(x - 3, y + 6, 'w')
+    g.hline(x - 6, x - 1, y + 8, 'c')
+    g.px(x - 7, y + 8, 'k')
+    g.px(x, y + 8, 'w')
+
+    # crumbs
+    g.px(x - 11, y + 8, 'g')
+    g.px(x + 28, y + 6, 'g')
+    g.px(x + 27, y + 7, 'k')
+
+
 def scene_gameover():
     g = Grid(W, H)
     sky(g, [(0.0, 'v'), (0.6, 'v'), (0.75, 'N'), (1.0, 'N')])
@@ -417,6 +461,10 @@ def scene_gameover():
     ground(g, 31, ('N', 'n', 'v'), tufts=10, seed=5)
     g.hline(0, W - 1, 30, 'f')
     g.blit(amanda(), 12, 12)
+    # The cake, on the ground beside her. It sits a few rows higher than her
+    # boots, which reads as "a bit further down the road" and keeps it clear of
+    # the bottom edge of the card.
+    dropped_cake(g, 38, 33)
     return g
 
 

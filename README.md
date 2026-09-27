@@ -37,6 +37,14 @@ The **ENGINE SECTION** below it (selection, state, rendering) shouldn't need cha
 for content edits. See [AGENTS.md](AGENTS.md) for the full content recipe, the
 invariants to preserve, and the conventions for ids/images/tone.
 
+## Look and feel
+
+Deliberately 1990s: a navy starfield, silver beveled panels with square corners, Impact
+display caps, Comic Sans for the Oracle, Courier for the status lines, magenta/cyan/lime
+accents, a scrolling marquee banner, faint CRT scanlines, and stepped (not smooth)
+progress animation. All of it is local fonts and CSS — no webfonts, no images beyond
+`images/`, so it still opens instantly and offline.
+
 ## Images
 
 `images/` holds a small SVG placeholder for each location plus `win.svg` and

@@ -15,7 +15,11 @@ should be rejected, or the change should include a migration of the whole repo.
 1. **No server, no build step, no dependencies.** One `index.html` that runs from
    `file://`. No npm, no bundler, no framework, no `fetch()` of local data files.
 2. **No network access at runtime.** No CDN links, no web fonts, no remote images.
-   Every asset is a relative path under `images/`.
+   Every asset is a relative path under `images/` (including `images/bg-tile.svg`,
+   which the page background tiles).
+3. **No `@font-face`, no Google Fonts.** The 1990s look depends on fonts that are
+   already installed locally — see "Look and feel" below. Adding a webfont would
+   both break the no-network rule and defeat the period styling.
 3. **No ES modules.** The script is a classic inline `<script>`; `import`/`export`
    will fail under `file://` because of CORS.
 4. **Single file.** The game is intentionally not split up. Do not introduce
@@ -135,7 +139,36 @@ Conventions that are not enforced by code but matter in practice:
 `images/` holds one small SVG placeholder per location plus `win.svg` and
 `gameover.svg`. Replace files in place, keeping the filenames, and everything just works.
 Prefer small assets (the originals are photos; keep the page light enough to open
-instantly from disk). If you add a location, add its placeholder too.
+instantly from disk). If you add a location, add its placeholder too. `bg-tile.svg` is
+the tiled starfield the page background repeats — don't rename it, the stylesheet
+references it by relative path.
+
+## Look and feel
+
+Deliberately 1990s, and the whole stylesheet is written to protect that. Before changing
+any CSS, read this list — each item is load-bearing:
+
+- **Fonts are local-only, and named in stacks.** `--font-display` is Impact (titles,
+  entry names, buttons), `--font-body` is Verdana/Tahoma, `--font-mono` is Courier New
+  (travel status, stats, dividers), `--font-hand` is Comic Sans MS (the Oracle only).
+  Every stack ends in a generic family so something renders everywhere.
+- **Silver bevels, square corners.** `border: 2px outset #dfdfdf` for raised, `inset` for
+  grooves and pressed states. `border-radius` was removed on purpose — rounded corners
+  did not exist in this era. `.primary-btn:active` and `.choice-btn:active` go `inset` to
+  look pressed.
+- **Navy + magenta + cyan + lime on silver.** The palette lives in `:root` as custom
+  properties. `--accent` is navy and is what text uses on silver; magenta and cyan are
+  decoration (shadows, borders, glows) and are deliberately *not* used for body text,
+  because magenta on silver fails contrast.
+- **Stepped, not smooth, animation.** Progress and choice-fill transitions use
+  `steps()`, the marquee loops seamlessly by holding its text twice and sliding `-50%`,
+  and the title has a barely-there flicker. Keep motion in that spirit.
+- **CRT scanlines** come from `body::after` at low opacity. Don't raise it much.
+- `prefers-reduced-motion: reduce` switches off the marquee, flicker, glow, and
+  transitions. Keep that block working.
+
+If you add a new UI element, style it from the existing tokens rather than introducing a
+new colour or a webfont.
 
 ## Style
 

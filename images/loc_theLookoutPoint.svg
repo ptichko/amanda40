@@ -1,8 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="ZONE 3 placeholder">
-  <rect width="640" height="360" fill="#33203a"/>
-  <rect x="16" y="16" width="608" height="328" fill="none" stroke="#d98fb3" stroke-width="3" stroke-dasharray="14 10"/>
-  <circle cx="320" cy="150" r="46" fill="none" stroke="#d98fb3" stroke-width="3"/>
-  <text x="320" y="162" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#d98fb3" text-anchor="middle">ZONE 3</text>
-  <text x="320" y="248" font-family="Georgia, 'Times New Roman', serif" font-size="19" fill="#d98fb3" opacity="0.75" text-anchor="middle">placeholder art</text>
-  <text x="320" y="278" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#d98fb3" opacity="0.55" text-anchor="middle">replace this file, keep the name</text>
+  <defs>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8e8e8"/>
+      <stop offset="1" stop-color="#b8b8b8"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#sheen)"/>
+  <path d="M0 0 H640 V4 H4 V356 H0 Z" fill="#ffffff"/>
+  <path d="M640 360 H0 V356 H636 V4 H640 Z" fill="#808080"/>
+  <rect x="18" y="18" width="604" height="324" fill="none" stroke="#000080" stroke-width="3" stroke-dasharray="16 12"/>
+  <rect x="40" y="40" width="560" height="6" fill="#ff00ff"/>
+  <rect x="40" y="314" width="560" height="6" fill="#00ffff"/>
+  <text x="320" y="168" font-family="Impact, 'Arial Black', sans-serif" font-size="52" letter-spacing="3" fill="#000080" text-anchor="middle">ZONE 3</text>
+  <text x="320" y="222" font-family="'Courier New', monospace" font-size="18" fill="#404040" text-anchor="middle">640 x 360 placeholder art</text>
+  <text x="320" y="252" font-family="'Courier New', monospace" font-size="16" fill="#606060" text-anchor="middle">replace this file, keep the name</text>
 </svg>

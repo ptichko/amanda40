@@ -845,7 +845,7 @@ const CONFIG = {
   maxPenaltyPoints: 3, // stumbles (red Xs) that end the game
   minTravel: 2,       // min steps gained per action
   maxTravel: 4,       // max steps gained per action
-  oracleAppearChance: 0.6 // odds the "Consult the Oracle" option shows up at a location
+  oracleAppearChance: 1 // odds the "Consult the Oracle" option shows up; 1 = she is always there
 };
 
 // The journey is three eras, split by progress. Each location belongs to exactly
@@ -860,14 +860,14 @@ const ZONES = [
 ];
 
 // The Oracle's possible hints. Each time she is consulted, one entry is picked
-// (weighted by optional `weight`, default 1 if omitted), and `accuracy` is the
-// probability that she ends up highlighting the location's actual "correct"
-// choice (see getCorrectChoice below) rather than a random wrong one.
+// (weighted by optional `weight`, default 1 if omitted). The text is pure flavour:
+// she always highlights the location's actual "correct" choice (see
+// getCorrectChoice below), so there is no accuracy roll to tune.
 const ORACLE_HINTS = [
-  { text: "PLACEHOLDER: the Oracle taps the card without looking at it. \"That one. I remember.\"", accuracy: 0.9 },
-  { text: "PLACEHOLDER: the Oracle frowns at her own handwriting, then commits to it anyway.", accuracy: 0.6 },
-  { text: "PLACEHOLDER: the Oracle is reading from a different decade entirely.", accuracy: 0.3 },
-  { text: "PLACEHOLDER: the Oracle closes the book and says \"your call\", which is not an answer.", accuracy: 0.1 }
+  { text: "PLACEHOLDER: the Oracle taps the card without looking at it. \"That one. I remember.\"" },
+  { text: "PLACEHOLDER: the Oracle reads her own handwriting twice, and underlines the same line both times." },
+  { text: "PLACEHOLDER: the Oracle is reading from a different decade entirely, and still lands on the right one." },
+  { text: "PLACEHOLDER: the Oracle closes the book and says the same thing she said last time." }
 ];
 
 // Each choice has a single, fixed outcome (no randomness in *what*
@@ -1107,7 +1107,7 @@ const END_TEXT = {
   },
 };
 
-/* content-hash: fac01a8f2a8cba1c8b4725b0c1fa86d6c30d926ec88bfc7d4fe319f250012f77 */
+/* content-hash: 8be1edb2607f764e89985739627341943a7dfe3fea4187ecb39735e8623be312 */
 
 /* == END GENERATED CONTENT == */
 
@@ -1295,7 +1295,6 @@ function newGame(options) {
     ended: false,
     leftOffering: false,
     oracleConsultCount: 0,
-    oracleCorrectCount: 0,
     seed: seed,
     rng: makeRng(seed),
     log: [],
@@ -1732,22 +1731,18 @@ function appendLocationEntry(location) {
   scrollFeedToBottom();
 }
 
-// Locations visited, penalty points, Oracle consults, and Oracle accuracy
-// (the fraction of consults where the highlighted choice was the actually
-// correct one), for display on the end screen.
+// Locations visited, penalty points, and Oracle consults, for display on the
+// end screen. There is deliberately no accuracy figure: the Oracle always
+// highlights the correct choice, so it could only ever read 100%.
 function computeStats() {
   const total = LOCATIONS.length;
   const visited = LOCATIONS.filter(loc => state.visited.has(loc.id)).length;
-  const oracleAccuracyPct = state.oracleConsultCount > 0
-    ? Math.round((state.oracleCorrectCount / state.oracleConsultCount) * 100)
-    : null;
 
   return {
     visited,
     total,
     penaltyPoints: state.penaltyPoints,
     oracleConsultCount: state.oracleConsultCount,
-    oracleAccuracyPct,
     seed: state.seed,
   };
 }
@@ -1755,12 +1750,10 @@ function computeStats() {
 function buildStatsBox(stats) {
   const box = el('div', 'stats-box');
   const list = el('ul', 'stats-list');
-  const accuracyText = stats.oracleAccuracyPct === null ? '—' : stats.oracleAccuracyPct + '%';
   [
     `Locations visited: ${stats.visited}/${stats.total}`,
     `Penalty points: ${stats.penaltyPoints}`,
     `Local Oracle consultations: ${stats.oracleConsultCount}`,
-    `Local Oracle accuracy: ${accuracyText}`,
     `Run seed: ${stats.seed}`,
   ].forEach(text => list.appendChild(el('li', null, text)));
   box.appendChild(list);
@@ -1911,19 +1904,15 @@ function renderOracle(location, buttonMap, oracleEl) {
   btn.addEventListener('click', () => {
     const hint = pickWeighted(ORACLE_HINTS, h => h.weight || 1);
     const correct = getCorrectChoice(location);
-    const isAccurate = state.rng() < hint.accuracy;
 
     state.log.push('o');
     syncHash();
 
-    let highlighted = correct;
-    if (!isAccurate) {
-      const others = location.choices.filter(c => c !== correct);
-      if (others.length > 0) highlighted = others[randomInt(0, others.length - 1)];
-    }
+    // She always points at what actually happened. The hint text is flavour
+    // only -- there is no accuracy roll, so consults can't mislead.
+    const highlighted = correct;
 
     state.oracleConsultCount += 1;
-    if (highlighted === correct) state.oracleCorrectCount += 1;
 
     playSound('oracle');
 

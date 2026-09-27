@@ -24,10 +24,10 @@ others are the roads not taken. **The three choices are shuffled every time you 
 the right answer isn't always in the same place and you can't beat it by guessing a
 position. The keyboard shortcuts stay positional, so the buttons move under `1`, `2`, `3`.
 
-An **Oracle** turns up at most locations. Consult her and she'll highlight what actually
-happened — she's right some of the time, and the odds depend on which hint she draws. Her
-hit rate shows up in the end-of-game stats, so consult her if you like, and don't if you'd
-rather trust yourself.
+An **Oracle** is waiting at every stop. Consult her and she'll highlight the choice that
+actually happened — she's never wrong. What she says while she does it is flavour, drawn
+from her own notes, so consult her if you like and don't if you'd rather trust yourself.
+She has nothing to say at the opening card, which only has one button.
 
 Before the first zone there's a **cutscene**: click *Begin the journey* and you get a
 pixel-art panel of the room you were born in — Wentworth Douglass Hospital, Dover NH,
@@ -149,10 +149,10 @@ python tools\build_content.py --force    # apply, discarding hand-edits to the b
 `tools/` holds dev-only helpers. Nothing in there is loaded by the page, and the game
 still runs if you delete the folder — but it's what makes the project maintainable.
 
-**Tests.** 441 checks over the engine and the content, no browser required:
+**Tests.** 449 checks over the engine and the content, no browser required:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all seven files
+powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all eight files
 node tools\test_replay.js                                     # just one
 ```
 

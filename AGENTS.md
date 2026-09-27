@@ -107,6 +107,7 @@ Python. The game itself needs neither Node nor Python; the suite is the only thi
 | `tools/dom_stub.js` | the harness: pulls the inline script out of `index.html` and runs it against a DOM stub with synchronous timers, plus a fake `AudioContext` that records notes |
 | `tools/test_content.js` | content invariants — unique `loc_*` ids, every `zone` in `ZONES`, contiguous zones, `winDistance` == last zone max, legal `outcome.type`s, every zone non-punishing, and **every image path exists on disk** |
 | `tools/test_content_csv.js` | that `index.html` still matches `content/content.csv` (it shells out to `build_content.py --check`), that the generated block is fenced and hashed, and that `CONFIG` is emitted as numbers |
+| `tools/test_oracle.js` | the Oracle is offered at every stop with a choice, and always highlights the `oracleCorrect` one — the two guarantees that replaced the old appearance and accuracy rolls |
 | `tools/test_styles.js` | balanced braces, no `@font-face` or remote assets, the reduced-motion block, a style rule for every class the engine creates, CSS assets on disk |
 | `tools/test_playthrough.js` | a safe run reaches a win at 100%, a reckless one ends early, every strategy terminates, the log has one token per action, replaying a finished run lands on the same end card |
 | `tools/test_replay.js` | replay determinism, fingerprint by fingerprint including Oracle hints and highlights; a malformed hash still yields a playable game |
@@ -245,7 +246,7 @@ The generated block is `CONFIG`, `ZONES`, `ORACLE_HINTS`, `INTRO_LOCATION`,
 | --- | --- | --- |
 | `CONFIG` | `config` | `winDistance`, `maxPenaltyPoints`, `minTravel`/`maxTravel`, `oracleAppearChance` |
 | `ZONES` | `zone` | the progress ranges (`min`/`max`) locations are grouped into. Three eras, each named with its years: **Childhood, 1986 to 2001** (0–13), **The Teenage Years, 2000 to 2005** (14–26), **Grown Up, 2006 to 2020** (27–40) |
-| `ORACLE_HINTS` | `hint` | hint texts the Oracle can give, each with an `accuracy` and optional `weight` |
+| `ORACLE_HINTS` | `hint` | the flavour text the Oracle says while she points at the correct choice, with an optional `weight` |
 | `INTRO_LOCATION` | `intro` | the fixed location every game starts at |
 | `INTRO_SEQUENCE` | `intro_panel` | pixel-art panels that play once after "Begin the journey", before zone 1 — see "The intro sequence" below |
 | `LOCATIONS` | `location` + `choice` | the 17 places the player can land, in date order within each zone, and what you can do at each |
@@ -335,6 +336,15 @@ Add as many panels as you like — the array is the whole interface.
   `getCorrectChoice()` falls back to the best-ranked outcome type via `OUTCOME_RANK`
   (`heal` > `normal` > `penalty` > `gameover`), and the Oracle starts pointing at
   whatever is safest rather than at what happened. `test_content.js` enforces this.
+- **The Oracle is offered everywhere and is never wrong.** `oracleAppearChance` is `1`,
+  and `renderOracle()`'s click handler highlights `getCorrectChoice(location)`
+  unconditionally — the hint text is flavour only. Both used to be probabilistic
+  (a 0.6 appearance roll, and a per-hint `accuracy` roll that could light a wrong
+  button), and both are now guaranteed. Don't reintroduce a chance of a wrong
+  answer: it is the one thing the player can act on. `test_oracle.js` walks 30 seeds
+  and fails on either regression. Two consequences of removing the roll:
+  `computeStats()` no longer reports an accuracy percentage (it could only ever read
+  100%), and no hint carries an `accuracy` field.
 - The order choices are *shown* in is not the order they're written in. `orderedChoices()`
   shuffles them with the seeded RNG before rendering, because otherwise the true choice
   sits at position 1 at all 17 stops and "always click the top button" wins every run.

@@ -56,7 +56,7 @@ INT_FIELDS = {
     ("location", "weight"),
     ("hint", "weight"),
 }
-FLOAT_FIELDS = {("config", "oracleAppearChance"), ("hint", "accuracy")}
+FLOAT_FIELDS = {("config", "oracleAppearChance")}
 BOOL_FIELDS = {("choice", "oracle_correct")}
 OPTIONAL_FIELDS = {("hint", "weight"), ("choice", "outcome_image")}
 
@@ -125,6 +125,15 @@ def read_csv(path=CSV_PATH):
                 % (os.path.relpath(path, REPO), ",".join(FIELDS), reader.fieldnames)
             )
         for n, row in enumerate(reader, start=2):
+            # A value containing a comma but no surrounding quotes lands in the
+            # restkey as an extra column. Without this check the rest of the
+            # sentence is dropped on the floor without a word.
+            if None in row:
+                raise ContentError(
+                    "row %d: %d fields for %d columns -- a value probably contains a "
+                    "comma but isn't quoted. Wrap it in \"double quotes\"."
+                    % (n, len(row) - 1 + len(row[None]), len(FIELDS))
+                )
             kind = (row["kind"] or "").strip()
             parent = (row["parent"] or "").strip()
             index = (row["index"] or "").strip()
@@ -176,7 +185,7 @@ def read_csv(path=CSV_PATH):
         for k in sorted(content.get("zone", {}), key=lambda s: int(s))
     ]
     out["ORACLE_HINTS"] = [
-        {k: v for k, v in content["hint"][k].items() if k in ("text", "accuracy", "weight")}
+        {k: v for k, v in content["hint"][k].items() if k in ("text", "weight")}
         for k in order("hint")
     ]
 
@@ -298,8 +307,8 @@ def emit_js(c):
       % json.dumps(c["CONFIG"]["minTravel"]))
     a("  maxTravel: %s,       // max steps gained per action"
       % json.dumps(c["CONFIG"]["maxTravel"]))
-    a("  oracleAppearChance: %s // odds the \"Consult the Oracle\" option shows up at a location"
-      % json.dumps(c["CONFIG"]["oracleAppearChance"]))
+    a("  oracleAppearChance: %s // odds the \"Consult the Oracle\" option shows up;"
+      " 1 = she is always there" % num(c["CONFIG"]["oracleAppearChance"]))
     a("};")
     a("")
     a("// The journey is three eras, split by progress. Each location belongs to exactly")
@@ -315,9 +324,9 @@ def emit_js(c):
     a("];")
     a("")
     a("// The Oracle's possible hints. Each time she is consulted, one entry is picked")
-    a("// (weighted by optional `weight`, default 1 if omitted), and `accuracy` is the")
-    a("// probability that she ends up highlighting the location's actual \"correct\"")
-    a("// choice (see getCorrectChoice below) rather than a random wrong one.")
+    a("// (weighted by optional `weight`, default 1 if omitted). The text is pure flavour:")
+    a("// she always highlights the location's actual \"correct\" choice (see")
+    a("// getCorrectChoice below), so there is no accuracy roll to tune.")
     a("const ORACLE_HINTS = [")
     a(",\n".join("  " + emit_hint(h) for h in c["ORACLE_HINTS"]))
     a("];")
@@ -405,13 +414,20 @@ def emit_js(c):
     return "\n".join(L)
 
 
+def num(value):
+    """JSON for a number, without a pointless trailing .0 on whole floats."""
+    if isinstance(value, float) and value.is_integer():
+        return json.dumps(int(value))
+    return json.dumps(value)
+
+
 def normalize(body):
     """The one canonical form of a generated block, for hashing and comparing."""
     return body.strip("\n")
 
 
 def emit_hint(h):
-    parts = ["text: %s" % j(h["text"]), "accuracy: %s" % json.dumps(h["accuracy"])]
+    parts = ["text: %s" % j(h["text"])]
     if "weight" in h:
         parts.append("weight: %s" % json.dumps(h["weight"]))
     return "{ " + ", ".join(parts) + " }"
@@ -540,7 +556,7 @@ def cmd_export():
         for f in ("name", "min", "max"):
             add("zone", str(z["id"]), "", f, z[f])
     for n, h in enumerate(c["ORACLE_HINTS"]):
-        for f in ("text", "accuracy", "weight"):
+        for f in ("text", "weight"):
             if f in h:
                 add("hint", "", str(n), f, h[f])
     i = c["INTRO_LOCATION"]

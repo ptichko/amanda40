@@ -38,7 +38,8 @@ try {
 const before = fs.readFileSync(CSV, 'utf8');
 try {
   execFileSync('python', [TOOL, '--export'], { cwd: REPO, stdio: 'pipe' });
-  r.equal(fs.readFileSync(CSV, 'utf8'), before,
+  // r.check, not r.equal: equal() would print the whole 291-row file as detail
+  r.check(fs.readFileSync(CSV, 'utf8') === before,
     're-exporting the CSV from index.html is a no-op (text survives the round trip)');
   r.check(!/â|�/.test(before), 'the CSV has no mojibake from a bad decode');
 } catch (err) {

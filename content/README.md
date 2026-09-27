@@ -70,7 +70,7 @@ they appear in the file. To reorder something, move its rows.
 | --- | --- | --- |
 | `config` | `winDistance`, `maxPenaltyPoints`, `minTravel`, `maxTravel`, `oracleAppearChance` | `value` |
 | `zone` | the zone number, e.g. `1` | `name`, `min`, `max` |
-| `hint` | *(blank)*, `index` numbers the hints | `text`, `accuracy` (`0`–`1`), `weight` *(optional)* |
+| `hint` | *(blank)*, `index` numbers the hints | `text`, `weight` *(optional)* |
 | `intro` | *(blank — there is only one)* | `id`, `name`, `image`, `description`, `choice_label`, `choice_outcome_type`, `choice_outcome_text` |
 | `intro_panel` | *(blank)*, `index` numbers the panels | `image`, `title`, `caption`, `button` |
 | `location` | the location id, e.g. `loc_theTalentShow` | `name`, `image`, `zone`, `weight`, `description` |
@@ -92,6 +92,10 @@ they appear in the file. To reorder something, move its rows.
 - **Commas and quotes are fine** — the file is properly quoted CSV, so
   `He said, "not yet."` needs no escaping. Just don't try to break out of the
   value with `</`, which the tool will reject.
+- **But a value with a comma has to be wrapped in `"double quotes"`.** If it isn't,
+  the comma splits the row and the rest of the sentence is dropped. The tool now
+  catches this and names the row, but a spreadsheet will quote it for you
+  automatically — which is the easy way to stay out of trouble.
 - **The `PLACEHOLDER:` prefix** is only there to make it easy to search for
   what's still a first draft. It shows up in the game, so delete it from any row
   you've finished writing.

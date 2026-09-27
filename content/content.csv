@@ -3,7 +3,7 @@ config,winDistance,,value,40
 config,maxPenaltyPoints,,value,3
 config,minTravel,,value,2
 config,maxTravel,,value,4
-config,oracleAppearChance,,value,0.6
+config,oracleAppearChance,,value,1
 zone,1,,name,"Childhood, 1986 to 2001"
 zone,1,,min,0
 zone,1,,max,13
@@ -14,13 +14,9 @@ zone,3,,name,"Grown Up, 2006 to 2020"
 zone,3,,min,27
 zone,3,,max,40
 hint,,0,text,"PLACEHOLDER: the Oracle taps the card without looking at it. ""That one. I remember."""
-hint,,0,accuracy,0.9
-hint,,1,text,"PLACEHOLDER: the Oracle frowns at her own handwriting, then commits to it anyway."
-hint,,1,accuracy,0.6
-hint,,2,text,PLACEHOLDER: the Oracle is reading from a different decade entirely.
-hint,,2,accuracy,0.3
-hint,,3,text,"PLACEHOLDER: the Oracle closes the book and says ""your call"", which is not an answer."
-hint,,3,accuracy,0.1
+hint,,1,text,"PLACEHOLDER: the Oracle reads her own handwriting twice, and underlines the same line both times."
+hint,,2,text,"PLACEHOLDER: the Oracle is reading from a different decade entirely, and still lands on the right one."
+hint,,3,text,PLACEHOLDER: the Oracle closes the book and says the same thing she said last time.
 intro,,,id,loc_intro
 intro,,,name,"Happy 40th, Amanda!"
 intro,,,image,images/loc_intro.svg

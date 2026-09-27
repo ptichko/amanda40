@@ -85,8 +85,12 @@ r.check(END_TEXT.gameover && END_TEXT.gameover.title && END_TEXT.gameover.messag
   'END_TEXT.gameover is complete');
 ORACLE_HINTS.forEach((h, i) => {
   r.check(typeof h.text === 'string' && h.text.length > 0, 'hint ' + i + ' has text');
-  r.check(h.accuracy > 0 && h.accuracy <= 1, 'hint ' + i + ' accuracy is in (0, 1]');
+  // She always highlights the correct choice now, so there is no accuracy roll
+  // to configure -- a lingering one would be a knob that does nothing.
+  r.check(!('accuracy' in h), 'hint ' + i + ' has no dead accuracy field');
 });
+r.check(CONFIG.oracleAppearChance === 1,
+  'the Oracle is offered at every stop (oracleAppearChance is 1)');
 
 // ---- images exist on disk ----
 const images = [];

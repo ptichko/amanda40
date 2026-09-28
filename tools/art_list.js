@@ -7,7 +7,7 @@ window.ART_FILES = [
   { path: "images/loc_stElizabethSeton.svg", label: "St. Elizabeth Seton School" },
   { path: "images/loc_theMoveToStrafford.jpg", label: "The Move to Strafford" },
   { path: "images/loc_theTalentShow.jpg", label: "The Strafford Elementary Talent Show" },
-  { path: "images/loc_theDareSpeech.jpg", label: "The DARE Speech" },
+  { path: "images/loc_theDareSpeech.jpg", label: "The DARE Graduation" },
   { path: "images/loc_piscataquaYouthPlayers.jpg", label: "The Piscataqua Youth Players" },
   { path: "images/loc_theFamilyTrips.svg", label: "Disney World, Jellystone, Poland Springs" },
   { path: "images/loc_destinationImagination.svg", label: "Destination Imagination, First Place" },

@@ -78,46 +78,46 @@ location,loc_theTalentShow,,image,images/loc_theTalentShow.jpg
 location,loc_theTalentShow,,zone,1
 location,loc_theTalentShow,,weight,1
 location,loc_theTalentShow,,description,It's time to show off your talent at the Strafford Elementary School. How will you impress your classmates?
-choice,loc_theTalentShow,0,label,"Grab the microphone and pretend your on Delilah, belting out ""Wind Beneath My Wings.”"
+choice,loc_theTalentShow,0,label,"Grab the microphone and pretend you're on Delilah, belting out ""Wind Beneath My Wings.”"
 choice,loc_theTalentShow,0,oracle_correct,true
 choice,loc_theTalentShow,0,outcome_type,normal
 choice,loc_theTalentShow,0,outcome_text,You did Bette Midler proud.
-choice,loc_theTalentShow,1,label,"Kart-wheel across the carpet during circle time, showing off your new gymnastics moves"
+choice,loc_theTalentShow,1,label,"Kart wheel across the carpet during circle time, showing off your new gymnastics moves."
 choice,loc_theTalentShow,1,outcome_type,penalty
 choice,loc_theTalentShow,1,outcome_text,Oompf. That hurt. Maybe you should have grabbed a microphone instead.
 choice,loc_theTalentShow,2,label,Recite your favorite Shel Silverstein poem from memory.
 choice,loc_theTalentShow,2,outcome_type,heal
 choice,loc_theTalentShow,2,outcome_text,If only talent shows were this wholesome.
-location,loc_theDareSpeech,,name,The DARE Speech
+location,loc_theDareSpeech,,name,The DARE Graduation
 location,loc_theDareSpeech,,image,images/loc_theDareSpeech.jpg
 location,loc_theDareSpeech,,zone,1
 location,loc_theDareSpeech,,weight,1
-location,loc_theDareSpeech,,description,Sixth grade DARE graduation: are you ready for a drug-free life?
+location,loc_theDareSpeech,,description,Sixth-grade DARE graduation: how will you promote a drug-free life?
 choice,loc_theDareSpeech,0,label,Deliver a graduation speech to save your classmates from becoming future addicts.
 choice,loc_theDareSpeech,0,oracle_correct,true
 choice,loc_theDareSpeech,0,outcome_type,normal
 choice,loc_theDareSpeech,0,outcome_text,Words have power. Thanks for keeping these kids pure.
-choice,loc_theDareSpeech,1,label,Doodle in your class notebook some new logos for DARE that end up on their website.
+choice,loc_theDareSpeech,1,label,Doodle new logos for DARE in your class notebook that end up on their website.
 choice,loc_theDareSpeech,1,outcome_type,penalty
 choice,loc_theDareSpeech,1,outcome_text,"Pay attention, kid, and get your head out of your notebook."
-choice,loc_theDareSpeech,2,label,Wear your DARE-theme t-shirt at graduation that becomes an iconic fashion trend in middle school.
+choice,loc_theDareSpeech,2,label,Wear your DARE-themed t-shirt at graduation creating a viral fashion trend in your middle school.
 choice,loc_theDareSpeech,2,outcome_type,heal
 choice,loc_theDareSpeech,2,outcome_text,"Hey, the lead singer of Bloc Party had a DARE t-shirt, but you wore it first."
 location,loc_piscataquaYouthPlayers,,name,The Piscataqua Youth Players
 location,loc_piscataquaYouthPlayers,,image,images/loc_piscataquaYouthPlayers.jpg
 location,loc_piscataquaYouthPlayers,,zone,1
 location,loc_piscataquaYouthPlayers,,weight,1
-location,loc_piscataquaYouthPlayers,,description,"PLACEHOLDER: four years before the Velveteen Rabbit you were Lucy Oopma Loompa in Charlie and the Chocolate Factory. December 1996: the Rabbit, with a playbill, and an original script with your handwriting in the margins."
-choice,loc_piscataquaYouthPlayers,0,label,Take the Velveteen Rabbit
+location,loc_piscataquaYouthPlayers,,description,Piscataqua Youth Players: Stage fright or stage might?
+choice,loc_piscataquaYouthPlayers,0,label,Shoot for the stars and take the lead role as the Velveteen Rabbit in the titular play.
 choice,loc_piscataquaYouthPlayers,0,oracle_correct,true
 choice,loc_piscataquaYouthPlayers,0,outcome_type,normal
-choice,loc_piscataquaYouthPlayers,0,outcome_text,"PLACEHOLDER: the playbill says so. So does the script, in pencil, in the margins."
-choice,loc_piscataquaYouthPlayers,1,label,Go on as the Tree instead
+choice,loc_piscataquaYouthPlayers,0,outcome_text,The playbill says so. So does VHS recording of your performance.
+choice,loc_piscataquaYouthPlayers,1,label,Skip the stage and use your artistic talents to create the set for the Velveteen Rabbit.
 choice,loc_piscataquaYouthPlayers,1,outcome_type,penalty
-choice,loc_piscataquaYouthPlayers,1,outcome_text,PLACEHOLDER: standing very still turns out to be a different kind of hard.
-choice,loc_piscataquaYouthPlayers,2,label,Learn everyone else's lines as well
+choice,loc_piscataquaYouthPlayers,1,outcome_text,"You were made for the lime light, my dear."
+choice,loc_piscataquaYouthPlayers,2,label,A rabbbit? You sat this one out and played Lucy Oopma Loompa in Charlie and the Chocolate Factory instead.
 choice,loc_piscataquaYouthPlayers,2,outcome_type,heal
-choice,loc_piscataquaYouthPlayers,2,outcome_text,PLACEHOLDER: you knew the whole show. Nobody handed you that.
+choice,loc_piscataquaYouthPlayers,2,outcome_text,You rose the occasion and did both. A true rising star.
 location,loc_theFamilyTrips,,name,"Disney World, Jellystone, Poland Springs"
 location,loc_theFamilyTrips,,image,images/loc_theFamilyTrips.svg
 location,loc_theFamilyTrips,,zone,1
@@ -212,17 +212,17 @@ location,loc_stonehillToEmerson,,name,Stonehill to Emerson
 location,loc_stonehillToEmerson,,image,images/loc_stonehillToEmerson.jpg
 location,loc_stonehillToEmerson,,zone,3
 location,loc_stonehillToEmerson,,weight,1
-location,loc_stonehillToEmerson,,description,"PLACEHOLDER: January 2007. Accepted to Emerson College, transferring from Stonehill, in creative writing. You had been writing for years; this was the first time the writing was the point."
-choice,loc_stonehillToEmerson,0,label,Take the transfer to Emerson
+location,loc_stonehillToEmerson,,description,Stonehill College in Janurary 2007: is your higher education high enough?
+choice,loc_stonehillToEmerson,0,label,Transfer to Emerson College and major in the lucrative craft of poetry.
 choice,loc_stonehillToEmerson,0,oracle_correct,true
 choice,loc_stonehillToEmerson,0,outcome_type,normal
-choice,loc_stonehillToEmerson,0,outcome_text,"PLACEHOLDER: January 2007, accepted. Creative writing."
-choice,loc_stonehillToEmerson,1,label,Stay at Stonehill and finish there
+choice,loc_stonehillToEmerson,0,outcome_text,Let's transform the mundane together and write a senior thesis.
+choice,loc_stonehillToEmerson,1,label,Stay at Stonehill. Why fix what ain't broke?
 choice,loc_stonehillToEmerson,1,outcome_type,penalty
-choice,loc_stonehillToEmerson,1,outcome_text,"PLACEHOLDER: not wrong, exactly. Just not the thing you had already decided."
-choice,loc_stonehillToEmerson,2,label,"Write something before you go, to prove you could"
+choice,loc_stonehillToEmerson,1,outcome_text,Everything was broken. Not even Jesus could fix it.
+choice,loc_stonehillToEmerson,2,label,Turn-down a full ride to Boston University and take a gap year.
 choice,loc_stonehillToEmerson,2,outcome_type,heal
-choice,loc_stonehillToEmerson,2,outcome_text,"PLACEHOLDER: you finish it on the train. It is not very good, and you go anyway."
+choice,loc_stonehillToEmerson,2,outcome_text,Universities just mean smaller fish in a bigger pond.
 location,loc_magnaCumLaude,,name,Magna Cum Laude
 location,loc_magnaCumLaude,,image,images/loc_magnaCumLaude.jpg
 location,loc_magnaCumLaude,,zone,3

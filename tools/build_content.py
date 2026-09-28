@@ -174,7 +174,7 @@ def sniff_delimiter(header_line):
     return best
 
 
-def read_csv(path=CSV_PATH):
+def read_csv(path=CSV_PATH, strict=True):
     if not os.path.exists(path):
         raise ContentError(
             "no %s -- run with --export to create it from index.html" % os.path.relpath(path, REPO)
@@ -183,6 +183,24 @@ def read_csv(path=CSV_PATH):
         text = decode_csv_bytes(fh.read())
     if text.startswith('﻿'):
         text = text[1:]
+    if strict and '�' in text:
+        # A byte the file's own encoding can't represent, already turned into a
+        # replacement character -- most likely a spreadsheet wrote one. Baking it
+        # would put "Wait � didn't" on the page and commit the damage, so stop.
+        where = text[:text.index('�')].count('\n') + 1
+        line = text.split('\n')[where - 1].strip()
+        if len(line) > 90:
+            line = line[:90] + '...'
+        raise ContentError(
+            "%s has a character that was lost when the file was saved -- it is now "
+            "a replacement character (U+FFFD) on line %d.\n"
+            "  Refusing to bake it: that would print \ufffd on the page and make the "
+            "loss permanent.\n"
+            "  line %d: %s\n"
+            "  Re-save the CSV as UTF-8, or fix that character by hand. --describe "
+            "reports how many there are."
+            % (os.path.relpath(path, REPO), where, where, line)
+        )
     delimiter = sniff_delimiter(text.split('\n', 1)[0])
     if delimiter != ',':
         # stderr, not stdout: --describe prints JSON on stdout and must stay parseable
@@ -575,7 +593,7 @@ def cmd_describe():
         raw = fh.read()
     text = decode_csv_bytes(raw)
     delimiter = sniff_delimiter(text.split('\n', 1)[0])
-    content = read_csv()
+    content = read_csv(strict=False)      # --describe reports the damage, doesn't refuse it
     js = normalize(emit_js(content))
     info = {
         "delimiter": delimiter,

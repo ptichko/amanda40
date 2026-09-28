@@ -1,292 +1,292 @@
-kind;parent;index;field;value
-config;winDistance;;value;40
-config;maxPenaltyPoints;;value;3
-config;minTravel;;value;2
-config;maxTravel;;value;4
-config;oracleAppearChance;;value;1
-zone;1;;name;Childhood, 1986 to 2001
-zone;1;;min;0
-zone;1;;max;13
-zone;2;;name;The Teenage Years, 2000 to 2005
-zone;2;;min;14
-zone;2;;max;26
-zone;3;;name;Grown Up, 2006 to 2020
-zone;3;;min;27
-zone;3;;max;40
-hint;;0;text;"PLACEHOLDER: the Oracle taps the card without looking at it. ""That one. I remember."""
-hint;;1;text;PLACEHOLDER: the Oracle reads her own handwriting twice, and underlines the same line both times.
-hint;;2;text;PLACEHOLDER: the Oracle is reading from a different decade entirely, and still lands on the right one.
-hint;;3;text;PLACEHOLDER: the Oracle closes the book and says the same thing she said last time.
-intro;;;id;loc_intro
-intro;;;name;Happy 40th, Amanda!
-intro;;;image;images/loc_intro.svg
-intro;;;description;PLACEHOLDER: forty years, in three parts. The Oracle has had your chart since the night you were born, and she says the road only goes one way from here.
-intro;;;choice_label;Begin the journey
-intro;;;choice_outcome_type;normal
-intro;;;choice_outcome_text;The path opens.
-intro_panel;;0;image;images/cutscene_birth.jpg
-intro_panel;;0;title;PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986
-intro_panel;;0;caption;PLACEHOLDER: the first room you were ever in, and then the long drive home to Rochester with a new person in the back seat.
-intro_panel;;0;button;Continue
-location;loc_rochesterFirstHome;;name;The First House, Rochester
-location;loc_rochesterFirstHome;;image;images/loc_rochesterFirstHome.svg
-location;loc_rochesterFirstHome;;zone;1
-location;loc_rochesterFirstHome;;weight;1
-location;loc_rochesterFirstHome;;description;PLACEHOLDER: 1986 to 1991, the first house, in Rochester NH — the one with the porch you could see the river from. In 1991 you started kindergarten at Jack and Jill, in a yellow coat you refused to take off.
-choice;loc_rochesterFirstHome;0;label;Start kindergarten at Jack and Jill
-choice;loc_rochesterFirstHome;0;oracle_correct;true
-choice;loc_rochesterFirstHome;0;outcome_type;normal
-choice;loc_rochesterFirstHome;0;outcome_text;PLACEHOLDER: four years old, and the teacher says your name back to you.
-choice;loc_rochesterFirstHome;1;label;Hide behind the coat rack until the second bell
-choice;loc_rochesterFirstHome;1;outcome_type;penalty
-choice;loc_rochesterFirstHome;1;outcome_text;PLACEHOLDER: it works for eleven minutes.
-choice;loc_rochesterFirstHome;2;label;Say your name to everyone in the room, twice
-choice;loc_rochesterFirstHome;2;outcome_type;heal
-choice;loc_rochesterFirstHome;2;outcome_text;PLACEHOLDER: the room says it back. Something settles.
-location;loc_stElizabethSeton;;name;St. Elizabeth Seton School
-location;loc_stElizabethSeton;;image;images/loc_stElizabethSeton.svg
-location;loc_stElizabethSeton;;zone;1
-location;loc_stElizabethSeton;;weight;1
-location;loc_stElizabethSeton;;description;PLACEHOLDER: kindergarten and first grade at St. Elizabeth Seton, still in Rochester. Two rooms, one teacher who knew your name and your mother's, and a walk to the church that you insisted on doing backwards.
-choice;loc_stElizabethSeton;0;label;Walk to school backwards the whole way
-choice;loc_stElizabethSeton;0;oracle_correct;true
-choice;loc_stElizabethSeton;0;outcome_type;normal
-choice;loc_stElizabethSeton;0;outcome_text;PLACEHOLDER: it takes twice as long, and you still get there first.
-choice;loc_stElizabethSeton;1;label;Move to a school further from home
-choice;loc_stElizabethSeton;1;outcome_type;penalty
-choice;loc_stElizabethSeton;1;outcome_text;PLACEHOLDER: a longer drive, and nobody to sit with.
-choice;loc_stElizabethSeton;2;label;Learn the names of everyone in both rooms
-choice;loc_stElizabethSeton;2;outcome_type;heal
-choice;loc_stElizabethSeton;2;outcome_text;PLACEHOLDER: first grade ends with thirty names and nobody missing.
-location;loc_theMoveToStrafford;;name;The Move to Strafford
-location;loc_theMoveToStrafford;;image;images/loc_theMoveToStrafford.jpg
-location;loc_theMoveToStrafford;;zone;1
-location;loc_theMoveToStrafford;;weight;1
-location;loc_theMoveToStrafford;;description;PLACEHOLDER: 1993. Rochester to Strafford, in a car with more boxes than seats. Strafford Elementary from kindergarten all the way through eighth grade — the longest address you ever had.
-choice;loc_theMoveToStrafford;0;label;Unpack the box marked KEEP FIRST
-choice;loc_theMoveToStrafford;0;oracle_correct;true
-choice;loc_theMoveToStrafford;0;outcome_type;normal
-choice;loc_theMoveToStrafford;0;outcome_text;PLACEHOLDER: books, the good blanket, the tape player. First night, first order of business.
-choice;loc_theMoveToStrafford;1;label;Unpack the box marked THROW AWAY FIRST
-choice;loc_theMoveToStrafford;1;outcome_type;penalty
-choice;loc_theMoveToStrafford;1;outcome_text;PLACEHOLDER: you break something irreplaceable before the first school day.
-choice;loc_theMoveToStrafford;2;label;Introduce yourself to a neighbour before you unpack
-choice;loc_theMoveToStrafford;2;outcome_type;heal
-choice;loc_theMoveToStrafford;2;outcome_text;PLACEHOLDER: by Sunday you have a house key that is not yours.
-location;loc_theTalentShow;;name;The Strafford Elementary Talent Show
-location;loc_theTalentShow;;image;images/loc_theTalentShow.jpg
-location;loc_theTalentShow;;zone;1
-location;loc_theTalentShow;;weight;1
-location;loc_theTalentShow;;description;It's time to show off your talent at the Strafford Elementary School. How will you impress your classmates?
-choice;loc_theTalentShow;0;label;"Grab the microphone and pretend you're on Delilah, belting out ""Wind Beneath My Wings.”"
-choice;loc_theTalentShow;0;oracle_correct;true
-choice;loc_theTalentShow;0;outcome_type;normal
-choice;loc_theTalentShow;0;outcome_text;You did Bette Midler proud.
-choice;loc_theTalentShow;1;label;Kart wheel across the carpet during circle time, showing off your new gymnastics moves.
-choice;loc_theTalentShow;1;outcome_type;penalty
-choice;loc_theTalentShow;1;outcome_text;Oompf. That hurt. Maybe you should have grabbed a microphone instead.
-choice;loc_theTalentShow;2;label;Recite your favorite Shel Silverstein poem from memory.
-choice;loc_theTalentShow;2;outcome_type;heal
-choice;loc_theTalentShow;2;outcome_text;If only talent shows were this wholesome.
-location;loc_theDareSpeech;;name;The DARE Graduation
-location;loc_theDareSpeech;;image;images/loc_theDareSpeech.jpg
-location;loc_theDareSpeech;;zone;1
-location;loc_theDareSpeech;;weight;1
-location;loc_theDareSpeech;;description;Sixth-grade DARE graduation: how will you promote a drug-free life?
-choice;loc_theDareSpeech;0;label;Deliver a graduation speech to save your classmates from becoming future addicts.
-choice;loc_theDareSpeech;0;oracle_correct;true
-choice;loc_theDareSpeech;0;outcome_type;normal
-choice;loc_theDareSpeech;0;outcome_text;Words have power. Thanks for keeping these kids pure.
-choice;loc_theDareSpeech;1;label;Doodle new logos for DARE in your class notebook that end up on their website.
-choice;loc_theDareSpeech;1;outcome_type;penalty
-choice;loc_theDareSpeech;1;outcome_text;Pay attention, kid, and get your head out of your notebook.
-choice;loc_theDareSpeech;2;label;Wear your DARE-themed t-shirt at graduation creating a viral fashion trend in your middle school.
-choice;loc_theDareSpeech;2;outcome_type;heal
-choice;loc_theDareSpeech;2;outcome_text;Hey, the lead singer of Bloc Party had a DARE t-shirt, but you wore it first.
-location;loc_piscataquaYouthPlayers;;name;The Piscataqua Youth Players
-location;loc_piscataquaYouthPlayers;;image;images/loc_piscataquaYouthPlayers.jpg
-location;loc_piscataquaYouthPlayers;;zone;1
-location;loc_piscataquaYouthPlayers;;weight;1
-location;loc_piscataquaYouthPlayers;;description;Piscataqua Youth Players: Stage fright or stage might?
-choice;loc_piscataquaYouthPlayers;0;label;Shoot for the stars and take the lead role as the Velveteen Rabbit in the titular play.
-choice;loc_piscataquaYouthPlayers;0;oracle_correct;true
-choice;loc_piscataquaYouthPlayers;0;outcome_type;normal
-choice;loc_piscataquaYouthPlayers;0;outcome_text;The playbill says so. So does the VHS recording of your performance.
-choice;loc_piscataquaYouthPlayers;1;label;Skip the stage and use your artistic talents to create the set for the Velveteen Rabbit.
-choice;loc_piscataquaYouthPlayers;1;outcome_type;penalty
-choice;loc_piscataquaYouthPlayers;1;outcome_text;You were made for the lime light, my dear.
-choice;loc_piscataquaYouthPlayers;2;label;A rabbit? You sat this one out and played Lucy Oopma Loompa in Charlie and the Chocolate Factory instead.
-choice;loc_piscataquaYouthPlayers;2;outcome_type;heal
-choice;loc_piscataquaYouthPlayers;2;outcome_text;You rose the occasion and did both. A true rising star.
-location;loc_theFamilyTrips;;name;Disney World, Jellystone, Poland Springs
-location;loc_theFamilyTrips;;image;images/loc_theFamilyTrips.svg
-location;loc_theFamilyTrips;;zone;1
-location;loc_theFamilyTrips;;weight;1
-location;loc_theFamilyTrips;;description;PLACEHOLDER: the three places you asked to go back to. Disney World in Orlando, Jellystone Campground in New Hampshire, and your grandparents' camp at Poland Springs, Maine — same camp, same rock, every summer for years.
-choice;loc_theFamilyTrips;0;label;Swim at Jellystone every single morning
-choice;loc_theFamilyTrips;0;oracle_correct;true
-choice;loc_theFamilyTrips;0;outcome_type;normal
-choice;loc_theFamilyTrips;0;outcome_text;PLACEHOLDER: the water is cold, and you were in it before breakfast. Every day.
-choice;loc_theFamilyTrips;1;label;Ride the biggest one at Disney World, twice
-choice;loc_theFamilyTrips;1;outcome_type;normal
-choice;loc_theFamilyTrips;1;outcome_text;PLACEHOLDER: twice, because the first time you were too small to remember it.
-choice;loc_theFamilyTrips;2;label;Go back to the same spot at Poland Springs every year
-choice;loc_theFamilyTrips;2;outcome_type;heal
-choice;loc_theFamilyTrips;2;outcome_text;PLACEHOLDER: the same rock, the same view, the same people already waiting.
-location;loc_destinationImagination;;name;Destination Imagination, First Place
-location;loc_destinationImagination;;image;images/loc_destinationImagination.svg
-location;loc_destinationImagination;;zone;2
-location;loc_destinationImagination;;weight;1
-location;loc_destinationImagination;;description;PLACEHOLDER: March 2000. Your Destination Imagination team took first place, and you were three hundred miles away at your brother's hockey tournament in Pennsylvania. Train from Philadelphia to Boston, bus to Portsmouth, Aunt Lynne waiting at Kingswood High School in Wolfeboro. You flew back for the rest of the tournament and were told at the rink. There is a newspaper article.
-choice;loc_destinationImagination;0;label;Take the train, then the bus, to get there in time
-choice;loc_destinationImagination;0;oracle_correct;true
-choice;loc_destinationImagination;0;outcome_type;normal
-choice;loc_destinationImagination;0;outcome_text;PLACEHOLDER: Philadelphia to Boston to Portsmouth, and Aunt Lynne at the school gates. You make it.
-choice;loc_destinationImagination;1;label;Stay at the tournament and miss it
-choice;loc_destinationImagination;1;outcome_type;penalty
-choice;loc_destinationImagination;1;outcome_text;PLACEHOLDER: you hear about first place in a car park, a week later, out of somebody else's newspaper.
-choice;loc_destinationImagination;2;label;Carry the trophy home down the aisle yourself
-choice;loc_destinationImagination;2;outcome_type;heal
-choice;loc_destinationImagination;2;outcome_text;PLACEHOLDER: trophy on your lap, Portland to Philadelphia. Nobody says a word the whole way.
-location;loc_storiesAreMadeThatWay;;name;"""Stories Are Made That Way"""
-location;loc_storiesAreMadeThatWay;;image;images/loc_storiesAreMadeThatWay.jpg
-location;loc_storiesAreMadeThatWay;;zone;2
-location;loc_storiesAreMadeThatWay;;weight;1
-location;loc_storiesAreMadeThatWay;;description;PLACEHOLDER: 1 April 2002. The musical CD comes out, and you sing several of the tracks with the other children. You still have the CD.
-choice;loc_storiesAreMadeThatWay;0;label;Sing your own tracks, not only the backing
-choice;loc_storiesAreMadeThatWay;0;oracle_correct;true
-choice;loc_storiesAreMadeThatWay;0;outcome_type;normal
-choice;loc_storiesAreMadeThatWay;0;outcome_text;PLACEHOLDER: several songs, with the other children, on an actual record.
-choice;loc_storiesAreMadeThatWay;1;label;Sing backing vocals only
-choice;loc_storiesAreMadeThatWay;1;outcome_type;penalty
-choice;loc_storiesAreMadeThatWay;1;outcome_text;PLACEHOLDER: you are on every track, and nobody would know it from the sleeve notes.
-choice;loc_storiesAreMadeThatWay;2;label;Learn every other child's part as well
-choice;loc_storiesAreMadeThatWay;2;outcome_type;heal
-choice;loc_storiesAreMadeThatWay;2;outcome_text;PLACEHOLDER: you could have sung any of them. You never needed to.
-location;loc_theLeadershipConference;;name;Washington DC, July 2003
-location;loc_theLeadershipConference;;image;images/loc_theLeadershipConference.svg
-location;loc_theLeadershipConference;;zone;2
-location;loc_theLeadershipConference;;weight;1
-location;loc_theLeadershipConference;;description;PLACEHOLDER: the teaching staff at Bishop Brady nominated you for the National Student Leadership Conference in Washington DC, in the area of Business and Commerce. July 2003: you went. There is a letter.
-choice;loc_theLeadershipConference;0;label;Go to Washington DC that July
-choice;loc_theLeadershipConference;0;oracle_correct;true
-choice;loc_theLeadershipConference;0;outcome_type;normal
-choice;loc_theLeadershipConference;0;outcome_text;PLACEHOLDER: nominated by the teaching staff, in Business and Commerce. The letter is real.
-choice;loc_theLeadershipConference;1;label;Skip it — there was a tournament that summer
-choice;loc_theLeadershipConference;1;outcome_type;penalty
-choice;loc_theLeadershipConference;1;outcome_text;PLACEHOLDER: you were at the rink. The letter stays in a drawer.
-choice;loc_theLeadershipConference;2;label;Take notes on everyone you met
-choice;loc_theLeadershipConference;2;outcome_type;heal
-choice;loc_theLeadershipConference;2;outcome_text;PLACEHOLDER: you came home with a notebook and no idea what you wanted yet.
-location;loc_editorsChoicePoetry;;name;Editor's Choice, Achievement in Poetry
-location;loc_editorsChoicePoetry;;image;images/loc_editorsChoicePoetry.svg
-location;loc_editorsChoicePoetry;;zone;2
-location;loc_editorsChoicePoetry;;weight;1
-location;loc_editorsChoicePoetry;;description;PLACEHOLDER: March 2004. The Editor's Choice Award for Achievement in Poetry. There is a certificate, which means somebody wrote your name on a line and meant it.
-choice;loc_editorsChoicePoetry;0;label;Accept the poetry award
-choice;loc_editorsChoicePoetry;0;oracle_correct;true
-choice;loc_editorsChoicePoetry;0;outcome_type;normal
-choice;loc_editorsChoicePoetry;0;outcome_text;PLACEHOLDER: Editor's Choice, Achievement in Poetry, March 2004. The certificate is signed.
-choice;loc_editorsChoicePoetry;1;label;Turn it down — you were only doing it for the class
-choice;loc_editorsChoicePoetry;1;outcome_type;penalty
-choice;loc_editorsChoicePoetry;1;outcome_text;PLACEHOLDER: you give it back, the class gives it back, and it ends up in a drawer either way.
-choice;loc_editorsChoicePoetry;2;label;Read one poem out loud at the ceremony
-choice;loc_editorsChoicePoetry;2;outcome_type;heal
-choice;loc_editorsChoicePoetry;2;outcome_text;PLACEHOLDER: your own, not the one that won. It goes over well.
-location;loc_theNationalAnthem;;name;Singing the National Anthem, June 2005
-location;loc_theNationalAnthem;;image;images/loc_theNationalAnthem.jpg
-location;loc_theNationalAnthem;;zone;2
-location;loc_theNationalAnthem;;weight;1
-location;loc_theNationalAnthem;;description;Bishop Brady High School graduation. How will go out in style? 
-choice;loc_theNationalAnthem;0;label;Take the microphone and belt out the National Anthem Wait � didn't you tell your parents?
-choice;loc_theNationalAnthem;0;oracle_correct;true
-choice;loc_theNationalAnthem;0;outcome_type;normal
-choice;loc_theNationalAnthem;0;outcome_text;God bless America and god bless the private lives of teenagers.
-choice;loc_theNationalAnthem;1;label;Arrive 15 minutes after the start time, forcing you to walk down the aisle with Mr. Roberts.
-choice;loc_theNationalAnthem;1;outcome_type;penalty
-choice;loc_theNationalAnthem;1;outcome_text;Turn back, old man.
-choice;loc_theNationalAnthem;2;label;Ghost write your valedictorian's speech, slipping in one joke about principal Barker.
-choice;loc_theNationalAnthem;2;outcome_type;heal
-choice;loc_theNationalAnthem;2;outcome_text;Mr. Miller loved your writing: why not an entire audience of graduates?
-location;loc_stonehillToEmerson;;name;Stonehill to Emerson
-location;loc_stonehillToEmerson;;image;images/loc_stonehillToEmerson.jpg
-location;loc_stonehillToEmerson;;zone;3
-location;loc_stonehillToEmerson;;weight;1
-location;loc_stonehillToEmerson;;description;Stonehill College in January 2007: is your higher education high enough?
-choice;loc_stonehillToEmerson;0;label;Transfer to Emerson College and major in the lucrative craft of poetry.
-choice;loc_stonehillToEmerson;0;oracle_correct;true
-choice;loc_stonehillToEmerson;0;outcome_type;normal
-choice;loc_stonehillToEmerson;0;outcome_text;Let's transform the mundane together and write a senior thesis.
-choice;loc_stonehillToEmerson;1;label;Stay at Stonehill. Why fix what ain't broke?
-choice;loc_stonehillToEmerson;1;outcome_type;penalty
-choice;loc_stonehillToEmerson;1;outcome_text;Everything was broken. Not even Jesus could fix it.
-choice;loc_stonehillToEmerson;2;label;Turn-down a full ride to Boston University and take a gap year.
-choice;loc_stonehillToEmerson;2;outcome_type;heal
-choice;loc_stonehillToEmerson;2;outcome_text;Universities just mean smaller fish in a bigger pond.
-location;loc_magnaCumLaude;;name;Magna Cum Laude
-location;loc_magnaCumLaude;;image;images/loc_magnaCumLaude.jpg
-location;loc_magnaCumLaude;;zone;3
-location;loc_magnaCumLaude;;weight;1
-location;loc_magnaCumLaude;;description;PLACEHOLDER: you graduated from Emerson, Magna Cum Laude, with a BFA in creative writing and a concentration in creative non-fiction and poetry. Both halves of it, in one degree.
-choice;loc_magnaCumLaude;0;label;Put creative non-fiction and poetry in the same degree
-choice;loc_magnaCumLaude;0;oracle_correct;true
-choice;loc_magnaCumLaude;0;outcome_type;normal
-choice;loc_magnaCumLaude;0;outcome_text;PLACEHOLDER: BFA, creative writing, concentrated in creative non-fiction and poetry. Magna Cum Laude.
-choice;loc_magnaCumLaude;1;label;Choose one and drop the other
-choice;loc_magnaCumLaude;1;outcome_type;penalty
-choice;loc_magnaCumLaude;1;outcome_text;PLACEHOLDER: you take the practical half. The other one keeps. It does not go anywhere.
-choice;loc_magnaCumLaude;2;label;Thank the teachers who wrote you a reference
-choice;loc_magnaCumLaude;2;outcome_type;heal
-choice;loc_magnaCumLaude;2;outcome_text;PLACEHOLDER: you kept the emails. You use them later, more than once.
-location;loc_wegoHealth;;name;WEGO Health, Somerville
-location;loc_wegoHealth;;image;images/loc_wegoHealth.svg
-location;loc_wegoHealth;;zone;3
-location;loc_wegoHealth;;weight;1
-location;loc_wegoHealth;;description;"PLACEHOLDER: April 2012, Somerville. Health Social Media writer at WEGO Health, and an advocate for Patient Leaders — the company that empowers health activists to help other people. Your article, ""Patient Leaders of Online Health Communities Discuss Patient to Patient Conversations on Clinical Trials"", ran in Monitor Magazine, the global voice of clinical research professionals. There is a copy of the magazine."
-choice;loc_wegoHealth;0;label;Write about patient leaders, for patient leaders
-choice;loc_wegoHealth;0;oracle_correct;true
-choice;loc_wegoHealth;0;outcome_type;normal
-choice;loc_wegoHealth;0;outcome_text;PLACEHOLDER: April 2012, Somerville. The Monitor article. There is a copy of the magazine.
-choice;loc_wegoHealth;1;label;Write the press release instead
-choice;loc_wegoHealth;1;outcome_type;penalty
-choice;loc_wegoHealth;1;outcome_text;PLACEHOLDER: it goes out. Nobody has to think about it, which was never the point.
-choice;loc_wegoHealth;2;label;Let a patient leader read it before it runs
-choice;loc_wegoHealth;2;outcome_type;heal
-choice;loc_wegoHealth;2;outcome_text;PLACEHOLDER: they change two sentences. Both of them are better.
-location;loc_spindrift;;name;Spindrift, and Watertown
-location;loc_spindrift;;image;images/loc_spindrift.jpg
-location;loc_spindrift;;zone;3
-location;loc_spindrift;;weight;1
-location;loc_spindrift;;description;PLACEHOLDER: 2017, twice over. You started working at Spindrift Beverage Company, and later the same year you moved to Watertown, Massachusetts.
-choice;loc_spindrift;0;label;Take the job at Spindrift, and move to Watertown
-choice;loc_spindrift;0;oracle_correct;true
-choice;loc_spindrift;0;outcome_type;normal
-choice;loc_spindrift;0;outcome_text;PLACEHOLDER: a new job, and a new town later in the same year. Both of them 2017.
-choice;loc_spindrift;1;label;Turn the offer down and stay where you are
-choice;loc_spindrift;1;outcome_type;penalty
-choice;loc_spindrift;1;outcome_text;PLACEHOLDER: the offer goes to somebody else. So, more or less, does Watertown.
-choice;loc_spindrift;2;label;Take the job and commute from where you already live
-choice;loc_spindrift;2;outcome_type;heal
-choice;loc_spindrift;2;outcome_text;PLACEHOLDER: you keep the postcode you know, and learn the job twice as fast.
-location;loc_belmontFamily;;name;Belmont, 2020
-location;loc_belmontFamily;;image;images/loc_belmontFamily.svg
-location;loc_belmontFamily;;zone;3
-location;loc_belmontFamily;;weight;1
-location;loc_belmontFamily;;description;PLACEHOLDER: 2020. You started a family, and moved to Belmont, Massachusetts.
-choice;loc_belmontFamily;0;label;Start a family, and move to Belmont
-choice;loc_belmontFamily;0;oracle_correct;true
-choice;loc_belmontFamily;0;outcome_type;normal
-choice;loc_belmontFamily;0;outcome_text;PLACEHOLDER: 2020, two enormous things at once, and a new postcode to learn on the way.
-choice;loc_belmontFamily;1;label;Wait a year, and do one thing at a time
-choice;loc_belmontFamily;1;outcome_type;penalty
-choice;loc_belmontFamily;1;outcome_text;PLACEHOLDER: the year goes differently. Belmont happens without you.
-choice;loc_belmontFamily;2;label;Move first, and let the rest follow
-choice;loc_belmontFamily;2;outcome_type;heal
-choice;loc_belmontFamily;2;outcome_text;PLACEHOLDER: you learn the town while there is nothing else on your mind.
-end;win;;title;The Fourth Decade
-end;win;;goodMessage;PLACEHOLDER: forty, and the road still going. Every stop on it is yours: the first house in Rochester, a yellow coat, a talent show on somebody's video tape, a train from Philadelphia, a cake with the candles knocked over on the ground, and a great deal of work done on behalf of other people. The Oracle puts the book away.
-end;win;;badMessage;PLACEHOLDER: forty, with a coin left at the shrine out of habit. Somebody has to move the shrine before the next traveller gets there. You do it yourself, and it is very funny.
-end;win;;image;images/win.svg
-end;gameover;;title;The journey ends
-end;gameover;;message;PLACEHOLDER: three stumbles and the Oracle calls it. She recommends rest, tea, and a second attempt — the whole of it is still there, exactly where you left it.
-end;gameover;;image;images/gameover.svg
+kind,parent,index,field,value
+config,winDistance,,value,40
+config,maxPenaltyPoints,,value,3
+config,minTravel,,value,2
+config,maxTravel,,value,4
+config,oracleAppearChance,,value,1
+zone,1,,name,"Childhood, 1986 to 2001"
+zone,1,,min,0
+zone,1,,max,13
+zone,2,,name,"The Teenage Years, 2000 to 2005"
+zone,2,,min,14
+zone,2,,max,26
+zone,3,,name,"Grown Up, 2006 to 2020"
+zone,3,,min,27
+zone,3,,max,40
+hint,,0,text,"PLACEHOLDER: the Oracle taps the card without looking at it. ""That one. I remember."""
+hint,,1,text,"PLACEHOLDER: the Oracle reads her own handwriting twice, and underlines the same line both times."
+hint,,2,text,"PLACEHOLDER: the Oracle is reading from a different decade entirely, and still lands on the right one."
+hint,,3,text,PLACEHOLDER: the Oracle closes the book and says the same thing she said last time.
+intro,,,id,loc_intro
+intro,,,name,"Happy 40th, Amanda!"
+intro,,,image,images/loc_intro.svg
+intro,,,description,"PLACEHOLDER: forty years, in three parts. The Oracle has had your chart since the night you were born, and she says the road only goes one way from here."
+intro,,,choice_label,Begin the journey
+intro,,,choice_outcome_type,normal
+intro,,,choice_outcome_text,The path opens.
+intro_panel,,0,image,images/cutscene_birth.jpg
+intro_panel,,0,title,"PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986"
+intro_panel,,0,caption,"PLACEHOLDER: the first room you were ever in, and then the long drive home to Rochester with a new person in the back seat."
+intro_panel,,0,button,Continue
+location,loc_rochesterFirstHome,,name,"The First House, Rochester"
+location,loc_rochesterFirstHome,,image,images/loc_rochesterFirstHome.svg
+location,loc_rochesterFirstHome,,zone,1
+location,loc_rochesterFirstHome,,weight,1
+location,loc_rochesterFirstHome,,description,"PLACEHOLDER: 1986 to 1991, the first house, in Rochester NH — the one with the porch you could see the river from. In 1991 you started kindergarten at Jack and Jill, in a yellow coat you refused to take off."
+choice,loc_rochesterFirstHome,0,label,Start kindergarten at Jack and Jill
+choice,loc_rochesterFirstHome,0,oracle_correct,true
+choice,loc_rochesterFirstHome,0,outcome_type,normal
+choice,loc_rochesterFirstHome,0,outcome_text,"PLACEHOLDER: four years old, and the teacher says your name back to you."
+choice,loc_rochesterFirstHome,1,label,Hide behind the coat rack until the second bell
+choice,loc_rochesterFirstHome,1,outcome_type,penalty
+choice,loc_rochesterFirstHome,1,outcome_text,PLACEHOLDER: it works for eleven minutes.
+choice,loc_rochesterFirstHome,2,label,"Say your name to everyone in the room, twice"
+choice,loc_rochesterFirstHome,2,outcome_type,heal
+choice,loc_rochesterFirstHome,2,outcome_text,PLACEHOLDER: the room says it back. Something settles.
+location,loc_stElizabethSeton,,name,St. Elizabeth Seton School
+location,loc_stElizabethSeton,,image,images/loc_stElizabethSeton.svg
+location,loc_stElizabethSeton,,zone,1
+location,loc_stElizabethSeton,,weight,1
+location,loc_stElizabethSeton,,description,"PLACEHOLDER: kindergarten and first grade at St. Elizabeth Seton, still in Rochester. Two rooms, one teacher who knew your name and your mother's, and a walk to the church that you insisted on doing backwards."
+choice,loc_stElizabethSeton,0,label,Walk to school backwards the whole way
+choice,loc_stElizabethSeton,0,oracle_correct,true
+choice,loc_stElizabethSeton,0,outcome_type,normal
+choice,loc_stElizabethSeton,0,outcome_text,"PLACEHOLDER: it takes twice as long, and you still get there first."
+choice,loc_stElizabethSeton,1,label,Move to a school further from home
+choice,loc_stElizabethSeton,1,outcome_type,penalty
+choice,loc_stElizabethSeton,1,outcome_text,"PLACEHOLDER: a longer drive, and nobody to sit with."
+choice,loc_stElizabethSeton,2,label,Learn the names of everyone in both rooms
+choice,loc_stElizabethSeton,2,outcome_type,heal
+choice,loc_stElizabethSeton,2,outcome_text,PLACEHOLDER: first grade ends with thirty names and nobody missing.
+location,loc_theMoveToStrafford,,name,The Move to Strafford
+location,loc_theMoveToStrafford,,image,images/loc_theMoveToStrafford.jpg
+location,loc_theMoveToStrafford,,zone,1
+location,loc_theMoveToStrafford,,weight,1
+location,loc_theMoveToStrafford,,description,"PLACEHOLDER: 1993. Rochester to Strafford, in a car with more boxes than seats. Strafford Elementary from kindergarten all the way through eighth grade — the longest address you ever had."
+choice,loc_theMoveToStrafford,0,label,Unpack the box marked KEEP FIRST
+choice,loc_theMoveToStrafford,0,oracle_correct,true
+choice,loc_theMoveToStrafford,0,outcome_type,normal
+choice,loc_theMoveToStrafford,0,outcome_text,"PLACEHOLDER: books, the good blanket, the tape player. First night, first order of business."
+choice,loc_theMoveToStrafford,1,label,Unpack the box marked THROW AWAY FIRST
+choice,loc_theMoveToStrafford,1,outcome_type,penalty
+choice,loc_theMoveToStrafford,1,outcome_text,PLACEHOLDER: you break something irreplaceable before the first school day.
+choice,loc_theMoveToStrafford,2,label,Introduce yourself to a neighbour before you unpack
+choice,loc_theMoveToStrafford,2,outcome_type,heal
+choice,loc_theMoveToStrafford,2,outcome_text,PLACEHOLDER: by Sunday you have a house key that is not yours.
+location,loc_theTalentShow,,name,The Strafford Elementary Talent Show
+location,loc_theTalentShow,,image,images/loc_theTalentShow.jpg
+location,loc_theTalentShow,,zone,1
+location,loc_theTalentShow,,weight,1
+location,loc_theTalentShow,,description,It's time to show off your talent at the Strafford Elementary School. How will you impress your classmates?
+choice,loc_theTalentShow,0,label,"Grab the microphone and pretend you're on Delilah, belting out ""Wind Beneath My Wings.”"
+choice,loc_theTalentShow,0,oracle_correct,true
+choice,loc_theTalentShow,0,outcome_type,normal
+choice,loc_theTalentShow,0,outcome_text,You did Bette Midler proud.
+choice,loc_theTalentShow,1,label,"Kart wheel across the carpet during circle time, showing off your new gymnastics moves."
+choice,loc_theTalentShow,1,outcome_type,penalty
+choice,loc_theTalentShow,1,outcome_text,Oompf. That hurt. Maybe you should have grabbed a microphone instead.
+choice,loc_theTalentShow,2,label,Recite your favorite Shel Silverstein poem from memory.
+choice,loc_theTalentShow,2,outcome_type,heal
+choice,loc_theTalentShow,2,outcome_text,If only talent shows were this wholesome.
+location,loc_theDareSpeech,,name,The DARE Graduation
+location,loc_theDareSpeech,,image,images/loc_theDareSpeech.jpg
+location,loc_theDareSpeech,,zone,1
+location,loc_theDareSpeech,,weight,1
+location,loc_theDareSpeech,,description,Sixth-grade DARE graduation: how will you promote a drug-free life?
+choice,loc_theDareSpeech,0,label,Deliver a graduation speech to save your classmates from becoming future addicts.
+choice,loc_theDareSpeech,0,oracle_correct,true
+choice,loc_theDareSpeech,0,outcome_type,normal
+choice,loc_theDareSpeech,0,outcome_text,Words have power. Thanks for keeping these kids pure.
+choice,loc_theDareSpeech,1,label,Doodle new logos for DARE in your class notebook that end up on their website.
+choice,loc_theDareSpeech,1,outcome_type,penalty
+choice,loc_theDareSpeech,1,outcome_text,"Pay attention, kid, and get your head out of your notebook."
+choice,loc_theDareSpeech,2,label,Wear your DARE-themed t-shirt at graduation creating a viral fashion trend in your middle school.
+choice,loc_theDareSpeech,2,outcome_type,heal
+choice,loc_theDareSpeech,2,outcome_text,"Hey, the lead singer of Bloc Party had a DARE t-shirt, but you wore it first."
+location,loc_piscataquaYouthPlayers,,name,The Piscataqua Youth Players
+location,loc_piscataquaYouthPlayers,,image,images/loc_piscataquaYouthPlayers.jpg
+location,loc_piscataquaYouthPlayers,,zone,1
+location,loc_piscataquaYouthPlayers,,weight,1
+location,loc_piscataquaYouthPlayers,,description,Piscataqua Youth Players: Stage fright or stage might?
+choice,loc_piscataquaYouthPlayers,0,label,Shoot for the stars and take the lead role as the Velveteen Rabbit in the titular play.
+choice,loc_piscataquaYouthPlayers,0,oracle_correct,true
+choice,loc_piscataquaYouthPlayers,0,outcome_type,normal
+choice,loc_piscataquaYouthPlayers,0,outcome_text,The playbill says so. So does the VHS recording of your performance.
+choice,loc_piscataquaYouthPlayers,1,label,Skip the stage and use your artistic talents to create the set for the Velveteen Rabbit.
+choice,loc_piscataquaYouthPlayers,1,outcome_type,penalty
+choice,loc_piscataquaYouthPlayers,1,outcome_text,"You were made for the lime light, my dear."
+choice,loc_piscataquaYouthPlayers,2,label,A rabbit? You sat this one out and played Lucy Oopma Loompa in Charlie and the Chocolate Factory instead.
+choice,loc_piscataquaYouthPlayers,2,outcome_type,heal
+choice,loc_piscataquaYouthPlayers,2,outcome_text,You rose the occasion and did both. A true rising star.
+location,loc_theFamilyTrips,,name,"Disney World, Jellystone, Poland Springs"
+location,loc_theFamilyTrips,,image,images/loc_theFamilyTrips.svg
+location,loc_theFamilyTrips,,zone,1
+location,loc_theFamilyTrips,,weight,1
+location,loc_theFamilyTrips,,description,"PLACEHOLDER: the three places you asked to go back to. Disney World in Orlando, Jellystone Campground in New Hampshire, and your grandparents' camp at Poland Springs, Maine — same camp, same rock, every summer for years."
+choice,loc_theFamilyTrips,0,label,Swim at Jellystone every single morning
+choice,loc_theFamilyTrips,0,oracle_correct,true
+choice,loc_theFamilyTrips,0,outcome_type,normal
+choice,loc_theFamilyTrips,0,outcome_text,"PLACEHOLDER: the water is cold, and you were in it before breakfast. Every day."
+choice,loc_theFamilyTrips,1,label,"Ride the biggest one at Disney World, twice"
+choice,loc_theFamilyTrips,1,outcome_type,normal
+choice,loc_theFamilyTrips,1,outcome_text,"PLACEHOLDER: twice, because the first time you were too small to remember it."
+choice,loc_theFamilyTrips,2,label,Go back to the same spot at Poland Springs every year
+choice,loc_theFamilyTrips,2,outcome_type,heal
+choice,loc_theFamilyTrips,2,outcome_text,"PLACEHOLDER: the same rock, the same view, the same people already waiting."
+location,loc_destinationImagination,,name,"Destination Imagination, First Place"
+location,loc_destinationImagination,,image,images/loc_destinationImagination.svg
+location,loc_destinationImagination,,zone,2
+location,loc_destinationImagination,,weight,1
+location,loc_destinationImagination,,description,"PLACEHOLDER: March 2000. Your Destination Imagination team took first place, and you were three hundred miles away at your brother's hockey tournament in Pennsylvania. Train from Philadelphia to Boston, bus to Portsmouth, Aunt Lynne waiting at Kingswood High School in Wolfeboro. You flew back for the rest of the tournament and were told at the rink. There is a newspaper article."
+choice,loc_destinationImagination,0,label,"Take the train, then the bus, to get there in time"
+choice,loc_destinationImagination,0,oracle_correct,true
+choice,loc_destinationImagination,0,outcome_type,normal
+choice,loc_destinationImagination,0,outcome_text,"PLACEHOLDER: Philadelphia to Boston to Portsmouth, and Aunt Lynne at the school gates. You make it."
+choice,loc_destinationImagination,1,label,Stay at the tournament and miss it
+choice,loc_destinationImagination,1,outcome_type,penalty
+choice,loc_destinationImagination,1,outcome_text,"PLACEHOLDER: you hear about first place in a car park, a week later, out of somebody else's newspaper."
+choice,loc_destinationImagination,2,label,Carry the trophy home down the aisle yourself
+choice,loc_destinationImagination,2,outcome_type,heal
+choice,loc_destinationImagination,2,outcome_text,"PLACEHOLDER: trophy on your lap, Portland to Philadelphia. Nobody says a word the whole way."
+location,loc_storiesAreMadeThatWay,,name,"""Stories Are Made That Way"""
+location,loc_storiesAreMadeThatWay,,image,images/loc_storiesAreMadeThatWay.jpg
+location,loc_storiesAreMadeThatWay,,zone,2
+location,loc_storiesAreMadeThatWay,,weight,1
+location,loc_storiesAreMadeThatWay,,description,"PLACEHOLDER: 1 April 2002. The musical CD comes out, and you sing several of the tracks with the other children. You still have the CD."
+choice,loc_storiesAreMadeThatWay,0,label,"Sing your own tracks, not only the backing"
+choice,loc_storiesAreMadeThatWay,0,oracle_correct,true
+choice,loc_storiesAreMadeThatWay,0,outcome_type,normal
+choice,loc_storiesAreMadeThatWay,0,outcome_text,"PLACEHOLDER: several songs, with the other children, on an actual record."
+choice,loc_storiesAreMadeThatWay,1,label,Sing backing vocals only
+choice,loc_storiesAreMadeThatWay,1,outcome_type,penalty
+choice,loc_storiesAreMadeThatWay,1,outcome_text,"PLACEHOLDER: you are on every track, and nobody would know it from the sleeve notes."
+choice,loc_storiesAreMadeThatWay,2,label,Learn every other child's part as well
+choice,loc_storiesAreMadeThatWay,2,outcome_type,heal
+choice,loc_storiesAreMadeThatWay,2,outcome_text,PLACEHOLDER: you could have sung any of them. You never needed to.
+location,loc_theLeadershipConference,,name,"Washington DC, July 2003"
+location,loc_theLeadershipConference,,image,images/loc_theLeadershipConference.svg
+location,loc_theLeadershipConference,,zone,2
+location,loc_theLeadershipConference,,weight,1
+location,loc_theLeadershipConference,,description,"PLACEHOLDER: the teaching staff at Bishop Brady nominated you for the National Student Leadership Conference in Washington DC, in the area of Business and Commerce. July 2003: you went. There is a letter."
+choice,loc_theLeadershipConference,0,label,Go to Washington DC that July
+choice,loc_theLeadershipConference,0,oracle_correct,true
+choice,loc_theLeadershipConference,0,outcome_type,normal
+choice,loc_theLeadershipConference,0,outcome_text,"PLACEHOLDER: nominated by the teaching staff, in Business and Commerce. The letter is real."
+choice,loc_theLeadershipConference,1,label,Skip it — there was a tournament that summer
+choice,loc_theLeadershipConference,1,outcome_type,penalty
+choice,loc_theLeadershipConference,1,outcome_text,PLACEHOLDER: you were at the rink. The letter stays in a drawer.
+choice,loc_theLeadershipConference,2,label,Take notes on everyone you met
+choice,loc_theLeadershipConference,2,outcome_type,heal
+choice,loc_theLeadershipConference,2,outcome_text,PLACEHOLDER: you came home with a notebook and no idea what you wanted yet.
+location,loc_editorsChoicePoetry,,name,"Editor's Choice, Achievement in Poetry"
+location,loc_editorsChoicePoetry,,image,images/loc_editorsChoicePoetry.svg
+location,loc_editorsChoicePoetry,,zone,2
+location,loc_editorsChoicePoetry,,weight,1
+location,loc_editorsChoicePoetry,,description,"PLACEHOLDER: March 2004. The Editor's Choice Award for Achievement in Poetry. There is a certificate, which means somebody wrote your name on a line and meant it."
+choice,loc_editorsChoicePoetry,0,label,Accept the poetry award
+choice,loc_editorsChoicePoetry,0,oracle_correct,true
+choice,loc_editorsChoicePoetry,0,outcome_type,normal
+choice,loc_editorsChoicePoetry,0,outcome_text,"PLACEHOLDER: Editor's Choice, Achievement in Poetry, March 2004. The certificate is signed."
+choice,loc_editorsChoicePoetry,1,label,Turn it down — you were only doing it for the class
+choice,loc_editorsChoicePoetry,1,outcome_type,penalty
+choice,loc_editorsChoicePoetry,1,outcome_text,"PLACEHOLDER: you give it back, the class gives it back, and it ends up in a drawer either way."
+choice,loc_editorsChoicePoetry,2,label,Read one poem out loud at the ceremony
+choice,loc_editorsChoicePoetry,2,outcome_type,heal
+choice,loc_editorsChoicePoetry,2,outcome_text,"PLACEHOLDER: your own, not the one that won. It goes over well."
+location,loc_theNationalAnthem,,name,"Singing the National Anthem, June 2005"
+location,loc_theNationalAnthem,,image,images/loc_theNationalAnthem.jpg
+location,loc_theNationalAnthem,,zone,2
+location,loc_theNationalAnthem,,weight,1
+location,loc_theNationalAnthem,,description,Bishop Brady High School graduation. How will you go out in style? 
+choice,loc_theNationalAnthem,0,label,Take the microphone and belt out the National Anthem Wait – didn't you tell your parents?
+choice,loc_theNationalAnthem,0,oracle_correct,true
+choice,loc_theNationalAnthem,0,outcome_type,normal
+choice,loc_theNationalAnthem,0,outcome_text,God bless America and god bless the private lives of teenagers.
+choice,loc_theNationalAnthem,1,label,"Arrive 15 minutes after the start time, forcing you to walk down the aisle with Mr. Roberts."
+choice,loc_theNationalAnthem,1,outcome_type,penalty
+choice,loc_theNationalAnthem,1,outcome_text,"Turn back, old man."
+choice,loc_theNationalAnthem,2,label,"Ghost write your valedictory speech, slipping in one joke about principal Barker."
+choice,loc_theNationalAnthem,2,outcome_type,heal
+choice,loc_theNationalAnthem,2,outcome_text,Mr. Miller loved your writing: why not an entire audience of graduates?
+location,loc_stonehillToEmerson,,name,Stonehill to Emerson
+location,loc_stonehillToEmerson,,image,images/loc_stonehillToEmerson.jpg
+location,loc_stonehillToEmerson,,zone,3
+location,loc_stonehillToEmerson,,weight,1
+location,loc_stonehillToEmerson,,description,First year at Stonehill College is complete: is your higher education high enough?
+choice,loc_stonehillToEmerson,0,label,Transfer to Emerson College and major in the lucrative craft of poetry.
+choice,loc_stonehillToEmerson,0,oracle_correct,true
+choice,loc_stonehillToEmerson,0,outcome_type,normal
+choice,loc_stonehillToEmerson,0,outcome_text,Let's transform the mundane together and write a senior thesis.
+choice,loc_stonehillToEmerson,1,label,Stay at Stonehill. Why fix what ain't broke?
+choice,loc_stonehillToEmerson,1,outcome_type,penalty
+choice,loc_stonehillToEmerson,1,outcome_text,Everything was broken. Not even Jesus could fix it.
+choice,loc_stonehillToEmerson,2,label,Turn-down a full ride to Boston University and take a gap year.
+choice,loc_stonehillToEmerson,2,outcome_type,heal
+choice,loc_stonehillToEmerson,2,outcome_text,Universities just mean smaller fish in a bigger pond.
+location,loc_magnaCumLaude,,name,Magna Cum Laude
+location,loc_magnaCumLaude,,image,images/loc_magnaCumLaude.jpg
+location,loc_magnaCumLaude,,zone,3
+location,loc_magnaCumLaude,,weight,1
+location,loc_magnaCumLaude,,description,"PLACEHOLDER: you graduated from Emerson, Magna Cum Laude, with a BFA in creative writing and a concentration in creative non-fiction and poetry. Both halves of it, in one degree."
+choice,loc_magnaCumLaude,0,label,Put creative non-fiction and poetry in the same degree
+choice,loc_magnaCumLaude,0,oracle_correct,true
+choice,loc_magnaCumLaude,0,outcome_type,normal
+choice,loc_magnaCumLaude,0,outcome_text,"PLACEHOLDER: BFA, creative writing, concentrated in creative non-fiction and poetry. Magna Cum Laude."
+choice,loc_magnaCumLaude,1,label,Choose one and drop the other
+choice,loc_magnaCumLaude,1,outcome_type,penalty
+choice,loc_magnaCumLaude,1,outcome_text,PLACEHOLDER: you take the practical half. The other one keeps. It does not go anywhere.
+choice,loc_magnaCumLaude,2,label,Thank the teachers who wrote you a reference
+choice,loc_magnaCumLaude,2,outcome_type,heal
+choice,loc_magnaCumLaude,2,outcome_text,"PLACEHOLDER: you kept the emails. You use them later, more than once."
+location,loc_wegoHealth,,name,"WEGO Health, Somerville"
+location,loc_wegoHealth,,image,images/loc_wegoHealth.svg
+location,loc_wegoHealth,,zone,3
+location,loc_wegoHealth,,weight,1
+location,loc_wegoHealth,,description,"PLACEHOLDER: April 2012, Somerville. Health Social Media writer at WEGO Health, and an advocate for Patient Leaders — the company that empowers health activists to help other people. Your article, ""Patient Leaders of Online Health Communities Discuss Patient to Patient Conversations on Clinical Trials"", ran in Monitor Magazine, the global voice of clinical research professionals. There is a copy of the magazine."
+choice,loc_wegoHealth,0,label,"Write about patient leaders, for patient leaders"
+choice,loc_wegoHealth,0,oracle_correct,true
+choice,loc_wegoHealth,0,outcome_type,normal
+choice,loc_wegoHealth,0,outcome_text,"PLACEHOLDER: April 2012, Somerville. The Monitor article. There is a copy of the magazine."
+choice,loc_wegoHealth,1,label,Write the press release instead
+choice,loc_wegoHealth,1,outcome_type,penalty
+choice,loc_wegoHealth,1,outcome_text,"PLACEHOLDER: it goes out. Nobody has to think about it, which was never the point."
+choice,loc_wegoHealth,2,label,Let a patient leader read it before it runs
+choice,loc_wegoHealth,2,outcome_type,heal
+choice,loc_wegoHealth,2,outcome_text,PLACEHOLDER: they change two sentences. Both of them are better.
+location,loc_spindrift,,name,"Spindrift, and Watertown"
+location,loc_spindrift,,image,images/loc_spindrift.jpg
+location,loc_spindrift,,zone,3
+location,loc_spindrift,,weight,1
+location,loc_spindrift,,description,"PLACEHOLDER: 2017, twice over. You started working at Spindrift Beverage Company, and later the same year you moved to Watertown, Massachusetts."
+choice,loc_spindrift,0,label,"Take the job at Spindrift, and move to Watertown"
+choice,loc_spindrift,0,oracle_correct,true
+choice,loc_spindrift,0,outcome_type,normal
+choice,loc_spindrift,0,outcome_text,"PLACEHOLDER: a new job, and a new town later in the same year. Both of them 2017."
+choice,loc_spindrift,1,label,Turn the offer down and stay where you are
+choice,loc_spindrift,1,outcome_type,penalty
+choice,loc_spindrift,1,outcome_text,"PLACEHOLDER: the offer goes to somebody else. So, more or less, does Watertown."
+choice,loc_spindrift,2,label,Take the job and commute from where you already live
+choice,loc_spindrift,2,outcome_type,heal
+choice,loc_spindrift,2,outcome_text,"PLACEHOLDER: you keep the postcode you know, and learn the job twice as fast."
+location,loc_belmontFamily,,name,"Belmont, 2020"
+location,loc_belmontFamily,,image,images/loc_belmontFamily.svg
+location,loc_belmontFamily,,zone,3
+location,loc_belmontFamily,,weight,1
+location,loc_belmontFamily,,description,"PLACEHOLDER: 2020. You started a family, and moved to Belmont, Massachusetts."
+choice,loc_belmontFamily,0,label,"Start a family, and move to Belmont"
+choice,loc_belmontFamily,0,oracle_correct,true
+choice,loc_belmontFamily,0,outcome_type,normal
+choice,loc_belmontFamily,0,outcome_text,"PLACEHOLDER: 2020, two enormous things at once, and a new postcode to learn on the way."
+choice,loc_belmontFamily,1,label,"Wait a year, and do one thing at a time"
+choice,loc_belmontFamily,1,outcome_type,penalty
+choice,loc_belmontFamily,1,outcome_text,PLACEHOLDER: the year goes differently. Belmont happens without you.
+choice,loc_belmontFamily,2,label,"Move first, and let the rest follow"
+choice,loc_belmontFamily,2,outcome_type,heal
+choice,loc_belmontFamily,2,outcome_text,PLACEHOLDER: you learn the town while there is nothing else on your mind.
+end,win,,title,The Fourth Decade
+end,win,,goodMessage,"PLACEHOLDER: forty, and the road still going. Every stop on it is yours: the first house in Rochester, a yellow coat, a talent show on somebody's video tape, a train from Philadelphia, a cake with the candles knocked over on the ground, and a great deal of work done on behalf of other people. The Oracle puts the book away."
+end,win,,badMessage,"PLACEHOLDER: forty, with a coin left at the shrine out of habit. Somebody has to move the shrine before the next traveller gets there. You do it yourself, and it is very funny."
+end,win,,image,images/win.svg
+end,gameover,,title,The journey ends
+end,gameover,,message,"PLACEHOLDER: three stumbles and the Oracle calls it. She recommends rest, tea, and a second attempt — the whole of it is still there, exactly where you left it."
+end,gameover,,image,images/gameover.svg

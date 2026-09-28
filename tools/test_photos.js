@@ -47,12 +47,13 @@ try {
     out.trim().split('\n').join('\n      '));
 }
 
-// A card image is 16:9 and lands in images/; the originals stay put so the
-// tool can be re-run.
+// A card image is 16:9 and lands in images/. The *source* photos are not
+// required: they are gitignored (one is 11.6 MB), so a fresh clone has only the
+// derived cards. If a source happens to be present the tool checks the card
+// against it pixel for pixel, which is the stronger check.
 const jpgs = fs.readdirSync(IMAGES).filter(f => /^loc_.*\.jpg$/.test(f));
 r.check(jpgs.length > 0, 'there are location card photographs  ->  ' + jpgs.length);
-const notCard = fs.readdirSync(IMAGES).filter(f => f.endsWith('.jpg') && !/^loc_.*\.jpg$/.test(f));
-r.check(notCard.length > 0,
-  'the untouched source photos are still in images/ for re-processing  ->  ' + notCard.length);
+r.check(fs.existsSync(path.join(IMAGES, 'cutscene_birth.jpg')),
+  'the birth cutscene card is a photograph too');
 
 process.exitCode = r.finish() === 0 ? 0 : 1;

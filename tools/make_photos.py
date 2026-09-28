@@ -109,14 +109,17 @@ def check():
     Compares decoded pixels rather than JPEG bytes, so a Pillow upgrade that
     changes the encoder doesn't produce a false failure -- but a swapped or
     re-cropped source photo does.
+
+    The source photos are deliberately not in git (one is 11.6 MB), so on a fresh
+    clone there is nothing to compare against. In that case the card is only
+    checked for existence and size, and the fact is reported rather than hidden:
+    a missing source weakens this check, it does not break it.
     """
     bad = []
+    unsourced = []
     for src, stem in MAPPING:
         src_path = os.path.join(IMAGES, src)
         out = target_for(stem)
-        if not os.path.exists(src_path):
-            bad.append('%s: source photo is gone' % src)
-            continue
         if not os.path.exists(out):
             bad.append('%s: card image has not been generated' % stem)
             continue
@@ -125,6 +128,9 @@ def check():
             if on_disk.size != (CARD_W, CARD_H):
                 bad.append('%s: is %dx%d, expected %dx%d'
                            % (stem, on_disk.size[0], on_disk.size[1], CARD_W, CARD_H))
+                continue
+            if not os.path.exists(src_path):
+                unsourced.append(stem)
                 continue
             # JPEG is lossy, so the file can't be compared with the uncompressed
             # render -- put both through the same encoder first, then diff pixels.
@@ -139,6 +145,9 @@ def check():
         print('  Fix with: python tools/make_photos.py', file=sys.stderr)
         return 1
     print('photos: %d card images match tools/make_photos.py' % len(MAPPING))
+    if unsourced:
+        print('        (%d checked for size only, source photo not present: %s)'
+              % (len(unsourced), ', '.join(unsourced)))
     return 0
 
 

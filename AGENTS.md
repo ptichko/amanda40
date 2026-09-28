@@ -114,10 +114,11 @@ Python. The game itself needs neither Node nor Python; the suite is the only thi
 | `tools/test_replay.js` | replay determinism, fingerprint by fingerprint including Oracle hints and highlights; a malformed hash still yields a playable game |
 | `tools/test_keyboard.js` | a full run played with `1`/`O`/`ENTER` only, stray keys inert, the `M` mute and the album button |
 | `tools/test_sound.js` | every effect's notes and pitch bends, silence before the first gesture, mute, and that a replay makes no sound |
-| `tools/make_art.py` | regenerates the pixel art (see "Regenerating the art") |
+| `tools/make_art.py` | regenerates the pixel art (see "Regenerating the art") and the preview manifest via `--manifest` |
 | `tools/make_photos.py` | builds the nine photograph cards from their source photos (see "Photograph cards") |
 | `tools/build_content.py` | bakes `content/content.csv` into the CONTENT SECTION of `index.html` (see "Where to edit content") |
-| `tools/art_preview.html` | contact sheet of every image at 1x and zoomed — open it after touching art |
+| `tools/art_preview.html` | contact sheet of every image at 1x and zoomed — open it after touching art. Lists the cards from `tools/art_list.js`, which `make_art.py --check` keeps current |
+| `tools/art_list.js` | the card list `art_preview.html` renders — **generated** by `make_art.py --manifest`, checked by `make_art.py --check` |
 
 `test_content.js` also prints how many lines still contain `PLACEHOLDER:` — that
 number should be zero before this is given to anyone.
@@ -384,7 +385,7 @@ non-location assets:
 | `Solo_Jazz_design.jpg` | the reference photo the wallpaper colours and texture were sampled from | **source reference** — not shown in the game, don't reference it from `index.html` |
 | `loc_*.jpg` (9 locations) | the real photographs, one per location | **photographs** — derived from the originals by `tools/make_photos.py`; 16:9, 1200x675, padded with navy |
 | `loc_*.svg` (the remaining 7 mid-game locations) | one per location | **placeholders** — generated, meant to be replaced with real photos |
-| `DARE.jpg`, `velveteen_rabbit.jpg`, … (the 9 originals) | the source photographs | **sources** — never referenced by `index.html`; `make_photos.py` reads them, so don't delete them |
+| `DARE.jpg`, `velveteen_rabbit.jpg`, … (the 10 originals) | the source photographs | **sources, gitignored** — never referenced by `index.html`; `make_photos.py` reads them, so they live on disk only and a clone has just the derived cards |
 
 Replace placeholder files in place, keeping the filenames, and everything just works.
 Prefer small assets so the page still opens instantly from disk. If you add a location,
@@ -424,6 +425,12 @@ point of the tool, since the page is meant to open instantly from disk.
 `--check` re-renders each source and compares **decoded pixels**, not file bytes, so a
 Pillow upgrade that changes the encoder doesn't cause a false failure while a swapped or
 re-cropped source photo does. `tools/test_photos.js` runs it.
+
+The source photos are **not in git** (`.gitignore`; one is 11.6 MB and the page only ever
+loads the small derived copy), so on a fresh clone there is nothing to compare against.
+`--check` then verifies each card exists at the right size and says so — "checked for size
+only, source photo not present" — rather than failing or quietly claiming more than it
+checked. Keep the originals on disk if you want to re-cut a card.
 
 ### Placeholder cards
 
@@ -466,9 +473,17 @@ are in that list.)
 python tools/make_art.py            # rewrite all six files it owns
 python tools/make_art.py --list     # what it would write
 python tools/make_art.py --preview  # print the sprite as ASCII
-python tools/make_art.py --check    # fail if images/ is out of date
+python tools/make_art.py --check    # fail if images/ or art_list.js is out of date
+python tools/make_art.py --manifest # rewrite tools/art_list.js for the preview sheet
 python tools/make_art.py win.svg    # just one
 ```
+
+`tools/art_list.js` is the card list that `art_preview.html` renders. It used to read
+`index.html` with `fetch()`, which **browsers block on `file://`** — the normal way to open
+anything in this repo — so the sheet's lower half always came up blank. A classic
+`<script src>` is not subject to that restriction, so the list is written out as JS and
+loaded as one. `--check` regenerates it in memory and fails if the committed copy differs,
+so it cannot drift.
 
 `tools/make_art.py` is a **dev tool, not part of the game**. Nothing in `index.html`
 invokes it, Python is not a dependency, and deleting `tools/` would not break the page —

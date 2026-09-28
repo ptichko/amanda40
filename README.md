@@ -121,6 +121,10 @@ python tools/make_photos.py --list     # which photo goes with which stop
 python tools/make_photos.py --check    # fail if a card image is stale
 ```
 
+The source photos are **not in git** - one of them is 11.6 MB, and the page only ever loads
+the small card built from it. They live on disk so you can re-cut a card; a fresh clone
+has just the finished ones, and `--check` then verifies size only and says so.
+
 To fill in one of the remaining placeholders, drop a photo in under the same filename
 (`images/loc_<id>.jpg`, where `<id>` is in `content/content.csv`) and point that row at
 it - no code change. To see everything at once without playing through, open
@@ -184,7 +188,10 @@ python tools/make_art.py --placeholders  # rewrite the location placeholders
 python tools/make_art.py --check      # fail if the finished art is out of date
 ```
 
-Open `tools/art_preview.html` afterwards to eyeball every image at once, zoomed.
+Open `tools/art_preview.html` afterwards to eyeball every image at once, zoomed. It lists
+the cards from a generated `tools/art_list.js`, so it works when you just double-click it -
+`python tools/make_art.py --manifest` rewrites that list, and `--check` fails if it is out
+of date.
 
 [AGENTS.md](AGENTS.md) has the longer version: architecture, the content recipe, the
 invariants a change must preserve, and the rules for keeping replay and sound working.

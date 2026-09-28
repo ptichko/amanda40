@@ -1,3 +1,23 @@
-.DS_Store
-Thumbs.db
+# Source photographs. These live on disk so the cards can be re-cut at a
+# different size, crop or quality, but they are not tracked: one of them is a
+# 13.9-megapixel phone photo at 11.6 MB, and the page only ever loads the small
+# derived copy.
+#
+# What IS tracked, and what the game actually loads:
+#   images/loc_*.jpg          the location cards   (built by tools/make_photos.py)
+#   images/cutscene_birth.jpg the birth cutscene  (ditto)
+#   images/Solo_Jazz_design.jpg  the wallpaper's colour reference, kept because
+#                                 it is tiny and documents where the palette came from
+#
+# tools/make_photos.py --check degrades gracefully when a source is absent: it
+# still verifies the card exists at the right size, and says so rather than
+# failing. tools/test_photos.js relies on that.
+images/*.jpg
+!images/loc_*.jpg
+!images/cutscene_birth.jpg
+!images/Solo_Jazz_design.jpg
+
+# Python bytecode cache -- tools/ has no importable modules, but debugging
+# scripts that add tools/ to sys.path will create this.
 __pycache__/
+*.pyc

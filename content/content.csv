@@ -115,7 +115,7 @@ choice,loc_piscataquaYouthPlayers,0,outcome_text,The playbill says so. So does V
 choice,loc_piscataquaYouthPlayers,1,label,Skip the stage and use your artistic talents to create the set for the Velveteen Rabbit.
 choice,loc_piscataquaYouthPlayers,1,outcome_type,penalty
 choice,loc_piscataquaYouthPlayers,1,outcome_text,"You were made for the lime light, my dear."
-choice,loc_piscataquaYouthPlayers,2,label,A rabbbit? You sat this one out and played Lucy Oopma Loompa in Charlie and the Chocolate Factory instead.
+choice,loc_piscataquaYouthPlayers,2,label,A rabbit? You sat this one out and played Lucy Oopma Loompa in Charlie and the Chocolate Factory instead.
 choice,loc_piscataquaYouthPlayers,2,outcome_type,heal
 choice,loc_piscataquaYouthPlayers,2,outcome_text,You rose the occasion and did both. A true rising star.
 location,loc_theFamilyTrips,,name,"Disney World, Jellystone, Poland Springs"
@@ -212,7 +212,7 @@ location,loc_stonehillToEmerson,,name,Stonehill to Emerson
 location,loc_stonehillToEmerson,,image,images/loc_stonehillToEmerson.jpg
 location,loc_stonehillToEmerson,,zone,3
 location,loc_stonehillToEmerson,,weight,1
-location,loc_stonehillToEmerson,,description,Stonehill College in Janurary 2007: is your higher education high enough?
+location,loc_stonehillToEmerson,,description,Stonehill College in January 2007: is your higher education high enough?
 choice,loc_stonehillToEmerson,0,label,Transfer to Emerson College and major in the lucrative craft of poetry.
 choice,loc_stonehillToEmerson,0,oracle_correct,true
 choice,loc_stonehillToEmerson,0,outcome_type,normal

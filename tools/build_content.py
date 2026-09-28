@@ -21,7 +21,7 @@ One row per field, so every row is complete and a half-filled row can't mean
     field        the property being set
     value        the value, verbatim
 
-Kinds: config, zone, hint, intro, intro_panel, location, choice, end.
+Kinds: config, zone, hint, intro, intro_panel, panel_bullet, location, choice, end.
 See content/README.md for the full field list.
 """
 
@@ -59,7 +59,10 @@ INT_FIELDS = {
 }
 FLOAT_FIELDS = {("config", "oracleAppearChance")}
 BOOL_FIELDS = {("choice", "oracle_correct")}
-OPTIONAL_FIELDS = {("hint", "weight"), ("choice", "outcome_image")}
+OPTIONAL_FIELDS = {("hint", "weight"), ("choice", "outcome_image"),
+                  # A panel with no picture is a page of words -- the how-to-play
+                  # card. image/caption are only required when a panel has one.
+                  ("intro_panel", "image"), ("intro_panel", "caption")}
 
 
 class ContentError(Exception):
@@ -98,10 +101,11 @@ def coerce(kind, field, raw, where, type_key=None):
 
 
 def slot_key(kind, parent, index):
-    """Choices are keyed per location *and* position; everything else by its own id."""
-    if kind == "choice":
+    """Choices and bullets are keyed per owner *and* position; everything else by its own id."""
+    if kind in ("choice", "panel_bullet"):
+        owner = "a location id" if kind == "choice" else "a panel index"
         if not parent or not index:
-            raise ContentError("a choice row needs both a location id and an index")
+            raise ContentError("a %s row needs both %s and an index" % (kind, owner))
         return "%s#%s" % (parent, index)
     if kind == "intro":
         return "intro"  # there is only ever one intro card
@@ -292,10 +296,28 @@ def read_csv(path=CSV_PATH, strict=True):
                         "text": intro["choice_outcome_text"]},
         }],
     }
-    out["INTRO_SEQUENCE"] = [
-        {f: content["intro_panel"][k][f] for f in ("image", "title", "caption", "button")}
-        for k in order("intro_panel")
-    ]
+    out["INTRO_SEQUENCE"] = []
+    panel_keys = order("intro_panel")
+    for k in panel_keys:
+        slot = need("intro_panel", k, "title")
+        panel = {"title": slot["title"]}
+        if slot.get("image"):
+            panel["image"] = slot["image"]
+        if slot.get("caption"):
+            panel["caption"] = slot["caption"]
+        if slot.get("button"):
+            panel["button"] = slot["button"]
+        bkeys = [bk for bk in order("panel_bullet") if bk.rsplit("#", 1)[0] == k]
+        if bkeys:
+            panel["bullets"] = [need("panel_bullet", bk, "text")["text"] for bk in bkeys]
+        out["INTRO_SEQUENCE"].append(panel)
+    # A bullet pointing at a panel that isn't there would be dropped without a
+    # word, so name it instead -- same reasoning as the quoting check below.
+    for bk in order("panel_bullet"):
+        if bk.rsplit("#", 1)[0] not in panel_keys:
+            raise ContentError(
+                "panel_bullet %s: there is no intro_panel with index %r"
+                % (bk, bk.rsplit("#", 1)[0]))
 
     locations = []
     for loc_id in order("location"):
@@ -450,17 +472,17 @@ def emit_js(c):
     a("  ],")
     a("};")
     a("")
-    a("// Pixel-art panels that play once, after \"Begin the journey\" and before the")
-    a("// first zone -- see playIntroSequence() in the engine. Deliberately not")
+    a("// Panels that play once, after \"Begin the journey\" and before the first")
+    a("// zone -- see playIntroSequence() in the engine. Deliberately not")
     a("// locations: no choices, no outcome, never repeated, so they live outside")
     a("// LOCATIONS and outside the album. Add as many as you like; each gets a")
     a("// Continue button and the last one hands control back to the game.")
+    a("//")
+    a("// `image` and `caption` are optional, so a panel can be a page of words")
+    a("// with no picture -- that is how the how-to-play card is written. `bullets`")
+    a("// is a plain list of lines rendered as a list under the caption.")
     a("const INTRO_SEQUENCE = [")
-    a(",\n".join(
-        "  {\n    image: %s,\n    title: %s,\n    caption: %s,\n    button: %s,\n  }"
-        % (j(p["image"]), j(p["title"]), j(p["caption"]), j(p["button"]))
-        for p in c["INTRO_SEQUENCE"]
-    ))
+    a(",\n".join(emit_panel(p) for p in c["INTRO_SEQUENCE"]))
     a("];")
     a("")
     a("// Locations the player can land on. Each has a `zone` (1, 2, or 3 -- see")
@@ -524,6 +546,27 @@ def emit_hint(h):
     if "weight" in h:
         parts.append("weight: %s" % json.dumps(h["weight"]))
     return "{ " + ", ".join(parts) + " }"
+
+
+def emit_panel(p):
+    """One INTRO_SEQUENCE panel. `image` and `caption` may be absent, and
+    `bullets` is optional -- the how-to-play panel is words and a list, no art.
+    `image` is emitted first so make_art.py's panel regex can pair it with the
+    title it sits next to."""
+    L = ["  {"]
+    if p.get("image"):
+        L.append("    image: %s," % j(p["image"]))
+    L.append("    title: %s," % j(p["title"]))
+    if p.get("caption"):
+        L.append("    caption: %s," % j(p["caption"]))
+    if p.get("bullets"):
+        L.append("    bullets: [")
+        L.append(",\n".join("      %s" % j(b) for b in p["bullets"]))
+        L.append("    ],")
+    if p.get("button"):
+        L.append("    button: %s," % j(p["button"]))
+    L.append("  }")
+    return "\n".join(L)
 
 
 def emit_location(loc):
@@ -689,7 +732,10 @@ def cmd_export():
     add("intro", "", "", "choice_outcome_text", ch["outcome"]["text"])
     for n, p in enumerate(c["INTRO_SEQUENCE"]):
         for f in ("image", "title", "caption", "button"):
-            add("intro_panel", "", str(n), f, p[f])
+            if f in p:
+                add("intro_panel", "", str(n), f, p[f])
+        for m, b in enumerate(p.get("bullets", [])):
+            add("panel_bullet", str(n), str(m), "text", b)
     for loc in c["LOCATIONS"]:
         for f in ("name", "image", "zone", "weight", "description"):
             add("location", loc["id"], "", f, loc[f])

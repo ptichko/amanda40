@@ -58,16 +58,29 @@ allLocations.forEach(l => {
     l.id + ' has a choice that is not a stumble');
 });
 
-// Intro panels: the birth and anything else that plays before zone 1. They must
-// exist, be reachable, and stay out of LOCATIONS.
+// Intro panels: the how-to-play card, the birth cutscene, and anything else
+// that plays before zone 1. They must exist, be reachable, and stay out of
+// LOCATIONS. `image` and `caption` are optional -- a panel with no picture is a
+// page of words -- so what is required is a title and *something* to read.
 r.check(Array.isArray(INTRO_SEQUENCE) && INTRO_SEQUENCE.length > 0,
   'INTRO_SEQUENCE has at least one panel');
 INTRO_SEQUENCE.forEach((panel, i) => {
-  r.check(panel.image && panel.title && panel.caption,
-    'intro panel ' + i + ' has an image, a title and a caption');
-  r.check(panel.image && fs.existsSync(path.join(REPO, panel.image)),
-    'intro panel ' + i + ' image exists: ' + panel.image);
+  r.check(panel.title, 'intro panel ' + i + ' has a title');
+  r.check(panel.caption || (panel.bullets && panel.bullets.length),
+    'intro panel ' + i + ' has something to say');
+  if (panel.image) {
+    r.check(fs.existsSync(path.join(REPO, panel.image)),
+      'intro panel ' + i + ' image exists: ' + panel.image);
+  }
+  if (panel.bullets) {
+    r.check(panel.bullets.every(b => typeof b === 'string' && b.trim().length > 0),
+      'intro panel ' + i + ' bullets are all non-blank text');
+  }
 });
+// The how-to-play page has to come first: it is the one thing between "Begin
+// the journey" and the story, and it is useless anywhere else in the sequence.
+r.check(Array.isArray(INTRO_SEQUENCE[0].bullets) && INTRO_SEQUENCE[0].bullets.length >= 3,
+  'the first intro panel is the how-to-play, written as a list');
 
 // Every zone needs somewhere to go, and at least one non-punishing way forward.
 ZONES.forEach(z => {

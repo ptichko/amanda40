@@ -29,9 +29,13 @@ actually happened — she's never wrong. What she says while she does it is flav
 from her own notes, so consult her if you like and don't if you'd rather trust yourself.
 She has nothing to say at the opening card, which only has one button.
 
-Before the first zone there's a **cutscene**: click *Begin the journey* and you get a
-pixel-art panel of the room you were born in — Wentworth Douglass Hospital, Dover NH,
-1986 — before the road starts.
+Before the first zone there's a **how-to-play card** and a **cutscene**. Click *Begin the
+journey* and you get a short page of instructions — what the choices are, that the Oracle
+will always point at the one that really happened, what the bar and the red Xs mean, and
+that the run is kept in the address bar — then a photograph of the room you were born in,
+Wentworth Douglass Hospital, Dover NH, 1986. The first **Wandering N steps** line lands
+after that, as the road actually starts, so the progress bar never moves ahead of the thing
+explaining it.
 
 ## Status: placeholder content
 
@@ -47,7 +51,7 @@ lives in **`content/content.csv`** — one spreadsheet, edited directly:
 
 - the three eras (zones) and their year spans,
 - the Oracle's hints and how often she's right,
-- the intro card and the cutscene panels,
+- the intro card, the how-to-play card and the cutscene panels,
 - each of the 17 places you can land — its name, picture, and description,
 - every choice at every stop, and what happens when you pick it,
 - the win and game-over cards.
@@ -135,8 +139,8 @@ it - no code change. To see everything at once without playing through, open
 ### Editing the words
 
 All the text in the game lives in one spreadsheet: **`content/content.csv`**. Zone names,
-the Oracle's hints, the intro card and cutscene, every location, every choice and what
-happens when you pick it, and both end cards.
+the Oracle's hints, the intro card, the how-to-play card and the cutscene, every location,
+every choice and what happens when you pick it, and both end cards.
 
 1. Open `content/content.csv` and change what you want. Save it.
 2. Run `python tools\build_content.py`.
@@ -168,7 +172,7 @@ python tools\build_content.py --force    # apply, discarding hand-edits to the b
 `tools/` holds dev-only helpers. Nothing in there is loaded by the page, and the game
 still runs if you delete the folder — but it's what makes the project maintainable.
 
-**Tests.** 461 checks over the engine, the content and the images, no browser required:
+**Tests.** 481 checks over the engine, the content and the images, no browser required:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all nine files
@@ -253,5 +257,5 @@ Play several full runs by hand, both outcomes. Things to look for:
       phones can't open `file://` paths.
 - [ ] Check the `<title>` and `<h1>` still suit, and add a dedication line to
       `INTRO_LOCATION` if you want her name in the first thing she reads.
-- [ ] Optional, all content-only: a second intro panel, an `outcome.image` on a dramatic
+- [ ] Optional, all content-only: a third intro panel, an `outcome.image` on a dramatic
       game over, or a `weight` bump so the best stop comes up more often.

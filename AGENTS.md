@@ -197,7 +197,14 @@ Game flow, in order:
 2. A choice at a location resolves to a **fixed** `outcome` — no randomness in *what*
    happens. Only the distance travelled is random (`CONFIG.minTravel`..`maxTravel`).
 3. Outcome text is appended inline into the location card (not a modal) with a
-   Continue button, then the "Wandering ... N steps" status plays.
+   Continue button, then the "Wandering ... N steps" status plays. **The intro
+   card is the exception**: it passes `deferTravel` to `appendConsequence()` and
+   the status is played afterwards, into the last intro panel, by
+   `resolveChoice()`. The first step of the journey belongs *after* the
+   how-to-play card and the birth cutscene — they are the road starting, not
+   travelling — and `updateProgressBar()` is held back with it, so the bar never
+   jumps ahead of the line that explains it. A replay plays no travel status at
+   all (`state.replaying` short-circuits it), like every other one.
 4. `pickNextLocation()` picks the next location: only from the player's **current
    zone**, weighted by `weight`, preferring unvisited ones, and never the location
    just left if any alternative exists.
@@ -267,7 +274,7 @@ The generated block is `CONFIG`, `ZONES`, `ORACLE_HINTS`, `INTRO_LOCATION`,
 | `ZONES` | `zone` | the progress ranges (`min`/`max`) locations are grouped into. Three eras, each named with its years: **Childhood, 1986 to 2001** (0–13), **The Teenage Years, 2000 to 2005** (14–26), **Grown Up, 2006 to 2020** (27–40) |
 | `ORACLE_HINTS` | `hint` | the flavour text the Oracle says while she points at the correct choice, with an optional `weight` |
 | `INTRO_LOCATION` | `intro` | the fixed location every game starts at |
-| `INTRO_SEQUENCE` | `intro_panel` | pixel-art panels that play once after "Begin the journey", before zone 1 — see "The intro sequence" below |
+| `INTRO_SEQUENCE` | `intro_panel` + `panel_bullet` | the panels that play once after "Begin the journey" — the **how-to-play card** and the **birth cutscene** — see "The intro sequence" below |
 | `LOCATIONS` | `location` + `choice` | the 17 places the player can land, in date order within each zone, and what you can do at each |
 | `END_TEXT` | `end` | `win` (with `goodMessage`/`badMessage`) and `gameover` titles, messages, images |
 
@@ -333,21 +340,35 @@ Conventions that are not enforced by code but matter in practice:
 
 ## The intro sequence
 
-`INTRO_SEQUENCE` is an array of `{ image, title, caption, button }` panels played once,
-after the player presses "Begin the journey" and before the first zone. It is where
-Wentworth Douglass Hospital lives — the birth is a panel, not a location, because it has
-no choices, no outcome, and should never come up again or appear in the album.
+`INTRO_SEQUENCE` is an array of panels played once, after the player presses "Begin the
+journey" and before the first zone. It is where the how-to-play card and Wentworth Douglass
+Hospital live — the birth is a panel, not a location, because it has no choices, no outcome,
+and should never come up again or appear in the album.
+
+A panel is `{ image, title, caption, button }`, and **`image` and `caption` are optional**,
+so a panel can be a page of words with no picture. It may also carry `bullets: [string]`,
+rendered as a list under the caption. Only `title` is required, and the engine defaults the
+button to "Continue" if `button` is missing. That combination is what the how-to-play card
+is: panel 0, no `image`, a one-line `caption`, and four `panel_bullet` rows. `buildEntryCard()`
+takes the optional image and description for it, and skips either element when it's absent —
+without that, a panel with no picture renders a broken `<img>` at the top of itself.
 
 `playIntroSequence()` in the engine walks the panels, one Continue button each, then hands
 control back so the first zone location is picked as normal. Two things to know:
 
 - **It has to survive a replay.** A shared link has no player to press Continue, so
   `playIntroSequence()` renders each panel and steps straight to the next when
-  `state.replaying` is set. Without that, every shared link dead-ends on the birth panel.
+  `state.replaying` is set. Without that, every shared link dead-ends on the first panel.
 - It needs no log token: it's deterministic, so the replay rebuilds it for free. Don't
   add one.
+- **`onDone` is handed the last panel's card body**, not nothing. That is where the
+  intro's deferred "Wandering N steps" status is appended, so the journey visibly
+  starts from the last thing the player read. Change the signature and the travel
+  status lands in the wrong card.
 
-Add as many panels as you like — the array is the whole interface.
+Add as many panels as you like — the array is the whole interface. Don't count them, though:
+`test_playthrough.js` compares the cutscene cards it counts against `INTRO_SEQUENCE.length`,
+so adding one is a content change, not a test change.
 
 ## Invariants a change must preserve
 
@@ -359,6 +380,10 @@ Add as many panels as you like — the array is the whole interface.
 - `INTRO_LOCATION` must stay outside `LOCATIONS` and without a `zone`.
 - `INTRO_SEQUENCE` panels must stay outside `LOCATIONS` too, or they become ordinary
   stops that can repeat and turn up in the album.
+- **The first `INTRO_SEQUENCE` panel is the how-to-play card** and must stay a list of
+  `bullets`. It is the only thing between "Begin the journey" and the story, and a
+  panel that lost its bullets would render as a bare title with nothing to read.
+  `test_content.js` asserts it.
 - Every location needs exactly one `oracleCorrect: true` choice. With none,
   `getCorrectChoice()` falls back to the best-ranked outcome type via `OUTCOME_RANK`
   (`heal` > `normal` > `penalty` > `gameover`), and the Oracle starts pointing at
@@ -392,7 +417,7 @@ non-location assets:
 | file | role | status |
 | --- | --- | --- |
 | `loc_intro.svg` | intro card | **final** — pixel-art Amanda in a birthday hat, waving on the road under the "40" |
-| `cutscene_birth.jpg` | the first intro panel | **photograph** — Wentworth-Douglass Hospital at dusk, from `wentworth_douglas_hospital.jpg`; it replaced a pixel-art version that `make_art.py` no longer generates |
+| `cutscene_birth.jpg` | the birth cutscene panel, which is intro panel 1 | **photograph** — Wentworth-Douglass Hospital at dusk, from `wentworth_douglas_hospital.jpg`; it replaced a pixel-art version that `make_art.py` no longer generates |
 | `win.svg` | win card | **final** — pixel-art Amanda, cake, confetti |
 | `gameover.svg` | game-over card | **final** — dejected pixel-art Amanda, arms down, beside the dropped birthday cake under a cold moon |
 | `walker_0..2.svg` | the three-frame sprite that rides the progress bar | **final** — same character, 24x31 |

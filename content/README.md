@@ -71,8 +71,8 @@ Five columns, and **one row per single value**:
 | Column | Meaning |
 | --- | --- |
 | `kind` | What the row is about. See the table below. |
-| `parent` | Which thing it belongs to — a location id, a zone number, or a key like `win`. |
-| `index` | Position within the parent, for ordered things (choices, cutscene panels, hints). |
+| `parent` | Which thing it belongs to — a location id, a zone number, a key like `win`, or a panel's index. |
+| `index` | Position within the parent, for ordered things (choices, cutscene panels, bullets, hints). |
 | `field` | The property being set — `name`, `description`, `label`, `text`… |
 | `value` | The value, exactly as it should read in the game. |
 
@@ -91,7 +91,8 @@ they appear in the file. To reorder something, move its rows.
 | `zone` | the zone number, e.g. `1` | `name`, `min`, `max` |
 | `hint` | *(blank)*, `index` numbers the hints | `text`, `weight` *(optional)* |
 | `intro` | *(blank — there is only one)* | `id`, `name`, `image`, `description`, `choice_label`, `choice_outcome_type`, `choice_outcome_text` |
-| `intro_panel` | *(blank)*, `index` numbers the panels | `image`, `title`, `caption`, `button` |
+| `intro_panel` | *(blank)*, `index` numbers the panels | `title`, `image` *(optional — omit it for a panel with no picture)*, `caption` *(optional)*, `button` *(optional)* |
+| `panel_bullet` | the panel's `index`, its own `index` numbers the bullets | `text` |
 | `location` | the location id, e.g. `loc_theTalentShow` | `name`, `image`, `zone`, `weight`, `description` |
 | `choice` | the location id it belongs to, `index` numbers the choices | `label`, `oracle_correct` (`true` on the one that really happened), `outcome_type`, `outcome_text`, `outcome_image` *(optional)* |
 | `end` | `win` or `gameover` | `title`, `message`, `image` — and for `win`, `goodMessage` and `badMessage` |
@@ -105,6 +106,10 @@ they appear in the file. To reorder something, move its rows.
   `penalty` gains a red X, a `heal` removes one, and three Xs ends the run.
 - **The zone `min`/`max` values must tile the whole journey without gaps**, and
   the last one has to end at `winDistance` (40). The tests check this too.
+- **The first `intro_panel` is the how-to-play card**, and it is a list: its
+  `panel_bullet` rows are the instructions, and it has no `image`. Leave the
+  `image` row off that panel rather than pointing it at something — an empty
+  cell and a missing row both mean "no picture", and a missing row is clearer.
 - **Keep the `id`s** (`loc_theTalentShow`) as they are. Other files reference
   them: `images/loc_theTalentShow.svg` is that location's picture, and the tests
   look the assets up by id.

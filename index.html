@@ -594,6 +594,44 @@
     margin-bottom: 18px;
   }
 
+  /* A panel with no picture -- the how-to-play card. The body is inset, so the
+     card reads as a sunken help window rather than a caption floating on silver. */
+  .cutscene-entry .entry-bullets {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 10px 12px;
+    text-align: left;
+    background: #ffffff;
+    border: 2px inset var(--silver-dark);
+  }
+
+  .entry-bullet {
+    position: relative;
+    padding-left: 16px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  /* The gap between items goes on the second and after -- the first has no
+     predecessor to hang it on. */
+  .entry-bullet + .entry-bullet {
+    margin-top: 10px;
+  }
+
+  /* Square bullets, drawn rather than typed, so they can't turn out to be a
+     bullet character out of some other font. */
+  .entry-bullet::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 8px;
+    height: 8px;
+    background: var(--magenta);
+  }
+
   /* ---- End entry (win/game-over, rendered as a location entry) ---- */
   .end-entry {
     text-align: center;
@@ -893,12 +931,27 @@ const INTRO_LOCATION = {
   ],
 };
 
-// Pixel-art panels that play once, after "Begin the journey" and before the
-// first zone -- see playIntroSequence() in the engine. Deliberately not
+// Panels that play once, after "Begin the journey" and before the first
+// zone -- see playIntroSequence() in the engine. Deliberately not
 // locations: no choices, no outcome, never repeated, so they live outside
 // LOCATIONS and outside the album. Add as many as you like; each gets a
 // Continue button and the last one hands control back to the game.
+//
+// `image` and `caption` are optional, so a panel can be a page of words
+// with no picture -- that is how the how-to-play card is written. `bullets`
+// is a plain list of lines rendered as a list under the caption.
 const INTRO_SEQUENCE = [
+  {
+    title: "How this works",
+    caption: "Four things, and then the road starts.",
+    bullets: [
+      "Every stop is a place from your last forty years. You get two or three choices about what happened there, and you pick one.",
+      "One choice at each stop is the one that really happened. Press O and the Oracle will point straight at it, every time, and she is never wrong.",
+      "The bar along the top is the journey. Forty steps takes you all the way to the finish, and three stumbles end it early.",
+      "Nothing is lost if you get it wrong. The address bar keeps the whole run, so you can copy the link and walk it again exactly."
+    ],
+    button: "Continue",
+  },
   {
     image: "images/cutscene_birth.jpg",
     title: "PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986",
@@ -1107,7 +1160,7 @@ const END_TEXT = {
   },
 };
 
-/* content-hash: 5de0decb11da164587a6063770153afe4eae21d657ddf3c5087d7055e7f26f77 */
+/* content-hash: 1ff774860ed6d8b661ef96acfe18d68057f59e82dcc1ba8b2282305bb09d0665 */
 
 /* == END GENERATED CONTENT == */
 
@@ -1144,13 +1197,17 @@ function img(className, src, alt) {
 // Builds the "image, title, description" card shared by location entries,
 // end screens, and the debug outcome-image gallery. Callers append
 // whatever else belongs in the body (choices, buttons, ...).
+//
+// `imageSrc` and `description` are both optional: the how-to-play panel is a
+// page of words with no picture, and an empty <img> would render as a broken
+// frame at the top of it.
 function buildEntryCard(entryClassName, imageSrc, imageAlt, title, description) {
   const entry = el('div', entryClassName);
-  entry.appendChild(img('entry-image', imageSrc, imageAlt));
+  if (imageSrc) entry.appendChild(img('entry-image', imageSrc, imageAlt));
 
   const body = el('div', 'entry-body');
   body.appendChild(el('h2', 'entry-name', title));
-  body.appendChild(el('p', 'entry-description', description));
+  if (description) body.appendChild(el('p', 'entry-description', description));
   entry.appendChild(body);
 
   return { entry, body };
@@ -1417,8 +1474,15 @@ function resolveChoice(choice, entryEl, instant) {
     playSound('heal');
   }
 
+  // The intro hands off to the intro sequence (playIntroSequence) before the
+  // first zone, so it is pulled out of the normal "pick the next stop" path --
+  // and its travel status is held back until the panels have played, so the
+  // bar and the "Wandering N steps" line move together, after the cutscene,
+  // rather than the bar jumping while the hospital card is still on screen.
+  const leavingIntro = state.currentLocationId === INTRO_LOCATION.id && !state.introPlayed;
+
   appendConsequence(entryEl, outcome, distance, () => {
-    updateProgressBar();
+    if (!leavingIntro) updateProgressBar();
 
     if (outcome.type === 'gameover') {
       // The choice's own flavor text was already shown inline via
@@ -1437,10 +1501,6 @@ function resolveChoice(choice, entryEl, instant) {
       return;
     }
 
-    // The intro hands off to the pixel-art sequence (playIntroSequence) before
-    // the first zone, so it is pulled out of the normal "pick the next stop" path.
-    const leavingIntro = state.currentLocationId === INTRO_LOCATION.id && !state.introPlayed;
-
     const advance = () => {
       const next = pickNextLocation(state.currentLocationId);
       state.currentLocationId = next.id;
@@ -1456,24 +1516,36 @@ function resolveChoice(choice, entryEl, instant) {
 
     if (leavingIntro) {
       state.introPlayed = true;
-      playIntroSequence(advance);
+      // The status lands in the last panel's card, where the Continue button
+      // was, so the journey visibly starts from the last thing she saw.
+      playIntroSequence(panelBody => {
+        const step = () => { updateProgressBar(); advance(); };
+        // A replay is instant and plays no status line anywhere else, so this
+        // one has to stay silent too -- otherwise a shared link would open
+        // with an animated walk in the middle of it.
+        if (state.replaying) { step(); return; }
+        playTravelStatus(panelBody, distance, step);
+      });
       return;
     }
 
     advance();
-  }, instant);
+  }, instant, leavingIntro);
 }
 
 // Plays the intro panels from INTRO_SEQUENCE, one at a time, each with its own
 // Continue button, then calls onDone to drop the player into the first zone.
+// onDone is handed the last panel's card body, so the intro's travel status can
+// be played there rather than back on the intro card.
 // Runs during a replay too — the sequence is deterministic, so a shared link
 // rebuilds it without needing a token of its own.
 function playIntroSequence(onDone) {
   let index = 0;
+  let lastBody = null;
 
   function next() {
     if (index >= INTRO_SEQUENCE.length) {
-      onDone();
+      onDone(lastBody);
       return;
     }
     const panel = INTRO_SEQUENCE[index];
@@ -1483,6 +1555,16 @@ function playIntroSequence(onDone) {
     // spacing and image framing as every other panel in the feed.
     const { entry, body } = buildEntryCard('location-entry cutscene-entry',
       panel.image, panel.title, panel.title, panel.caption);
+    lastBody = body;
+
+    // A panel may carry a list instead of a paragraph -- the how-to-play card
+    // is four bullets and no picture. Rendered before the button so the list
+    // reads as the body of the card.
+    if (panel.bullets && panel.bullets.length) {
+      const list = el('ul', 'entry-bullets');
+      panel.bullets.forEach(text => list.appendChild(el('li', 'entry-bullet', text)));
+      body.appendChild(list);
+    }
 
     // A replay has no player to press Continue, so the panels are rendered and
     // stepped through in one go -- otherwise a shared link would stall here.
@@ -1513,9 +1595,13 @@ function playIntroSequence(onDone) {
 // "You walk N steps..." status via playTravelStatus before running
 // onContinue; a gameover outcome runs onContinue immediately.
 //
+// `deferTravel` suppresses that status line so the caller can play it later and
+// somewhere else. Only the intro card uses it: its step belongs after the intro
+// panels, not between "Begin the journey" and the birth cutscene.
+//
 // In `instant` mode (replaying a shared run) the same box is rendered but
 // without the button, and onContinue runs straight away.
-function appendConsequence(entryEl, outcome, distance, onContinue, instant) {
+function appendConsequence(entryEl, outcome, distance, onContinue, instant, deferTravel) {
   const body = entryEl.querySelector('.entry-body');
 
   const consequence = el('div', 'consequence');
@@ -1553,6 +1639,10 @@ function appendConsequence(entryEl, outcome, distance, onContinue, instant) {
     }
 
     continueBtn.remove();
+    if (deferTravel) {
+      onContinue();
+      return;
+    }
     playTravelStatus(consequence, distance, onContinue);
   });
   box.appendChild(continueBtn);

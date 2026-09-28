@@ -24,10 +24,17 @@ intro,,,description,"PLACEHOLDER: forty years, in three parts. The Oracle has ha
 intro,,,choice_label,Begin the journey
 intro,,,choice_outcome_type,normal
 intro,,,choice_outcome_text,The path opens.
-intro_panel,,0,image,images/cutscene_birth.jpg
-intro_panel,,0,title,"PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986"
-intro_panel,,0,caption,"PLACEHOLDER: the first room you were ever in, and then the long drive home to Rochester with a new person in the back seat."
+intro_panel,,0,title,How this works
+intro_panel,,0,caption,"Four things, and then the road starts."
 intro_panel,,0,button,Continue
+panel_bullet,0,0,text,"Every stop is a place from your last forty years. You get two or three choices about what happened there, and you pick one."
+panel_bullet,0,1,text,"One choice at each stop is the one that really happened. Press O and the Oracle will point straight at it, every time, and she is never wrong."
+panel_bullet,0,2,text,"The bar along the top is the journey. Forty steps takes you all the way to the finish, and three stumbles end it early."
+panel_bullet,0,3,text,"Nothing is lost if you get it wrong. The address bar keeps the whole run, so you can copy the link and walk it again exactly."
+intro_panel,,1,image,images/cutscene_birth.jpg
+intro_panel,,1,title,"PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986"
+intro_panel,,1,caption,"PLACEHOLDER: the first room you were ever in, and then the long drive home to Rochester with a new person in the back seat."
+intro_panel,,1,button,Continue
 location,loc_rochesterFirstHome,,name,"The First House, Rochester"
 location,loc_rochesterFirstHome,,image,images/loc_rochesterFirstHome.svg
 location,loc_rochesterFirstHome,,zone,1

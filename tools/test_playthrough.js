@@ -9,7 +9,7 @@ const { boot, clickForward, contentObject, reporter } = require('./dom_stub');
 
 const r = reporter('playthrough');
 
-const { LOCATIONS } = contentObject();
+const { LOCATIONS, INTRO_SEQUENCE } = contentObject();
 const byName = new Map(LOCATIONS.map(l => [l.name, l]));
 
 // Plays like a person who knows the story: always takes the choice that really
@@ -82,7 +82,56 @@ r.equal(knowing.title, 'The Fourth Decade', 'and wins');
 r.equal(knowing.penalties, 0, 'without a single stumble');
 r.check(knowing.steps > 5, 'having taken a real journey (' + knowing.steps + ' actions)');
 r.check(knowing.hash.includes('choices='), 'a shareable hash was written');
-r.check(knowing.cutscenes === 1, 'the intro cutscene played exactly once');
+// Counted from the content, not hardcoded: adding a panel to INTRO_SEQUENCE
+// (the how-to-play card, the birth cutscene) should not fail this line.
+r.equal(knowing.cutscenes, INTRO_SEQUENCE.length,
+  'every intro panel played exactly once (' + INTRO_SEQUENCE.length + ')');
+r.check(knowing.cutscenes > 0, 'and there is at least one');
+
+// The how-to-play card. Checked on a rendered feed rather than on the content
+// object, because what matters is that it comes out as a readable card: no
+// broken image frame, a list rather than a wall of prose, one way on.
+{
+  const g = boot();
+  g.findIn(g.card(), 'choice-btn')[0].click();   // "Begin the journey"
+  clickForward(g);                               // Continue on the outcome box
+  const card = g.card();
+  r.check(card && card._class.includes('cutscene-entry'),
+    'Continue after "Begin the journey" opens the first intro panel');
+  r.equal(g.findIn(card, 'entry-image').length, 0, 'the how-to-play card has no picture');
+  const bullets = g.findIn(card, 'entry-bullet');
+  r.check(bullets.length >= 3, 'it lists the instructions (' + bullets.length + ' lines)');
+  r.check(bullets.every(li => li._text.trim().length > 0), 'and none of them is blank');
+  r.equal(g.findIn(card, 'primary-btn').length, 1, 'with a single Continue button');
+
+  // The first "Wandering N steps" belongs *after* the whole intro sequence, not
+  // between "Begin the journey" and the panels -- and the bar moves with it, so
+  // the two never disagree about how far along the journey is.
+  r.equal(g.find('travel-status').length, 0,
+    'and no travel status has played yet');
+  r.equal(g.byId['progress-fill'].style.width, '0%',
+    'the progress bar has not moved either');
+  for (let i = 1; i < INTRO_SEQUENCE.length; i++) clickForward(g);
+  r.equal(g.find('travel-status').length, 0,
+    'still nothing while the cutscene is on screen');
+  clickForward(g);
+  r.equal(g.find('travel-status').length, 1,
+    'the first travel status plays after the last panel');
+  r.equal(g.findIn(g.feed.children[1 + INTRO_SEQUENCE.length - 1], 'travel-status').length, 1,
+    'inside the last panel, not back on the intro card');
+  r.check(g.byId['progress-fill'].style.width !== '0%',
+    'and the bar moved with it (' + g.byId['progress-fill'].style.width + ')');
+  r.check(g.card() && g.card()._class.includes('location-entry')
+    && !g.card()._class.includes('cutscene-entry'),
+    'then the first zone stop opens');
+
+  // A normal stop still plays its own status inline, or deferring the intro's
+  // would have quietly turned the feature off for the rest of the run.
+  g.findIn(g.card(), 'choice-btn')[0].click();
+  clickForward(g);
+  r.equal(g.find('travel-status').length, 2,
+    'every later step plays its own travel status');
+}
 
 // The log records one token per *logged* action. Steps also counts the cutscene
 // panel, which is not a choice and so has no token.
@@ -153,5 +202,9 @@ r.equal(replay.byId['progress-fill'].style.width, knowing.progress, 'at the same
 r.equal(replay.hash, knowing.hash, 'and leaves the same hash behind');
 r.equal(replay.feed.children.filter(c => c._class.includes('cutscene-entry')).length,
   knowing.cutscenes, 'having replayed the intro cutscene too');
+// A replay is instant everywhere else, so it must not gain an animated walk
+// just because the intro's travel status moved. The dots are timers.
+r.equal(replay.find('travel-status').length, 0,
+  'a replay plays no travel status at all, the intro\'s included');
 
 process.exitCode = r.finish() === 0 ? 0 : 1;

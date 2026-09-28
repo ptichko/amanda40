@@ -64,17 +64,18 @@ recipe, the invariants to preserve, and the conventions for ids/images/tone.
 
 ## Look and feel
 
-Deliberately 1990s: a teal-and-indigo Solo Jazz cup wallpaper, silver beveled panels with
+Deliberately 1990s: a teal-and-indigo Memphis-shape wallpaper, silver beveled panels with
 square corners, Impact display caps, Comic Sans for the Oracle, Courier for the status
 lines, a scrolling marquee banner, faint CRT scanlines, and stepped (not smooth) progress
 animation. All of it is local fonts and CSS — no webfonts, no images beyond `images/`, so
 it still opens instantly and offline.
 
-The wallpaper is the Solo Jazz cup: broad ragged teal swipes (`#04C4C7`) with white
-dry-brush speckle and thin indigo (`#3a2785`) scribbles, on a near-white ground. It's
-deliberately mostly white so the silver panels stay readable on top of it. The page's own
-text is inked deep teal with indigo accents (`--page-ink`, `--page-accent`) rather than the
-white and cyan that a dark background wanted.
+The wallpaper is a **Memphis-style scatter**: outlined and filled triangles, rings,
+confetti dots, rotated bars, terrazzo chips, plus signs, squiggles and zigzags on a
+near-white ground, in teal, light teal, indigo and navy. Only about 3% of the tile is
+inked — deliberately, so the silver panels and the deep-teal title text stay readable
+across it. The four colours are the ones sampled from the Solo Jazz cup, so the lineage
+holds even though the pattern no longer copies its texture.
 
 **Amanda appears as pixel art** — a blonde character in a teal jacket and magenta scarf,
 drawn on an 8px grid with `crispEdges` so she stays blocky at any zoom. She's on the intro

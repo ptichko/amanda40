@@ -28,6 +28,7 @@ See content/README.md for the full field list.
 import argparse
 import csv
 import hashlib
+import io
 import json
 import os
 import re
@@ -110,58 +111,132 @@ def slot_key(kind, parent, index):
     return key
 
 
+def _utf8_seq_len(lead):
+    """How many bytes the UTF-8 sequence starting with this lead byte takes, or 0."""
+    if 0xC2 <= lead <= 0xDF:
+        return 2
+    if 0xE0 <= lead <= 0xEF:
+        return 3
+    if 0xF0 <= lead <= 0xF4:
+        return 4
+    return 0
+
+
+# Bytes that are cp1252 punctuation rather than UTF-8. A spreadsheet saved as
+# "Windows ANSI" writes these raw, which is why a file can be valid UTF-8
+# everywhere except one smart quote.
+CP1252_PUNCT = {
+    0x85: '…', 0x91: '‘', 0x92: '’', 0x93: '“',
+    0x94: '”', 0x95: '•', 0x96: '–', 0x97: '—',
+}
+
+
+def decode_csv_bytes(data):
+    """Decode the CSV as UTF-8, repairing bytes a spreadsheet wrote as cp1252.
+
+    A plain `decode('utf-8')` raises on those; decoding the whole file as cp1252
+    instead is worse, because it turns every correctly-encoded em dash into
+    mojibake. So walk the bytes, pass valid UTF-8 sequences through untouched, and
+    reinterpret only the bytes that cannot be part of one.
+    """
+    try:
+        return data.decode('utf-8-sig')
+    except UnicodeDecodeError:
+        pass
+    out = []
+    i, n = 0, len(data)
+    while i < n:
+        b = data[i]
+        if b < 0x80:
+            out.append(chr(b))
+            i += 1
+            continue
+        length = _utf8_seq_len(b)
+        if length and i + length <= n:
+            chunk = data[i:i + length]
+            try:
+                out.append(chunk.decode('utf-8'))
+                i += length
+                continue
+            except UnicodeDecodeError:
+                pass
+        out.append(CP1252_PUNCT.get(b) or bytes([b]).decode('cp1252', 'replace'))
+        i += 1
+    return ''.join(out)
+
+
+def sniff_delimiter(header_line):
+    """Excel writes ';' when the locale's decimal separator is a comma."""
+    counts = {d: header_line.count(d) for d in (',', ';', '\t', '|')}
+    best = max(counts, key=lambda d: counts[d])
+    if counts[best] == 0:
+        raise ContentError("could not find a delimiter in the CSV header line")
+    return best
+
+
 def read_csv(path=CSV_PATH):
     if not os.path.exists(path):
         raise ContentError(
             "no %s -- run with --export to create it from index.html" % os.path.relpath(path, REPO)
         )
+    with open(path, 'rb') as fh:
+        text = decode_csv_bytes(fh.read())
+    if text.startswith('﻿'):
+        text = text[1:]
+    delimiter = sniff_delimiter(text.split('\n', 1)[0])
+    if delimiter != ',':
+        # stderr, not stdout: --describe prints JSON on stdout and must stay parseable
+        print("note: %s is %s-delimited (fine); the tool writes ',' by default"
+              % (os.path.relpath(path, REPO), {';': 'semicolon', '\t': 'tab',
+                                               '|': 'pipe'}.get(delimiter, delimiter)),
+              file=sys.stderr)
     buckets = {}
     seen = {}
-    with open(path, newline="", encoding="utf-8-sig") as fh:
-        reader = csv.DictReader(fh)
-        if reader.fieldnames != FIELDS:
+    reader = csv.DictReader(io.StringIO(text), delimiter=delimiter)
+    if reader.fieldnames != FIELDS:
+        raise ContentError(
+            "%s must have exactly the columns %s, found %s"
+            % (os.path.relpath(path, REPO), ",".join(FIELDS), reader.fieldnames)
+        )
+    rows = list(reader)
+    for n, row in enumerate(rows, start=2):
+        # A value containing the delimiter but no surrounding quotes lands in the
+        # restkey as an extra column. Without this check the rest of the sentence
+        # is dropped on the floor without a word.
+        if None in row:
             raise ContentError(
-                "%s must have exactly the columns %s, found %s"
-                % (os.path.relpath(path, REPO), ",".join(FIELDS), reader.fieldnames)
+                "row %d: %d fields for %d columns -- a value probably contains a "
+                "%s but isn't quoted. Wrap it in \"double quotes\"."
+                % (n, len(row) - 1 + len(row[None]), len(FIELDS), delimiter)
             )
-        for n, row in enumerate(reader, start=2):
-            # A value containing a comma but no surrounding quotes lands in the
-            # restkey as an extra column. Without this check the rest of the
-            # sentence is dropped on the floor without a word.
-            if None in row:
-                raise ContentError(
-                    "row %d: %d fields for %d columns -- a value probably contains a "
-                    "comma but isn't quoted. Wrap it in \"double quotes\"."
-                    % (n, len(row) - 1 + len(row[None]), len(FIELDS))
-                )
-            kind = (row["kind"] or "").strip()
-            parent = (row["parent"] or "").strip()
-            index = (row["index"] or "").strip()
-            field = (row["field"] or "").strip()
-            value = row["value"]
-            if value is None:
-                raise ContentError("row %d: value is missing" % n)
-            if not kind or not field:
-                raise ContentError("row %d: kind and field are required" % n)
-            where = "row %d (%s %s)" % (n, kind, parent or index)
-            if value.strip() == "" and (kind, field) in OPTIONAL_FIELDS:
-                continue
-            key = slot_key(kind, parent, index)
-            slots = buckets.setdefault(kind, {})
-            # first appearance in the file decides order, so the author controls
-            # the sequence by where they put the rows
-            if key not in slots:
-                seen.setdefault(kind, []).append(key)
-            slot = slots.setdefault(key, {})
-            if field in slot:
-                raise ContentError("%s: field %r set twice" % (where, field))
-            value = coerce(kind, field, value, where,
-                           type_key=parent if kind == "config" else None)
-            # only the choice that actually happened is marked, so keep false out
-            # of the data entirely and let it stay absent
-            if (kind, field) in BOOL_FIELDS and value is False:
-                continue
-            slot[field] = value
+        kind = (row["kind"] or "").strip()
+        parent = (row["parent"] or "").strip()
+        index = (row["index"] or "").strip()
+        field = (row["field"] or "").strip()
+        value = row["value"]
+        if value is None:
+            raise ContentError("row %d: value is missing" % n)
+        if not kind or not field:
+            raise ContentError("row %d: kind and field are required" % n)
+        where = "row %d (%s %s)" % (n, kind, parent or index)
+        if value.strip() == "" and (kind, field) in OPTIONAL_FIELDS:
+            continue
+        key = slot_key(kind, parent, index)
+        slots = buckets.setdefault(kind, {})
+        # first appearance in the file decides order, so the author controls
+        # the sequence by where they put the rows
+        if key not in slots:
+            seen.setdefault(kind, []).append(key)
+        slot = slots.setdefault(key, {})
+        if field in slot:
+            raise ContentError("%s: field %r set twice" % (where, field))
+        value = coerce(kind, field, value, where,
+                       type_key=parent if kind == "config" else None)
+        # only the choice that actually happened is marked, so keep false out
+        # of the data entirely and let it stay absent
+        if (kind, field) in BOOL_FIELDS and value is False:
+            continue
+        slot[field] = value
 
     content = buckets
     order = lambda kind: seen.get(kind, [])
@@ -488,6 +563,34 @@ def engine_start(html):
     return html.rindex("/*", 0, banner)
 
 
+def cmd_describe():
+    """Report how the CSV was read, without writing anything.
+
+    A spreadsheet can hand back a semicolon-delimited, Windows-1252 file without
+    saying so, and the difference between that and a clean UTF-8 comma file is
+    worth being able to see. Deliberately read-only: the test suite calls this
+    instead of --export, which would rewrite the author's file as a side effect.
+    """
+    with open(CSV_PATH, 'rb') as fh:
+        raw = fh.read()
+    text = decode_csv_bytes(raw)
+    delimiter = sniff_delimiter(text.split('\n', 1)[0])
+    content = read_csv()
+    js = normalize(emit_js(content))
+    info = {
+        "delimiter": delimiter,
+        "rows": sum(1 for _ in csv.reader(io.StringIO(text), delimiter=delimiter)) - 1,
+        "locations": len(content["LOCATIONS"]),
+        "hints": len(content["ORACLE_HINTS"]),
+        "bytes": len(raw),
+        "lost_characters": text.count('�'),
+        "em_dashes": js.count('—'),
+        "curly_quotes": js.count('“') + js.count('”') + js.count('‘') + js.count('’'),
+    }
+    print(json.dumps(info, indent=2, sort_keys=True))
+    return 0
+
+
 def cmd_check():
     body, stored = split_generated(read_index())
     if body is None:
@@ -599,6 +702,8 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--check", action="store_true", help="fail if index.html is stale")
     ap.add_argument("--export", action="store_true", help="write the CSV from index.html")
+    ap.add_argument("--describe", action="store_true",
+                    help="print how the CSV was read (delimiter, rows, any lost characters)")
     ap.add_argument("--force", action="store_true", help="apply even if index.html was hand-edited")
     args = ap.parse_args()
     try:
@@ -606,6 +711,8 @@ def main():
             return cmd_check()
         if args.export:
             return cmd_export()
+        if args.describe:
+            return cmd_describe()
         return cmd_apply(args.force)
     except ContentError as exc:
         print("error: %s" % exc, file=sys.stderr)

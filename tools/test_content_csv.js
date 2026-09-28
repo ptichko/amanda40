@@ -18,8 +18,8 @@ r.check(fs.existsSync(path.join(REPO, 'content', 'README.md')),
   'content/README.md documents the format');
 
 if (fs.existsSync(CSV)) {
-  const header = fs.readFileSync(CSV, 'utf8').split('\n')[0].replace(/^﻿/, '').trim();
-  r.equal(header, 'kind,parent,index,field,value', 'the CSV has the documented columns');
+  const header = fs.readFileSync(CSV, 'latin1').split(/\r?\n/)[0].replace(/^﻿/, '').trim();
+  r.check(header.length > 0, 'the CSV has a header row  ->  ' + header.slice(0, 40));
 }
 
 // The real check: does index.html match the CSV?
@@ -32,24 +32,48 @@ try {
     out.split('\n').join('\n      '));
 }
 
-// Mojibake guard: node hands the exporter UTF-8, and if that ever gets decoded
-// with the Windows locale codec, every em dash in the game silently turns into
-// "â€"". Round-trip the export and compare, rather than trusting it.
-const before = fs.readFileSync(CSV, 'utf8');
+const html = readIndex();
+const generated = html.slice(html.indexOf('const CONFIG'), html.indexOf('   ENGINE SECTION'));
+
+// How did the tool read the author's file? A spreadsheet can hand back a
+// semicolon-delimited, Windows-1252 CSV without saying so, so assert on what
+// matters -- that it parsed completely and lost nothing -- not on a particular
+// delimiter or encoding. Deliberately NOT --export: that rewrites the author's
+// file, and a test has no business doing that.
+let info = null;
 try {
-  execFileSync('python', [TOOL, '--export'], { cwd: REPO, stdio: 'pipe' });
-  // r.check, not r.equal: equal() would print the whole 291-row file as detail
-  r.check(fs.readFileSync(CSV, 'utf8') === before,
-    're-exporting the CSV from index.html is a no-op (text survives the round trip)');
-  r.check(!/â|�/.test(before), 'the CSV has no mojibake from a bad decode');
+  const out = execFileSync('python', [TOOL, '--describe'], { cwd: REPO, stdio: 'pipe' });
+  info = JSON.parse(out.toString());
+  r.check(info.rows > 250, 'the whole CSV parsed  ->  ' + info.rows + ' rows');
+  r.equal(info.lost_characters, 0, 'no characters were lost decoding the file');
+  r.check(info.locations === 17, 'all the locations are there  ->  ' + info.locations);
+  // whatever the delimiter, the five logical columns must be the documented ones
+  const header = fs.readFileSync(CSV, 'latin1').split(/\r?\n/)[0].replace(/^﻿/, '').trim();
+  const cols = header.split(info.delimiter).map(s => s.trim());
+  r.check(cols.join(',') === 'kind,parent,index,field,value',
+    'the CSV has the documented columns, whatever the delimiter  ->  ' + info.delimiter);
+  r.check(['locations', 'hints', 'rows'].every(k => k in info),
+    'the tool can describe how it read the file');
 } catch (err) {
-  const out = ((err.stdout || '') + (err.stderr || '')).toString().trim();
-  r.check(false, 're-exporting the CSV from index.html is a no-op (text survives)\n      ' +
-    out.split('\n').join('\n      '));
+  const out = (err.stdout || '').toString() + (err.stderr || '').toString();
+  r.check(false, 'build_content.py --describe works\n      ' +
+    out.trim().split('\n').join('\n      '));
+}
+
+// Mojibake guard, on the text the game actually shows. The exporter used to
+// decode node's UTF-8 output with the Windows locale codec, which turned every
+// em dash in the game into "â€"". Check the rendered JS, not the author's raw
+// bytes -- a spreadsheet's stray cp1252 byte is the tool's problem to absorb,
+// and --describe's lost_characters count is what proves it did.
+r.check(!/â/.test(generated), 'the generated content has no mojibake');
+r.check(!generated.includes('�'), 'the generated content has no replacement characters');
+if (info) {
+  const dashes = (generated.match(/—/g) || []).length;
+  r.check(dashes === info.em_dashes,
+    'every em dash in the CSV reached the page  ->  ' + dashes);
 }
 
 // The generated block must be fenced, or the next build clobbers hand-written code.
-const html = readIndex();
 r.check(html.includes('/* == BEGIN GENERATED CONTENT'),
   'index.html opens the generated block with a marker');
 r.check(html.includes('/* == END GENERATED CONTENT == */'),

@@ -38,9 +38,9 @@ pixel-art panel of the room you were born in — Wentworth Douglass Hospital, Do
 The engine is complete and playable, and the **structure is real** — the three eras, the
 15 stops, the years, the artefacts (video, playbill, CD, certificate, letter, newspaper
 article, magazine) and the true/wrong choice on every location are all in place. What is
-still placeholder is the **wording**: every description, caption and outcome is a first
-draft, marked `PLACEHOLDER:` in the source. 78 lines to go. `test_content.js` reports the
-count on every run, and it should be zero before this is given to anyone.
+still placeholder is the **wording**: every description, caption and outcome started as a
+first draft, marked `PLACEHOLDER:` in the source. 70 lines to go. `test_content.js`
+reports the count on every run, and it should be zero before this is given to anyone.
 
 Swap in the real memories, keeping the years and the facts. Everything you'd want to write
 lives in **`content/content.csv`** — one spreadsheet, edited directly:
@@ -168,7 +168,7 @@ python tools\build_content.py --force    # apply, discarding hand-edits to the b
 `tools/` holds dev-only helpers. Nothing in there is loaded by the page, and the game
 still runs if you delete the folder — but it's what makes the project maintainable.
 
-**Tests.** 455 checks over the engine, the content and the images, no browser required:
+**Tests.** 461 checks over the engine, the content and the images, no browser required:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all nine files

@@ -21,3 +21,6 @@ images/*.jpg
 # scripts that add tools/ to sys.path will create this.
 __pycache__/
 *.pyc
+
+# LibreOffice/Calc lock files -- left behind while a CSV is open for editing
+.~lock.*#

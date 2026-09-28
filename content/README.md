@@ -43,7 +43,26 @@ tell you so. If you *meant* to edit it there, pass `--force`.
 | `python tools/build_content.py` | Bake `content.csv` into `index.html`. |
 | `python tools/build_content.py --check` | Fail if `index.html` doesn't match the CSV. The test suite runs this. |
 | `python tools/build_content.py --export` | Go the other way: rebuild `content.csv` from `index.html`. Useful if you hand-wrote content in the HTML and want to keep it. |
+| `python tools/build_content.py --describe` | Print, as JSON, how the tool read your file: the delimiter it found, the row count, and how many characters were lost decoding. Read-only — it never writes. |
 | `python tools/build_content.py --force` | Bake, discarding hand-edits to the generated block. |
+
+## Saving from a spreadsheet
+
+It works whatever your editor does, but it's worth knowing what it will do:
+
+- **The delimiter doesn't matter.** Excel writes `;` instead of `,` in locales where the
+  decimal separator is a comma. The tool sniffs the header line and reads either.
+- **Windows-1252 ("Windows ANSI") is fine too.** A file saved that way can contain raw
+  smart quotes that aren't valid UTF-8. Those bytes get reinterpreted rather than
+  rejected — decoding the whole file as Windows-1252 instead would be *worse*, because it
+  turns every correctly-encoded em dash into `â€"`.
+- Run `--describe` if you want to see what it made of your file. `lost_characters`
+  should always be `0`.
+
+The one thing genuinely worth avoiding is a value containing a comma or a semicolon with
+no surrounding quotes. A spreadsheet quotes it for you automatically; typed by hand it
+splits the row and the rest of the sentence is dropped. The tool now catches that and
+names the row instead of losing the text quietly.
 
 ## How the file is laid out
 

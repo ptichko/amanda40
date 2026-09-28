@@ -228,11 +228,26 @@ The game can't read the CSV while running, and that is deliberate: browsers bloc
 source, `index.html` is the build output.
 
 ```powershell
-python tools\build_content.py            # bake the CSV into index.html
+python tools\build_content.py            # rebuild index.html from the CSV
 python tools\build_content.py --check    # fail if index.html is stale (a test does this)
 python tools\build_content.py --export   # rebuild the CSV from index.html
-python tools\build_content.py --force    # apply, discarding hand-edits to the block
+python tools\build_content.py --describe # report how the CSV was read (read-only)
+python tools\build_content.py --force    # apply even if index.html was hand-edited
 ```
+
+**The CSV is read defensively, because spreadsheets are not to be trusted.** Excel
+writes `;` instead of `,` in locales whose decimal separator is a comma, so the delimiter
+is sniffed from the header. A file saved as Windows-1252 can contain raw smart quotes that
+aren't valid UTF-8; `decode_csv_bytes()` walks the bytes, passes valid UTF-8 sequences
+through untouched and reinterprets only the bytes that *cannot* be part of one. Decoding
+such a file as Windows-1252 wholesale would be worse, because it turns every correctly
+encoded em dash into `â€"` — that mistake cost this repo real text once. `--describe`
+reports the delimiter, the row count and `lost_characters`, and is what
+`test_content_csv.js` asserts on.
+
+That test deliberately does **not** call `--export`: `--export` rewrites the author's
+file, and a test has no business mutating the source it is checking. It was doing exactly
+that, and normalising a hand-edited CSV as a side effect of running the suite.
 
 Two safeguards, both worth preserving:
 

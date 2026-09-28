@@ -45,7 +45,14 @@ JPEG_QUALITY = 88
 # partial.
 MAPPING = [
     ('DARE.jpg',                       'loc_theDareSpeech'),
+    # The Strafford sign, not the aerial house photo. Both wanted this card and
+    # only one can have it; the sign won because it is a real photograph, like
+    # every other card here, and strafford_house.png is a satellite map
+    # screenshot with a pin on it. The aerial is left on disk and unmapped
+    # rather than deleted, in case a Strafford Elementary location is ever added
+    # -- which is really what the sign is about, and what neither card covers.
     ('strafford_elementary_school.jpg', 'loc_theMoveToStrafford'),
+    ('rochester_first_house.png',      'loc_rochesterFirstHome'),
     ('wind_beneath_my_wings.jpg',      'loc_theTalentShow'),
     ('velveteen_rabbit.jpg',           'loc_piscataquaYouthPlayers'),
     ('stories_are_made_that_way.jpg',  'loc_storiesAreMadeThatWay'),
@@ -57,6 +64,26 @@ MAPPING = [
     # and becomes a photograph here
     ('wentworth_douglas_hospital.jpg', 'cutscene_birth'),
 ]
+
+
+def check_mapping():
+    """Fail if two source photos are mapped to one target stem.
+
+    rebuild() walks MAPPING in order and writes stem + '.jpg' each time, so a
+    duplicate would not fail -- the later entry would just overwrite the earlier
+    one and the earlier photo would be dropped with no message. That is exactly
+    what happens if a second Strafford photo is added without retiring the
+    first, which is how this check came to exist.
+    """
+    owner = {}
+    for src, stem in MAPPING:
+        if stem in owner:
+            print('error: %s and %s are both mapped to %s.jpg -- a card can only '
+                  'have one source; retire one of them (or give it a stop of its '
+                  'own).' % (owner[stem], src, stem), file=sys.stderr)
+            return 1
+        owner[stem] = src
+    return 0
 
 
 def target_for(stem):
@@ -88,6 +115,9 @@ def process(src_path, out_path):
 
 
 def rebuild():
+    bad = check_mapping()
+    if bad:
+        return bad
     missing = []
     for src, stem in MAPPING:
         src_path = os.path.join(IMAGES, src)
@@ -164,10 +194,10 @@ def main():
     ap.add_argument('--check', action='store_true', help='fail if a card image is missing/stale')
     ap.add_argument('--list', action='store_true', help='show the photo -> location mapping')
     args = ap.parse_args()
-    if args.check:
-        return check()
     if args.list:
-        return show()
+        return check_mapping() or show()
+    if args.check:
+        return check_mapping() or check()
     return rebuild()
 
 

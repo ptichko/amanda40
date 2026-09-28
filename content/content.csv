@@ -36,7 +36,7 @@ intro_panel;;1;title;PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986
 intro_panel;;1;caption;PLACEHOLDER: the first room you were ever in, and then the long drive home to Rochester with a new person in the back seat.
 intro_panel;;1;button;Continue
 location;loc_rochesterFirstHome;;name;The First House, Rochester
-location;loc_rochesterFirstHome;;image;images/loc_rochesterFirstHome.svg
+location;loc_rochesterFirstHome;;image;images/loc_rochesterFirstHome.jpg
 location;loc_rochesterFirstHome;;zone;1
 location;loc_rochesterFirstHome;;weight;1
 location;loc_rochesterFirstHome;;description;PLACEHOLDER: 1986 to 1991, the first house, in Rochester NH — the one with the porch you could see the river from. In 1991 you started kindergarten at Jack and Jill, in a yellow coat you refused to take off.

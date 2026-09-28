@@ -3,7 +3,7 @@
 window.ART_FILES = [
   { path: "images/loc_intro.svg", label: "Happy 40th, Amanda!" },
   { path: "images/cutscene_birth.jpg", label: "PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986" },
-  { path: "images/loc_rochesterFirstHome.svg", label: "The First House, Rochester" },
+  { path: "images/loc_rochesterFirstHome.jpg", label: "The First House, Rochester" },
   { path: "images/loc_stElizabethSeton.svg", label: "St. Elizabeth Seton School" },
   { path: "images/loc_theMoveToStrafford.jpg", label: "The Move to Strafford" },
   { path: "images/loc_theTalentShow.jpg", label: "The Strafford Elementary Talent Show" },

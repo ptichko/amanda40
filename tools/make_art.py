@@ -348,8 +348,13 @@ def placeholder_jobs():
 
         zm = ZONE_RE.search(block)
         zone = int(zm.group(1)) if zm else 1
-        dm = re.search(r"description:\s*'((?:[^'\\]|\\.)*)'", block, re.S)
-        desc = dm.group(1).replace("\\'", "'") if dm else ''
+        # Same trap as LOCATION_RE above, and it bit here too: this only ever
+        # matched single-quoted descriptions, so once the content block became
+        # generated JSON every `desc` came back empty, every card was built
+        # with year='', and --list-placeholders has been reporting "(no year)"
+        # for all of them. Accept either quote style.
+        dm = re.search(r'''description:\s*["']((?:[^"'\\]|\\.)*)["']''', block, re.S)
+        desc = _unquote(dm.group(1)) if dm else ''
         year = YEAR_RE.search(desc)
         jobs.append((os.path.basename(image), name, year.group(0) if year else '', zone))
     return jobs

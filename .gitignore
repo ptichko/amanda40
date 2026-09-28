@@ -12,7 +12,12 @@
 # tools/make_photos.py --check degrades gracefully when a source is absent: it
 # still verifies the card exists at the right size, and says so rather than
 # failing. tools/test_photos.js relies on that.
+#
+# Sources are ignored by extension, and .png is here as well as .jpg: the two
+# house photos are PNGs of about 800KB and 600KB, and tracking them for the sake
+# of two more of them would undo the whole point of deriving a small card.
 images/*.jpg
+images/*.png
 !images/loc_*.jpg
 !images/cutscene_birth.jpg
 !images/Solo_Jazz_design.jpg

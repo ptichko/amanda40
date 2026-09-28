@@ -107,8 +107,8 @@ journey, with the ones you never reached greyed out.
 
 ## Images
 `images/` is done for the intro, the win card, and the game-over card (real pixel art -
-leave those alone unless you want to redraw her). Of the 16 mid-game locations, **9 now use
-a real photograph** and the remaining 7 have generated placeholder cards - a dithered
+leave those alone unless you want to redraw her). Of the 16 mid-game locations, **10 now use
+a real photograph** and the remaining 6 have generated placeholder cards - a dithered
 gradient in their era's colour, the year, and the location name. The birth cutscene is a
 photograph too: Wentworth-Douglass Hospital at dusk.
 
@@ -226,16 +226,16 @@ cards match.
 
 ### 2. Drop in the remaining photographs
 
-Nine are in. The other seven stops still have generated placeholder cards: the first
-house in Rochester, St. Elizabeth Seton, Disney World / Jellystone / Poland Springs,
-Destination Imagination, the Washington DC conference, WEGO Health, and Belmont. Each is
-named after its location `id` - put a photo at `images/loc_<id>.jpg`, point that row in
-`content/content.csv` at it, and nothing else needs to change. `index.html?debug=true`
-shows every one at once.
+Ten are in. The other six stops still have generated placeholder cards: St. Elizabeth
+Seton, Disney World / Jellystone / Poland Springs, Destination Imagination, the Washington
+DC conference, WEGO Health, and Belmont. Each is named after its location `id` - put a
+photo at `images/loc_<id>.jpg`, point that row in `content/content.csv` at it, and nothing
+else needs to change. `index.html?debug=true` shows every one at once.
 
-The obvious candidates are the things you already have: the playbill and the original
-Velveteen Rabbit script, the newspaper clipping, the poetry certificate, the
-leadership-conference letter, the Monitor magazine article.
+Still worth hunting down: the leadership-conference letter, the Monitor magazine article,
+and anything from Strafford Elementary. `strafford_house.png` is on disk but deliberately
+unmapped — it is an aerial map pin rather than a photo of the house, and the Strafford
+school sign keeps that card, since that school has no stop of its own yet.
 
 ### 3. Playtest
 

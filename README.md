@@ -87,7 +87,9 @@ as you get closer to forty.
 ## Playing
 
 Click through, or use the keyboard: `1`–`9` pick a choice, `O` consults the Oracle, `ENTER`
-presses the last button (Continue, a zone gate, Play Again), `M` mutes.
+presses the last button (Continue, a zone gate, Play Again), `M` mutes. Whatever the
+keyboard is standing on shows a dotted, Win95-style focus box, so you can follow `1` `2` `3`
+by eye.
 
 There are sound effects — a blip when you choose, a falling buzz when you stumble, a
 rising pair when something heals, a chime at a zone gate, and a short tune either way at

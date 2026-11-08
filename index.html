@@ -778,6 +778,18 @@
     cursor: default;
   }
 
+  /* Visible keyboard focus, in the period style: a dotted rectangle inside the
+     control, like a Win95 focus rect. :focus-visible rather than :focus so a
+     mouse click never lights it up; the 1-9 / O / ENTER keys do, and that is
+     the navigation the key hints promise. Black reads on silver, navy hover
+     and magenta hover alike. */
+  .choice-btn:focus-visible,
+  .primary-btn:focus-visible,
+  .sound-toggle:focus-visible {
+    outline: 2px dotted #000000;
+    outline-offset: -6px;
+  }
+
   .hidden { display: none !important; }
 
   /* ---- Motion ---- */

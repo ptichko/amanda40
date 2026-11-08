@@ -635,6 +635,10 @@ any CSS, read this list — each item is load-bearing:
   synthesising state changes directly would bypass the guards. Note `ENTER` is ignored
   when a button already has focus, otherwise the browser's own activation would fire the
   action twice.
+- **Keyboard focus is visible.** `.choice-btn`, `.primary-btn` and `.sound-toggle` show a
+  dotted in-set focus rectangle under `:focus-visible` (period-correct Win95 focus-behaviour
+  with `:focus` — mouse clicks would light it on every press). The rule tests for
+  `:focus-visible` plus a `dotted` outline; if you re-style it, keep both in the check.
 - `prefers-reduced-motion: reduce` switches off the marquee, flicker, glow, and
   transitions. Keep that block working.
 

@@ -170,21 +170,21 @@ choice;loc_storiesAreMadeThatWay;1;outcome_text;PLACEHOLDER: you are on every tr
 choice;loc_storiesAreMadeThatWay;2;label;Learn every other child's part as well
 choice;loc_storiesAreMadeThatWay;2;outcome_type;heal
 choice;loc_storiesAreMadeThatWay;2;outcome_text;PLACEHOLDER: you could have sung any of them. You never needed to.
-location;loc_theLeadershipConference;;name;Washington DC, July 2003
+location;loc_theLeadershipConference;;name;Summer 2003, July 2003
 location;loc_theLeadershipConference;;image;images/loc_theLeadershipConference.svg
 location;loc_theLeadershipConference;;zone;2
 location;loc_theLeadershipConference;;weight;1
-location;loc_theLeadershipConference;;description;PLACEHOLDER: the teaching staff at Bishop Brady nominated you for the National Student Leadership Conference in Washington DC, in the area of Business and Commerce. July 2003: you went. There is a letter.
-choice;loc_theLeadershipConference;0;label;Go to Washington DC that July
+location;loc_theLeadershipConference;;description;How will you spend your summer in 2003? Work at the ice cream parlor? Or aim for Forbes future business leaders?, in the area of Business and Commerce. July 2003: you went. There is a letter.
+choice;loc_theLeadershipConference;0;label;The teaching staff at Bishop Brady nominated you for the National Student Leadership Conference in Washington DC.
 choice;loc_theLeadershipConference;0;oracle_correct;true
 choice;loc_theLeadershipConference;0;outcome_type;normal
-choice;loc_theLeadershipConference;0;outcome_text;PLACEHOLDER: nominated by the teaching staff, in Business and Commerce. The letter is real.
-choice;loc_theLeadershipConference;1;label;Skip it — there was a tournament that summer
+choice;loc_theLeadershipConference;0;outcome_text;Boom. Ready to climb the corporate ladder to CEO., in Business and Commerce. The letter is real.
+choice;loc_theLeadershipConference;1;label;Melted scoops and dropped cones. An unforgettable summer at the Rochester Dairy Queen.
 choice;loc_theLeadershipConference;1;outcome_type;penalty
-choice;loc_theLeadershipConference;1;outcome_text;PLACEHOLDER: you were at the rink. The letter stays in a drawer.
-choice;loc_theLeadershipConference;2;label;Take notes on everyone you met
+choice;loc_theLeadershipConference;1;outcome_text;You dropped too many cones, my dear.
+choice;loc_theLeadershipConference;2;label;Maple Haven sleep-away camp for you. It's time to hae your own wet, hot, American summer.
 choice;loc_theLeadershipConference;2;outcome_type;heal
-choice;loc_theLeadershipConference;2;outcome_text;PLACEHOLDER: you came home with a notebook and no idea what you wanted yet.
+choice;loc_theLeadershipConference;2;outcome_text;Sigh. Watching a movie about camp, just isn't the same as living it, right?
 location;loc_editorsChoicePoetry;;name;Editor's Choice, Achievement in Poetry
 location;loc_editorsChoicePoetry;;image;images/loc_editorsChoicePoetry.svg
 location;loc_editorsChoicePoetry;;zone;2
@@ -200,7 +200,7 @@ choice;loc_editorsChoicePoetry;1;outcome_text;PLACEHOLDER: you give it back, the
 choice;loc_editorsChoicePoetry;2;label;Read one poem out loud at the ceremony
 choice;loc_editorsChoicePoetry;2;outcome_type;heal
 choice;loc_editorsChoicePoetry;2;outcome_text;PLACEHOLDER: your own, not the one that won. It goes over well.
-location;loc_theNationalAnthem;;name;Singing the National Anthem, June 2005
+location;loc_theNationalAnthem;;name;High-School Gradudation, June 2005
 location;loc_theNationalAnthem;;image;images/loc_theNationalAnthem.jpg
 location;loc_theNationalAnthem;;zone;2
 location;loc_theNationalAnthem;;weight;1

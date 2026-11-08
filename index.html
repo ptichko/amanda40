@@ -115,6 +115,7 @@
     font-size: 0.8rem;
     letter-spacing: 0.1em;
     color: var(--lime);
+    text-transform: uppercase;
     text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
     animation: marquee-scroll 26s linear infinite;
   }
@@ -902,7 +903,7 @@
   <p class="tagline">~ a small text adventure, hand-made for Amanda's fortieth ~</p>
 
   <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">&#9733; HAPPY 40th BIRTHDAY AMANDA &#9733; THE FOURTH DECADE &#9733; FORTY IS A DOOR, NOT A WALL &#9733; WALK THROUGH IT &#9733; HAPPY 40th BIRTHDAY AMANDA &#9733; THE FOURTH DECADE &#9733; FORTY IS A DOOR, NOT A WALL &#9733; WALK THROUGH IT &#9733;</div>
+    <div class="marquee-track" id="marquee-track">&#9733; HAPPY 40th BIRTHDAY AMANDA &#9733; THE FOURTH DECADE &#9733; FORTY IS A DOOR, NOT A WALL &#9733; WALK THROUGH IT &#9733; HAPPY 40th BIRTHDAY AMANDA &#9733; THE FOURTH DECADE &#9733; FORTY IS A DOOR, NOT A WALL &#9733; WALK THROUGH IT &#9733;</div>
   </div>
 
     <div id="scene" aria-live="polite" aria-relevant="additions" aria-busy="false">
@@ -1260,6 +1261,7 @@ const penaltyPointsEl = document.getElementById('penalty-points');
 const zoneMarkersEl = document.getElementById('zone-markers');
 const zoneLabelsEl = document.getElementById('zone-labels');
 const stepsEl = document.getElementById('steps');
+const marqueeTrackEl = document.getElementById('marquee-track');
 
 // Creates an element, optionally setting its className and textContent.
 function el(tag, className, text) {
@@ -2163,12 +2165,27 @@ function renderZoneMarkers() {
 const WALK_STOP_MS = 700;
 let walkStopTimer;
 
+// The banner names the era you are walking through. Its track holds the text
+// twice and the CSS slides -50% for a seamless loop, so a replacement always
+// writes both halves at once and they must stay identical strings.
+let marqueeZoneName = null;
+function setMarqueeMessage(zone) {
+  if (!marqueeTrackEl) return;
+  const name = zone && zone.name ? zone.name : 'The Fourth Decade';
+  if (name === marqueeZoneName) return;
+  marqueeZoneName = name;
+  const half = '\u2605 HAPPY 40th BIRTHDAY AMANDA \u2605 ' + name +
+    ' \u2605 FORTY IS A DOOR, NOT A WALL \u2605 WALK THROUGH IT \u2605';
+  marqueeTrackEl.textContent = half + half;
+}
+
 function updateProgressBar() {
   const pct = Math.min(100, (state.progress / CONFIG.winDistance) * 100);
   progressFillEl.style.width = pct + '%';
   if (stepsEl) {
     stepsEl.textContent = 'step ' + state.progress + ' of ' + CONFIG.winDistance;
   }
+  setMarqueeMessage(getZoneForProgress(state.progress));
   // Amanda stands on the leading edge of the fill. The clamp keeps her fully
   // inside the panel at 0% and 100% instead of hanging off either end.
   progressWalkerEl.style.left = 'clamp(12px, ' + pct + '%, calc(100% - 12px))';

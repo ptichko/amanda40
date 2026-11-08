@@ -159,7 +159,7 @@ function boot(options) {
   const busyLog = [];
   const byId = {};
   ['scene', 'scene-feed', 'progress-fill', 'penalty-points', 'zone-markers', 'zone-labels',
-    'steps', 'sound-toggle']
+    'steps', 'marquee-track', 'sound-toggle']
     .forEach(id => { byId[id] = makeNode(id === 'sound-toggle' ? 'button' : 'div'); });
   {
     const scene = byId.scene;

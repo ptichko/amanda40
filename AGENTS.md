@@ -641,7 +641,11 @@ any CSS, read this list — each item is load-bearing:
   `background-size: 300px 300px` to match the tile's native size.
 - **Stepped, not smooth, animation.** Progress and choice-fill transitions use
   `steps()`, the marquee loops seamlessly by holding its text twice and sliding `-50%`,
-  and the title has a barely-there flicker. Keep motion in that spirit.
+  and the title has a barely-there flicker. Keep motion in that spirit. The marquee also
+  names the era: `setMarqueeMessage()` (called from `updateProgressBar()` on every zone
+  change) rewrites both halves with the current zone's name, so a replacement must keep
+  the two halves identical strings. That and the `:focus-visible` rect are the two things
+  `test_styles.js` greps for in the stylesheet.
 - **CRT scanlines** come from `body::after` at low opacity. Don't raise it much.
 - **The pixel sprite in the HUD** is scaled 1:1 (24x31) with `image-rendering: pixelated`.
   Don't apply a transform scale to it.

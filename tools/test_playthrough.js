@@ -71,6 +71,7 @@ function play(choose, maxSteps = 80) {
     log: (g.hash.match(/choices=([^&]*)/) || [, ''])[1],
     entries: g.feed.children.length,
     cutscenes: g.feed.children.filter(c => c._class.includes('cutscene-entry')).length,
+  marquee: g.byId['marquee-track']._text,
   };
 }
 
@@ -82,6 +83,15 @@ r.equal(knowing.title, 'The Fourth Decade', 'and wins');
 r.equal(knowing.penalties, 0, 'without a single stumble');
 r.check(knowing.steps > 5, 'having taken a real journey (' + knowing.steps + ' actions)');
 r.check(knowing.hash.includes('choices='), 'a shareable hash was written');
+
+// The marquee follows the journey: at the win it names the final era, and its
+// two halves stay identical so the CSS -50% loop remains seamless.
+const lastZone = ZONES[ZONES.length - 1];
+r.check(knowing.marquee.includes(lastZone.name),
+  'the marquee names the final era (' + lastZone.name + ')');
+const half = knowing.marquee.slice(0, Math.floor(knowing.marquee.length / 2));
+r.equal(knowing.marquee.slice(Math.ceil(knowing.marquee.length / 2)), half,
+  'the marquee still holds its text twice for the seamless loop');
 // Counted from the content, not hardcoded: adding a panel to INTRO_SEQUENCE
 // (the how-to-play card, the birth cutscene) should not fail this line.
 r.equal(knowing.cutscenes, INTRO_SEQUENCE.length,

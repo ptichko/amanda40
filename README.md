@@ -70,6 +70,9 @@ lines, a scrolling marquee banner, faint CRT scanlines, and stepped (not smooth)
 animation. All of it is local fonts and CSS — no webfonts, no images beyond `images/`, so
 it still opens instantly and offline.
 
+The scrolling banner at the top follows the journey: by default it cheers, and whenever
+you cross into a new era it names it — *now in: The Teenage Years* and so on.
+
 The wallpaper is a **Memphis-style scatter**: outlined and filled triangles, rings,
 confetti dots, rotated bars, terrazzo chips, plus signs, squiggles and zigzags on a
 near-white ground, in teal, light teal, indigo and navy. Only about 3% of the tile is

@@ -107,6 +107,10 @@ Every run is recorded in the address bar as `#seed=…&choices=…`, so you can:
 The end card lists the run's seed and shows a *View the album* button: every stop in the
 journey, with the ones you never reached greyed out.
 
+If you play with a screen reader, each new card is announced as it lands (the feed is a
+polite live region), and replaying a shared link is held back until the rebuild is done
+instead of reading the whole journey back to back.
+
 ## Images
 `images/` is done for the intro, the win card, and the game-over card (real pixel art -
 leave those alone unless you want to redraw her). Of the 16 mid-game locations, **10 now use

@@ -841,7 +841,7 @@
     <div class="marquee-track">&#9733; HAPPY 40th BIRTHDAY AMANDA &#9733; THE FOURTH DECADE &#9733; FORTY IS A DOOR, NOT A WALL &#9733; WALK THROUGH IT &#9733; HAPPY 40th BIRTHDAY AMANDA &#9733; THE FOURTH DECADE &#9733; FORTY IS A DOOR, NOT A WALL &#9733; WALK THROUGH IT &#9733;</div>
   </div>
 
-  <div id="scene">
+    <div id="scene" aria-live="polite" aria-relevant="additions" aria-busy="false">
     <div id="scene-feed"></div>
   </div>
 
@@ -1314,6 +1314,10 @@ function replayLog(tokens) {
   // Muting the effects for the duration keeps a shared link from firing every
   // sound in the run at once.
   state.replaying = true;
+  // The feed is a live region; a replay appends the whole journey at once, so
+  // aria-busy holds the reader off until the rebuild is done. Same reasoning
+  // as silencing the sounds above.
+  sceneEl.setAttribute('aria-busy', 'true');
   try {
     for (const token of tokens) {
       if (state.ended) break;
@@ -1346,6 +1350,7 @@ function replayLog(tokens) {
     }
   } finally {
     state.replaying = false;
+    sceneEl.setAttribute('aria-busy', 'false');
   }
 }
 

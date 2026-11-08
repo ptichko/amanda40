@@ -91,6 +91,13 @@ outcomes, Oracle hints and highlights) is reproduced. Three consequences:
   `location.hash` fallback for environments where that throws. Keep it called from the
   same place as the `state.log.push`.
 
+The feed is a live region (`#scene` is `aria-live="polite"` with `aria-relevant="additions"`,
+so screen readers announce new cards as they land). `replayLog()` holds it at
+`aria-busy="true"` for the duration of a rebuild and releases it in the same `finally` that
+clears `state.replaying` — same reasoning as the silenced sounds: a replay would otherwise
+read the whole journey back to back. `test_replay.js` asserts the flips through
+`busyLog`, an aria-busy recorder that `dom_stub.js` wraps around `#scene`.
+
 ## Tests
 
 ```powershell

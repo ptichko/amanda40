@@ -109,6 +109,13 @@ r.equal(second.hash, first.hash, 'replay leaves the same hash behind');
 // A replay must be silent: it would otherwise fire every effect at once.
 r.equal(second.notes.length, 0, 'replaying a run makes no sound');
 
+// The same reasoning in a11y terms: the live region is held busy while the
+// whole journey is rebuilt, and released when the replay ends. The played run
+// (no replay) should never flip it at all.
+r.check(second.busyLog.indexOf('true') >= 0, 'a replay holds the live region busy');
+r.equal(second.busyLog[second.busyLog.length - 1], 'false', 'the live region is released after the replay');
+r.equal(first.busyLog.length, 0, 'an ordinary run never flips the live region');
+
 // A junk hash must not wedge the game.
 const junk = boot({ hash: '#seed=notanumber&choices=zz.9.-4.o' });
 r.check(junk.card() && !junk.card()._class.includes('end-entry'),

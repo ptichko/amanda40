@@ -132,9 +132,21 @@ function makeAudio(notes) {
 function boot(options) {
   const opts = options || {};
   const notes = [];
+  // Every aria-busy flip on the feed, in order. A live region gets held busy
+  // during a replay (a screen reader would otherwise read the whole journey
+  // back to back), so tests can assert the hold is taken and released.
+  const busyLog = [];
   const byId = {};
   ['scene', 'scene-feed', 'progress-fill', 'penalty-points', 'zone-markers', 'sound-toggle']
     .forEach(id => { byId[id] = makeNode(id === 'sound-toggle' ? 'button' : 'div'); });
+  {
+    const scene = byId.scene;
+    const origSet = scene.setAttribute.bind(scene);
+    scene.setAttribute = (k, v) => {
+      if (k === 'aria-busy') busyLog.push(String(v));
+      return origSet(k, v);
+    };
+  }
 
   const handlers = {};
   let hash = opts.hash || '';
@@ -166,7 +178,7 @@ function boot(options) {
   const feed = byId['scene-feed'];
 
   return {
-    sandbox, byId, feed, notes, loc,
+    sandbox, byId, feed, notes, loc, busyLog,
     // The bottom of the feed: whatever the player is looking at.
     card: () => feed.children[feed.children.length - 1] || null,
     // Every node in the tree matching a class name.

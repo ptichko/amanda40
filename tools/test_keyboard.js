@@ -43,6 +43,26 @@ g.key('z');
 g.key('9');
 r.equal(g.feed.children.length, before, 'stray keys do not change the feed');
 
+// Each choice button carries a key badge on the right. The keys stay
+// positional, so the badge is the bridge between the key-hints line and a
+// button: badges number the choices 1..n on screen, and pressing a number
+// selects the button whose badge reads that number.
+const bgRun = findSeedRun(page => page.findIn(page.card(), 'choice-btn').length >= 2);
+if (bgRun) {
+  const pg = bgRun.g;
+  const buttons = pg.findIn(pg.card(), 'choice-btn');
+  const badges = pg.findIn(pg.card(), 'choice-key').map(n => n._text);
+  r.equal(badges.length, buttons.length, 'every choice button carries a key badge');
+  r.equal(badges.join(' '), buttons.map((_, i) => String(i + 1)).join(' '),
+    'badges number the choices in on-screen order');
+  pg.key('2');
+  const chosen = pg.findIn(pg.card(), 'choice-btn')
+    .filter(b => String(b._class).includes('choice-selected'));
+  r.equal(chosen.length, 1, 'pressing 2 selects a choice');
+  const chosenBadge = chosen.length ? pg.findIn(chosen[0], 'choice-key') : [];
+  r.equal((chosenBadge[0] || {})._text, '2', 'the selected button is the one with badge 2');
+}
+
 // M mutes, and the label and aria-pressed follow.
 const toggle = g.byId['sound-toggle'];
 r.equal(toggle._text, 'sound on', 'the sound toggle starts on');

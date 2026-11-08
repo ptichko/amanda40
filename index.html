@@ -408,6 +408,27 @@
     animation: oracle-glow 1.1s ease-in-out infinite alternate;
   }
 
+  /* Key badge on the right of each choice: its 1-9 shortcut. The choices are
+     shuffled every run, so this - not the label - is the visible link between
+     the key hints line and the buttons. */
+  .choice-key {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1;
+    color: var(--accent);
+    border: 1px solid var(--silver-dark);
+    padding: 2px 5px;
+    background: var(--silver-light);
+  }
+
+  .choice-btn:hover .choice-key,
+  .choice-btn:focus-visible .choice-key {
+    color: #ffffff;
+    border-color: #ffffff;
+    background: transparent;
+  }
+
   .oracle-icon {
     display: inline-flex;
     flex-shrink: 0;
@@ -1346,6 +1367,15 @@ function replayLog(tokens) {
       const choice = location && location.choices[token];
       if (!choice || !entry) break;
 
+      // A live click marks the chosen button (selectChoice); a replay resolves
+      // instantly and skips that, so mark it here to keep a replayed card
+      // looking the same as the played one.
+      const marked = state.currentButtonMap && state.currentButtonMap.get(choice);
+      if (marked) {
+        marked.classList.add('choice-selected');
+        const fill = marked.querySelector('.choice-fill');
+        if (fill) fill.classList.add('choice-fill-active');
+      }
       resolveChoice(choice, entry, true);
     }
   } finally {
@@ -1373,6 +1403,10 @@ function newGame(options) {
     rng: makeRng(seed),
     log: [],
     currentEntry: null,
+    // The choice buttons of the current card, choice -> button. The replay
+    // uses it to mark the chosen button the way a live click would, since it
+    // resolves straight through resolveChoice and never calls selectChoice.
+    currentButtonMap: null,
     currentGate: null,
     replaying: false,
     introPlayed: false,
@@ -1824,14 +1858,21 @@ function appendLocationEntry(location) {
   sceneFeedEl.appendChild(entry);
 
   const buttonMap = new Map();
-  orderedChoices(location).forEach(choice => {
+  orderedChoices(location).forEach((choice, idx) => {
     const btn = el('button', 'choice-btn');
     btn.appendChild(el('span', 'choice-label', choice.label));
     btn.appendChild(el('span', 'choice-fill'));
+    // Key badge, kept after choice-fill so children[0] is still the label
+    // (that is what tests and the Oracle complaint read). It shows the 1-9
+    // shortcut for this button's on-screen position - which the shuffle makes
+    // the only coupling between the key hints and the buttons, so it follows
+    // the display order, not the order the choices are written in.
+    btn.appendChild(el('span', 'choice-key', String(idx + 1)));
     btn.addEventListener('click', () => selectChoice(choice, btn, buttonMap, entry));
     choicesEl.appendChild(btn);
     buttonMap.set(choice, btn);
   });
+  state.currentButtonMap = buttonMap;
 
   renderOracle(location, buttonMap, oracleEl);
   state.currentEntry = entry;

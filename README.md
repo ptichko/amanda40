@@ -89,7 +89,8 @@ as you get closer to forty.
 Click through, or use the keyboard: `1`–`9` pick a choice, `O` consults the Oracle, `ENTER`
 presses the last button (Continue, a zone gate, Play Again), `M` mutes. Whatever the
 keyboard is standing on shows a dotted, Win95-style focus box, so you can follow `1` `2` `3`
-by eye.
+by eye — and each choice button carries its shortcut as a small number badge on the right,
+because the choices shuffle every run.
 
 There are sound effects — a blip when you choose, a falling buzz when you stumble, a
 rising pair when something heals, a chime at a zone gate, and a short tune either way at

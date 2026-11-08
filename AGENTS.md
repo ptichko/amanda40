@@ -412,6 +412,10 @@ so adding one is a content change, not a test change.
   display-only, so don't "fix" this by sorting the content instead: the Oracle's highlight
   follows the *choice object* via `buttonMap`, and the run log records the index into
   `LOCATIONS`, not the position on screen. That's what keeps shared links replaying right.
+  The `choice-key` badge rides the display order — it shows the button's `1`-`9`
+  shortcut, which is positional by design — and `state.currentButtonMap` is how the
+  replay marks the chosen button the same way a live click does, since a replay resolves
+  through `resolveChoice` and never calls `selectChoice`.
 - Adding a zone needs no engine change - `renderZoneMarkers()` and
   `appendZoneTransitionEntry()` both read `ZONES` - but the new zone's `min`/`max` must
   keep the ranges contiguous.

@@ -45,7 +45,12 @@ function contentObject() {
 }
 
 function makeNode(tag) {
-  return {
+  // _class is the string every search reads (collect, querySelectorAll,
+  // tests inspecting _class directly), so classList keeps it in sync from a
+  // shared set. Before the sync, classes added after creation -- oracle
+  // highlights, the selected choice, choice-fill-active -- were invisible to
+  // the stub and to every test that drove the game by class.
+  const node = {
     tagName: tag,
     children: [],
     _class: '',
@@ -55,18 +60,37 @@ function makeNode(tag) {
     removed: false,
     handlers: {},
     attrs: {},
-    classList: {
-      _s: new Set(),
-      add(...c) { c.forEach(x => this._s.add(x)); },
-      remove(...c) { c.forEach(x => this._s.delete(x)); },
-      contains(c) { return this._s.has(c); },
+  };
+  const cls = new Set();
+  const sync = () => { node._class = [...cls].join(' '); };
+  node.classList = {
+    add(...c) { c.forEach(x => { if (x) cls.add(x); }); sync(); },
+    remove(...c) { c.forEach(x => cls.delete(x)); sync(); },
+    contains(c) { return cls.has(c); },
+  };
+  Object.defineProperty(node, 'className', {
+    get() { return node._class; },
+    set(v) {
+      cls.clear();
+      String(v).split(/\s+/).filter(Boolean).forEach(x => cls.add(x));
+      node._class = [...cls].join(' ');
     },
-    get className() { return this._class; },
-    set className(v) { this._class = v; },
-    get textContent() { return this._text; },
-    set textContent(v) { this._text = String(v); },
-    appendChild(c) { this.children.push(c); return c; },
-    remove() { this.removed = true; },
+  });
+  node.appendChild = c => { node.children.push(c); return c; };
+  node.remove = function () { node.removed = true; };
+  Object.defineProperty(node, 'textContent', {
+    get() { return node._text; },
+    set(v) { node._text = String(v); },
+  });
+  Object.defineProperties(node, {
+    scrollHeight: { get() { return 0; } },
+    lastElementChild: { get() { return node.children[node.children.length - 1] || null; } },
+    innerHTML: {
+      set(v) { node.children = []; },
+      get() { return ''; },
+    },
+  });
+  Object.assign(node, {
     addEventListener(ev, fn) { this.handlers[ev] = fn; },
     removeEventListener(ev) { delete this.handlers[ev]; },
     setAttribute(k, v) { this.attrs[k] = String(v); },
@@ -74,10 +98,6 @@ function makeNode(tag) {
     click() { if (this.handlers.click && !this.disabled) this.handlers.click(); },
     focus() {},
     scrollIntoView() {},
-    get scrollHeight() { return 0; },
-    get lastElementChild() { return this.children[this.children.length - 1] || null; },
-    set innerHTML(v) { this.children = []; },
-    get innerHTML() { return ''; },
     querySelector(sel) { return this.querySelectorAll(sel)[0] || null; },
     querySelectorAll(sel) {
       const want = String(sel).replace(/^\./, '');
@@ -90,7 +110,8 @@ function makeNode(tag) {
       }
       return out;
     },
-  };
+  });
+  return node;
 }
 
 // A fake Web Audio API that records the notes the game asks for, so sound

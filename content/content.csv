@@ -230,51 +230,51 @@ choice;loc_stonehillToEmerson;1;outcome_text;Everything was broken. Not even Jes
 choice;loc_stonehillToEmerson;2;label;Turn-down a full ride to Boston University and take a gap year.
 choice;loc_stonehillToEmerson;2;outcome_type;heal
 choice;loc_stonehillToEmerson;2;outcome_text;Universities just mean smaller fish in a bigger pond.
-location;loc_magnaCumLaude;;name;Magna Cum Laude
+location;loc_magnaCumLaude;;name;College Graduation
 location;loc_magnaCumLaude;;image;images/loc_magnaCumLaude.jpg
 location;loc_magnaCumLaude;;zone;3
 location;loc_magnaCumLaude;;weight;1
-location;loc_magnaCumLaude;;description;PLACEHOLDER: you graduated from Emerson, Magna Cum Laude, with a BFA in creative writing and a concentration in creative non-fiction and poetry. Both halves of it, in one degree.
-choice;loc_magnaCumLaude;0;label;Put creative non-fiction and poetry in the same degree
+location;loc_magnaCumLaude;;description;Time leave the ivory towers behind and make your mark on the word., Magna Cum Laude, with a BFA in creative writing and a concentration in creative non-fiction and poetry. Both halves of it, in one degree.
+choice;loc_magnaCumLaude;0;label;Combine creative non-fiction and poetry in the same degree and write that senior poetry thesis.
 choice;loc_magnaCumLaude;0;oracle_correct;true
 choice;loc_magnaCumLaude;0;outcome_type;normal
-choice;loc_magnaCumLaude;0;outcome_text;PLACEHOLDER: BFA, creative writing, concentrated in creative non-fiction and poetry. Magna Cum Laude.
-choice;loc_magnaCumLaude;1;label;Choose one and drop the other
+choice;loc_magnaCumLaude;0;outcome_text;I think you finished Magna Cum Laude., creative writing, concentrated in creative non-fiction and poetry. Magna Cum Laude.
+choice;loc_magnaCumLaude;1;label;Finish your major in social media marketing and start selling bubbly water.
 choice;loc_magnaCumLaude;1;outcome_type;penalty
-choice;loc_magnaCumLaude;1;outcome_text;PLACEHOLDER: you take the practical half. The other one keeps. It does not go anywhere.
-choice;loc_magnaCumLaude;2;label;Thank the teachers who wrote you a reference
+choice;loc_magnaCumLaude;1;outcome_text;No, no, no. The graveyard of empty cans didn't come until much later.
+choice;loc_magnaCumLaude;2;label;“I am flying into music” – you acted in your final college play with all the art kids.
 choice;loc_magnaCumLaude;2;outcome_type;heal
-choice;loc_magnaCumLaude;2;outcome_text;PLACEHOLDER: you kept the emails. You use them later, more than once.
+choice;loc_magnaCumLaude;2;outcome_text;Bill Knot would be proud., more than once.
 location;loc_wegoHealth;;name;WEGO Health, Somerville
 location;loc_wegoHealth;;image;images/loc_wegoHealth.svg
 location;loc_wegoHealth;;zone;3
 location;loc_wegoHealth;;weight;1
-location;loc_wegoHealth;;description;"PLACEHOLDER: April 2012, Somerville. Health Social Media writer at WEGO Health, and an advocate for Patient Leaders — the company that empowers health activists to help other people. Your article, ""Patient Leaders of Online Health Communities Discuss Patient to Patient Conversations on Clinical Trials"", ran in Monitor Magazine, the global voice of clinical research professionals. There is a copy of the magazine."
-choice;loc_wegoHealth;0;label;Write about patient leaders, for patient leaders
+location;loc_wegoHealth;;description;First big-girl job as a Health Social Media writer at WEGO Health. How are you going to change the healthcare industry?
+choice;loc_wegoHealth;0;label;" Your article, ""Patient Leaders of Online Health Communities Discuss Patient to Patient Conversations on Clinical Trials"", ran in Monitor Magazine, the global voice of clinical research professionals."
 choice;loc_wegoHealth;0;oracle_correct;true
 choice;loc_wegoHealth;0;outcome_type;normal
-choice;loc_wegoHealth;0;outcome_text;PLACEHOLDER: April 2012, Somerville. The Monitor article. There is a copy of the magazine.
-choice;loc_wegoHealth;1;label;Write the press release instead
+choice;loc_wegoHealth;0;outcome_text;The only time a BFA actually published a healthcare article., Somerville. The Monitor article. There is a copy of the magazine.
+choice;loc_wegoHealth;1;label;Create a network of twitter accounts of real patients that begin tweeting large health insurance companies to enact change., you saw the other side.
 choice;loc_wegoHealth;1;outcome_type;penalty
-choice;loc_wegoHealth;1;outcome_text;PLACEHOLDER: it goes out. Nobody has to think about it, which was never the point.
-choice;loc_wegoHealth;2;label;Let a patient leader read it before it runs
+choice;loc_wegoHealth;1;outcome_text;Remember Google Circles? You're early adoption tired to get patients the help they needed., which was never the point.
+choice;loc_wegoHealth;2;label;Google Circles was running itself in circles, but you're blogging help create a stronger health community.
 choice;loc_wegoHealth;2;outcome_type;heal
-choice;loc_wegoHealth;2;outcome_text;PLACEHOLDER: they change two sentences. Both of them are better.
+choice;loc_wegoHealth;2;outcome_text;A graveyard of empty bubble-waters cans or furthering your career in healthcare?
 location;loc_spindrift;;name;Spindrift, and Watertown
 location;loc_spindrift;;image;images/loc_spindrift.jpg
 location;loc_spindrift;;zone;3
 location;loc_spindrift;;weight;1
-location;loc_spindrift;;description;PLACEHOLDER: 2017, twice over. You started working at Spindrift Beverage Company, and later the same year you moved to Watertown, Massachusetts.
-choice;loc_spindrift;0;label;Take the job at Spindrift, and move to Watertown
+location;loc_spindrift;;description;2017: It's time to get out of your temp job at Boston Coach and land something bigger., twice over. You started working at Spindrift Beverage Company, and later the same year you moved to Watertown, Massachusetts.
+choice;loc_spindrift;0;label;The one time LinkedIn actually landed you a job. But bubble water? Seriously?, and move to Watertown
 choice;loc_spindrift;0;oracle_correct;true
 choice;loc_spindrift;0;outcome_type;normal
-choice;loc_spindrift;0;outcome_text;PLACEHOLDER: a new job, and a new town later in the same year. Both of them 2017.
-choice;loc_spindrift;1;label;Turn the offer down and stay where you are
+choice;loc_spindrift;0;outcome_text;Spindrift. Yup, that's it., and a new town later in the same year. Both of them 2017.
+choice;loc_spindrift;1;label;Remote work before it was cool. Big corporate life at Aetna.
 choice;loc_spindrift;1;outcome_type;penalty
-choice;loc_spindrift;1;outcome_text;PLACEHOLDER: the offer goes to somebody else. So, more or less, does Watertown.
-choice;loc_spindrift;2;label;Take the job and commute from where you already live
+choice;loc_spindrift;1;outcome_text;Remote work may not be the best for your propensity to nap., more or less, does Watertown.
+choice;loc_spindrift;2;label;Take Jenna's old job at Athena health. Nothing like a bit of nepotism.
 choice;loc_spindrift;2;outcome_type;heal
-choice;loc_spindrift;2;outcome_text;PLACEHOLDER: you keep the postcode you know, and learn the job twice as fast.
+choice;loc_spindrift;2;outcome_text;You had the interview, but you decided you were meant for different things., and learn the job twice as fast.
 location;loc_belmontFamily;;name;Belmont, 2020
 location;loc_belmontFamily;;image;images/loc_belmontFamily.svg
 location;loc_belmontFamily;;zone;3

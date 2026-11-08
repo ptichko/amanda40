@@ -182,6 +182,49 @@
     gap: 12px;
   }
 
+  /* The bar plus its zone-labels row stay one fixed-height block, so the
+     walker stays pinned to the track: labels live below in a second element
+     instead of inside .progress-wrap. */
+  .progress-col {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Tiny ruler under the track: one label at each zone's first step. */
+  #zone-labels {
+    position: relative;
+    height: 14px;
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--page-ink-dim);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .zone-label {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+  }
+
+  /* The first zone starts at the edge, so it is left-anchored instead of
+     half off the ruler. */
+  .zone-label.zone-label-first {
+    transform: none;
+  }
+
+  /* Step readout next to the penalty marks. */
+  .steps {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: var(--page-ink);
+    white-space: nowrap;
+  }
+
   .progress-wrap {
     position: relative;
     flex: 1;
@@ -868,17 +911,21 @@
 
   <div id="hud">
     <div class="hud-row">
-      <div class="progress-wrap">
-        <div class="progress-track">
-          <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
-          <div id="zone-markers"></div>
+      <div class="progress-col">
+        <div class="progress-wrap">
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+            <div id="zone-markers"></div>
+          </div>
+          <span class="progress-walker" id="progress-walker" aria-hidden="true">
+            <img src="images/walker_0.svg" alt="">
+            <img src="images/walker_1.svg" alt="">
+            <img src="images/walker_2.svg" alt="">
+          </span>
         </div>
-        <span class="progress-walker" id="progress-walker" aria-hidden="true">
-          <img src="images/walker_0.svg" alt="">
-          <img src="images/walker_1.svg" alt="">
-          <img src="images/walker_2.svg" alt="">
-        </span>
+        <div id="zone-labels" aria-hidden="true"></div>
       </div>
+      <div class="steps" id="steps">step 0 of 40</div>
       <div class="penalty-points" id="penalty-points"></div>
     </div>
   </div>
@@ -1211,6 +1258,8 @@ const progressWalkerEl = document.getElementById('progress-walker');
 const soundToggleEl = document.getElementById('sound-toggle');
 const penaltyPointsEl = document.getElementById('penalty-points');
 const zoneMarkersEl = document.getElementById('zone-markers');
+const zoneLabelsEl = document.getElementById('zone-labels');
+const stepsEl = document.getElementById('steps');
 
 // Creates an element, optionally setting its className and textContent.
 function el(tag, className, text) {
@@ -2097,6 +2146,17 @@ function renderZoneMarkers() {
     marker.title = `${zone.name} begins`;
     zoneMarkersEl.appendChild(marker);
   });
+
+  // The zone names as a ruler under the track, same positions as the markers:
+  // all zones labelled, the first anchored at the left edge instead of sucked
+  // half off it.
+  zoneLabelsEl.innerHTML = '';
+  ZONES.forEach(zone => {
+    const label = el('span',
+      'zone-label' + (zone.min === 0 ? ' zone-label-first' : ''), zone.name);
+    label.style.left = (zone.min / CONFIG.winDistance) * 100 + '%';
+    zoneLabelsEl.appendChild(label);
+  });
 }
 
 // How long Amanda keeps marching after the bar last moved.
@@ -2106,6 +2166,9 @@ let walkStopTimer;
 function updateProgressBar() {
   const pct = Math.min(100, (state.progress / CONFIG.winDistance) * 100);
   progressFillEl.style.width = pct + '%';
+  if (stepsEl) {
+    stepsEl.textContent = 'step ' + state.progress + ' of ' + CONFIG.winDistance;
+  }
   // Amanda stands on the leading edge of the fill. The clamp keeps her fully
   // inside the panel at 0% and 100% instead of hanging off either end.
   progressWalkerEl.style.left = 'clamp(12px, ' + pct + '%, calc(100% - 12px))';

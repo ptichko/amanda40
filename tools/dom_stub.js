@@ -158,7 +158,8 @@ function boot(options) {
   // back to back), so tests can assert the hold is taken and released.
   const busyLog = [];
   const byId = {};
-  ['scene', 'scene-feed', 'progress-fill', 'penalty-points', 'zone-markers', 'sound-toggle']
+  ['scene', 'scene-feed', 'progress-fill', 'penalty-points', 'zone-markers', 'zone-labels',
+    'steps', 'sound-toggle']
     .forEach(id => { byId[id] = makeNode(id === 'sound-toggle' ? 'button' : 'div'); });
   {
     const scene = byId.scene;

@@ -108,6 +108,9 @@ Every run is recorded in the address bar as `#seed=…&choices=…`, so you can:
 The end card lists the run's seed and shows a *View the album* button: every stop in the
 journey, with the ones you never reached greyed out.
 
+The HUD keeps you oriented: the walker sprite rides the bar, a ruler under it names the
+three eras at their first steps, and a `step N of 40` readout sits beside the Xs.
+
 If you play with a screen reader, each new card is announced as it lands (the feed is a
 polite live region), and replaying a shared link is held back until the rebuild is done
 instead of reading the whole journey back to back.

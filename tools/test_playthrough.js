@@ -9,7 +9,7 @@ const { boot, clickForward, contentObject, reporter } = require('./dom_stub');
 
 const r = reporter('playthrough');
 
-const { LOCATIONS, INTRO_SEQUENCE } = contentObject();
+const { CONFIG, LOCATIONS, INTRO_SEQUENCE, ZONES } = contentObject();
 const byName = new Map(LOCATIONS.map(l => [l.name, l]));
 
 // Plays like a person who knows the story: always takes the choice that really
@@ -121,6 +121,18 @@ r.check(knowing.cutscenes > 0, 'and there is at least one');
     'inside the last panel, not back on the intro card');
   r.check(g.byId['progress-fill'].style.width !== '0%',
     'and the bar moved with it (' + g.byId['progress-fill'].style.width + ')');
+  // The step readout says the same thing the bar does, in steps not percent.
+  const pct = Number(String(g.byId['progress-fill'].style.width).replace('%', ''));
+  const steps = Math.round(pct * CONFIG.winDistance / 100);
+  r.equal(g.byId['steps']._text, 'step ' + steps + ' of ' + CONFIG.winDistance,
+    'the step readout matches the bar (step ' + steps + ' of ' + CONFIG.winDistance + ')');
+  // The zone-labels ruler carries every zone's name, in zone order, at its
+  // own first step.
+  const labelEls = g.byId['zone-labels'].children;
+  r.equal(labelEls.length, ZONES.length,
+    'every zone gets a label on the ruler (' + labelEls.length + ')');
+  r.equal(labelEls.map(n => n._text).join(' | '), ZONES.map(z => z.name).join(' | '),
+    'the ruler labels the zones in order');
   r.check(g.card() && g.card()._class.includes('location-entry')
     && !g.card()._class.includes('cutscene-entry'),
     'then the first zone stop opens');

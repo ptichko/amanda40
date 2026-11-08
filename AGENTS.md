@@ -587,6 +587,10 @@ either.
 `updateProgressBar()` in the engine. Its `left` is clamped so she stays inside the panel
 at 0% and 100%. Three things to know:
 
+- The HUD row is `.progress-col` (bar + `#zone-labels` ruler) vs `#steps` vs
+  `#penalty-points`. The labels are a *sibling*, not a child of `.progress-wrap`, so the
+  wrap's height stays the track's — the walker `bottom: -2px` pins her to the track, not
+  to the labels row.
 - If you change the progress bar's height, check `.progress-walker` still lines up — the
   sprite is 24x31 and deliberately pokes a few pixels above the track.
 - Don't "fix" her by moving her into `.progress-track`; the track has `overflow: hidden`

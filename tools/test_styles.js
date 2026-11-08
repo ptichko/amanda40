@@ -48,7 +48,8 @@ for (const m of style.matchAll(/url\('([^']+)'\)/g)) {
 }
 
 // ---- the stylesheet is not accidentally scoped to a missing element ----
-for (const id of ['scene', 'scene-feed', 'hud', 'progress-fill', 'penalty-points', 'zone-markers']) {
+for (const id of ['scene', 'scene-feed', 'hud', 'progress-fill', 'penalty-points',
+  'zone-markers', 'zone-labels', 'steps']) {
   r.check(html.includes('id="' + id + '"'), 'markup still has #' + id);
 }
 

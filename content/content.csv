@@ -39,17 +39,17 @@ location;loc_rochesterFirstHome;;name;The First House, Rochester
 location;loc_rochesterFirstHome;;image;images/loc_rochesterFirstHome.jpg
 location;loc_rochesterFirstHome;;zone;1
 location;loc_rochesterFirstHome;;weight;1
-location;loc_rochesterFirstHome;;description;PLACEHOLDER: 1986 to 1991, the first house, in Rochester NH — the one with the porch you could see the river from. In 1991 you started kindergarten at Jack and Jill, in a yellow coat you refused to take off.
-choice;loc_rochesterFirstHome;0;label;Start kindergarten at Jack and Jill
+location;loc_rochesterFirstHome;;description;It's time to spread your wings and leave for school. Where are you headed first?
+choice;loc_rochesterFirstHome;0;label;Bring your third-grade-level reading skills to Jack and Jill kindergarten.
 choice;loc_rochesterFirstHome;0;oracle_correct;true
 choice;loc_rochesterFirstHome;0;outcome_type;normal
-choice;loc_rochesterFirstHome;0;outcome_text;PLACEHOLDER: four years old, and the teacher says your name back to you.
-choice;loc_rochesterFirstHome;1;label;Hide behind the coat rack until the second bell
+choice;loc_rochesterFirstHome;0;outcome_text;That's right. Jack and Jill were focused on scaling that hill, while you were reading chapter books for breakfast.
+choice;loc_rochesterFirstHome;1;label;Hone your natural craft and artistic abilities at Rochester Montessori.
 choice;loc_rochesterFirstHome;1;outcome_type;penalty
-choice;loc_rochesterFirstHome;1;outcome_text;PLACEHOLDER: it works for eleven minutes.
-choice;loc_rochesterFirstHome;2;label;Say your name to everyone in the room, twice
+choice;loc_rochesterFirstHome;1;outcome_text;Don't cry over spilled paint. The closet Montessori was in Boston.
+choice;loc_rochesterFirstHome;2;label;Mimi's home school provides the best, tailored education for your growing mind.
 choice;loc_rochesterFirstHome;2;outcome_type;heal
-choice;loc_rochesterFirstHome;2;outcome_text;PLACEHOLDER: the room says it back. Something settles.
+choice;loc_rochesterFirstHome;2;outcome_text;Not quite, but we all know Mimi helped prepare you for academic succession years before kindergarten.
 location;loc_stElizabethSeton;;name;St. Elizabeth Seton School
 location;loc_stElizabethSeton;;image;images/loc_stElizabethSeton.svg
 location;loc_stElizabethSeton;;zone;1

@@ -28,11 +28,11 @@ intro_panel;;0;title;How this game works
 intro_panel;;0;caption;Four rules, and then the birthday adventure begins.
 intro_panel;;0;button;Continue
 panel_bullet;0;0;text;Every stop is a place from your last forty years. You get two or three choices about what happened there and you pick one.
-panel_bullet;0;1;text;One choice at each stop is the one that really happened. Press O and the Oracle will point straight at it every time., and she is never wrong.
+panel_bullet;0;1;text;One choice at each stop is the one that really happened. Press O and the Oracle will point straight at it every time, and she is never wrong.
 panel_bullet;0;2;text;The bar along the top is the journey. Forty steps takes you all the way to the finish, and three stumbles end it early.
 panel_bullet;0;3;text;Nothing is lost if you get it wrong. The address bar keeps the whole run, so you can copy the link and walk it again exactly.
 intro_panel;;1;image;images/cutscene_birth.jpg
-intro_panel;;1;title; Wentworth Douglass Hospital in Dover NH., 1986
+intro_panel;;1;title; Wentworth Douglass Hospital in Dover NH, 1986
 intro_panel;;1;caption;The first room you were ever in, and then the long drive home to Rochester with a new person in the back seat.
 intro_panel;;1;button;Continue
 location;loc_rochesterFirstHome;;name;The First Four Walls and Roof Over Your head
@@ -211,8 +211,8 @@ choice;loc_theNationalAnthem;0;outcome_type;normal
 choice;loc_theNationalAnthem;0;outcome_text;God bless America and god bless the private lives of teenagers.
 choice;loc_theNationalAnthem;1;label;Arrive 15 minutes after the start time, forcing you to walk down the aisle with Mr. Roberts.
 choice;loc_theNationalAnthem;1;outcome_type;penalty
-choice;loc_theNationalAnthem;1;outcome_text;Turn back old man
-choice;loc_theNationalAnthem;2;label;Ghost write your valedictory speech slipping in one joke about principal Barker.
+choice;loc_theNationalAnthem;1;outcome_text;Turn back, old man
+choice;loc_theNationalAnthem;2;label;Ghost write your valedictory speech, slipping in one joke about principal Barker.
 choice;loc_theNationalAnthem;2;outcome_type;heal
 choice;loc_theNationalAnthem;2;outcome_text;Mr. Miller loved your writing: why not an entire audience of graduates?
 location;loc_stonehillToEmerson;;name;Stonehill to Emerson

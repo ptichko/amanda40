@@ -984,8 +984,8 @@ const ZONES = [
 // getCorrectChoice below), so there is no accuracy roll to tune.
 const ORACLE_HINTS = [
   { text: "PLACEHOLDER: the Oracle taps the card without looking at it. \"That one. I remember.\"" },
-  { text: "PLACEHOLDER: the Oracle reads her own handwriting twice  and underlines the same line both times." },
-  { text: "PLACEHOLDER: the Oracle is reading from a different decade entirely  and still lands on the right one." },
+  { text: "PLACEHOLDER: the Oracle reads her own handwriting twice, and underlines the same line both times." },
+  { text: "PLACEHOLDER: the Oracle is reading from a different decade entirely, and still lands on the right one." },
   { text: "PLACEHOLDER: the Oracle closes the book and says the same thing she said last time." }
 ];
 
@@ -1005,8 +1005,8 @@ const ORACLE_HINTS = [
 // zone-based selection (pickNextLocation) -- newGame() always sends the
 // player here first.
 const INTRO_LOCATION = {
-  id: "loc_intro", name: "Happy 40th  Amanda!", image: "images/loc_intro.svg",
-  description: "Amanda's 40 years  in 3 parts. Play through the adventure and see if you can make it to the birthday party!",
+  id: "loc_intro", name: "Happy 40th, Amanda!", image: "images/loc_intro.svg",
+  description: "Amanda's 40 years, in 3 parts. Play through the adventure and see if you can make it to the birthday party!",
   choices: [
     { label: "Begin the journey", outcome: { type: "normal", text: "A baby is born..." } },
   ],
@@ -1024,19 +1024,19 @@ const INTRO_LOCATION = {
 const INTRO_SEQUENCE = [
   {
     title: "How this game works",
-    caption: "Four rules  and then the birthday adventure begins.",
+    caption: "Four rules, and then the birthday adventure begins.",
     bullets: [
       "Every stop is a place from your last forty years. You get two or three choices about what happened there and you pick one.",
       "One choice at each stop is the one that really happened. Press O and the Oracle will point straight at it every time., and she is never wrong.",
-      "The bar along the top is the journey. Forty steps takes you all the way to the finish  and three stumbles end it early.",
-      "Nothing is lost if you get it wrong. The address bar keeps the whole run  so you can copy the link and walk it again exactly."
+      "The bar along the top is the journey. Forty steps takes you all the way to the finish, and three stumbles end it early.",
+      "Nothing is lost if you get it wrong. The address bar keeps the whole run, so you can copy the link and walk it again exactly."
     ],
     button: "Continue",
   },
   {
     image: "images/cutscene_birth.jpg",
     title: " Wentworth Douglass Hospital in Dover NH., 1986",
-    caption: "The first room you were ever in  and then the long drive home to Rochester with a new person in the back seat.",
+    caption: "The first room you were ever in, and then the long drive home to Rochester with a new person in the back seat.",
     button: "Continue",
   }
 ];
@@ -1170,7 +1170,7 @@ const LOCATIONS = [
     zone: 2, weight: 1,
     choices: [
       { label: "Take the microphone and belt out the National Anthem Wait – didn't you tell your parents?", oracleCorrect: true, outcome: { type: "normal", text: "God bless America and god bless the private lives of teenagers." } },
-      { label: "Arrive 15 minutes after the start time  forcing you to walk down the aisle with Mr. Roberts.", outcome: { type: "penalty", text: "Turn back old man" } },
+      { label: "Arrive 15 minutes after the start time, forcing you to walk down the aisle with Mr. Roberts.", outcome: { type: "penalty", text: "Turn back old man" } },
       { label: "Ghost write your valedictory speech slipping in one joke about principal Barker.", outcome: { type: "heal", text: "Mr. Miller loved your writing: why not an entire audience of graduates?" } }
     ],
   },
@@ -1241,7 +1241,7 @@ const END_TEXT = {
   },
 };
 
-/* content-hash: 6e26ca3192481ce4115761f923de850b43361108a17751082fee66b82276fafd */
+/* content-hash: 511cc86e417711c0bdfb532ba66254e1654abc1166708a644ca357fe9e5e8545 */
 
 /* == END GENERATED CONTENT == */
 

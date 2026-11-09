@@ -984,8 +984,8 @@ const ZONES = [
 // getCorrectChoice below), so there is no accuracy roll to tune.
 const ORACLE_HINTS = [
   { text: "PLACEHOLDER: the Oracle taps the card without looking at it. \"That one. I remember.\"" },
-  { text: "PLACEHOLDER: the Oracle reads her own handwriting twice, and underlines the same line both times." },
-  { text: "PLACEHOLDER: the Oracle is reading from a different decade entirely, and still lands on the right one." },
+  { text: "PLACEHOLDER: the Oracle reads her own handwriting twice  and underlines the same line both times." },
+  { text: "PLACEHOLDER: the Oracle is reading from a different decade entirely  and still lands on the right one." },
   { text: "PLACEHOLDER: the Oracle closes the book and says the same thing she said last time." }
 ];
 
@@ -1005,8 +1005,8 @@ const ORACLE_HINTS = [
 // zone-based selection (pickNextLocation) -- newGame() always sends the
 // player here first.
 const INTRO_LOCATION = {
-  id: "loc_intro", name: "Happy 40th, Amanda!", image: "images/loc_intro.svg",
-  description: "Amanda's 40 years, in 3 parts. Play through the adventure and see if you can make it to the birthday party!",
+  id: "loc_intro", name: "Happy 40th  Amanda!", image: "images/loc_intro.svg",
+  description: "Amanda's 40 years  in 3 parts. Play through the adventure and see if you can make it to the birthday party!",
   choices: [
     { label: "Begin the journey", outcome: { type: "normal", text: "A baby is born..." } },
   ],
@@ -1023,20 +1023,20 @@ const INTRO_LOCATION = {
 // is a plain list of lines rendered as a list under the caption.
 const INTRO_SEQUENCE = [
   {
-    title: "How this works",
-    caption: "Four things, and then the birthday adventure begins.",
+    title: "How this game works",
+    caption: "Four rules  and then the birthday adventure begins.",
     bullets: [
-      "Every stop is a place from your last forty years. You get two or three choices about what happened there, and you pick one.",
-      "One choice at each stop is the one that really happened. Press O and the Oracle will point straight at it, every time, and she is never wrong.",
-      "The bar along the top is the journey. Forty steps takes you all the way to the finish, and three stumbles end it early.",
-      "Nothing is lost if you get it wrong. The address bar keeps the whole run, so you can copy the link and walk it again exactly."
+      "Every stop is a place from your last forty years. You get two or three choices about what happened there and you pick one.",
+      "One choice at each stop is the one that really happened. Press O and the Oracle will point straight at it every time., and she is never wrong.",
+      "The bar along the top is the journey. Forty steps takes you all the way to the finish  and three stumbles end it early.",
+      "Nothing is lost if you get it wrong. The address bar keeps the whole run  so you can copy the link and walk it again exactly."
     ],
     button: "Continue",
   },
   {
     image: "images/cutscene_birth.jpg",
-    title: "PLACEHOLDER: Wentworth Douglass Hospital, Dover NH, 1986",
-    caption: "PLACEHOLDER: the first room you were ever in, and then the long drive home to Rochester with a new person in the back seat.",
+    title: " Wentworth Douglass Hospital in Dover NH., 1986",
+    caption: "The first room you were ever in  and then the long drive home to Rochester with a new person in the back seat.",
     button: "Continue",
   }
 ];
@@ -1054,8 +1054,8 @@ const INTRO_SEQUENCE = [
 const LOCATIONS = [
   // --- Zone 1: Childhood (0-13) ---
   {
-    id: "loc_rochesterFirstHome", name: "The First House, Rochester", image: "images/loc_rochesterFirstHome.jpg",
-    description: "It's time to spread your wings and leave for school. Where are you headed first?",
+    id: "loc_rochesterFirstHome", name: "The First Four Walls and Roof Over Your head", image: "images/loc_rochesterFirstHome.jpg",
+    description: "You're a family of 3. For now...how will you e",
     zone: 1, weight: 1,
     choices: [
       { label: "Bring your third-grade-level reading skills to Jack and Jill kindergarten.", oracleCorrect: true, outcome: { type: "normal", text: "That's right. Jack and Jill were focused on scaling that hill, while you were reading chapter books for breakfast." } },
@@ -1170,8 +1170,8 @@ const LOCATIONS = [
     zone: 2, weight: 1,
     choices: [
       { label: "Take the microphone and belt out the National Anthem Wait – didn't you tell your parents?", oracleCorrect: true, outcome: { type: "normal", text: "God bless America and god bless the private lives of teenagers." } },
-      { label: "Arrive 15 minutes after the start time, forcing you to walk down the aisle with Mr. Roberts.", outcome: { type: "penalty", text: "Turn back, old man." } },
-      { label: "Ghost write your valedictory speech, slipping in one joke about principal Barker.", outcome: { type: "heal", text: "Mr. Miller loved your writing: why not an entire audience of graduates?" } }
+      { label: "Arrive 15 minutes after the start time  forcing you to walk down the aisle with Mr. Roberts.", outcome: { type: "penalty", text: "Turn back old man" } },
+      { label: "Ghost write your valedictory speech slipping in one joke about principal Barker.", outcome: { type: "heal", text: "Mr. Miller loved your writing: why not an entire audience of graduates?" } }
     ],
   },
   // --- Zone 3: Grown Up (27-40) ---
@@ -1212,7 +1212,7 @@ const LOCATIONS = [
     choices: [
       { label: "The one time LinkedIn actually landed you a job. But bubble water? Seriously?, and move to Watertown", oracleCorrect: true, outcome: { type: "normal", text: "Spindrift. Yup, that's it., and a new town later in the same year. Both of them 2017." } },
       { label: "Remote work before it was cool. Big corporate life at Aetna.", outcome: { type: "penalty", text: "Remote work may not be the best for your propensity to nap., more or less, does Watertown." } },
-      { label: "Take Jenna's old job at Athena health. Nothing like a bit of nepotism.", outcome: { type: "heal", text: "You had the interview, but you decided you were meant for different things., and learn the job twice as fast." } }
+      { label: "Take Jenna's old job at Athena health. Nothing like a bit of nepotism.", outcome: { type: "heal", text: "You had the interview but you decided you were meant for different things., and learn the job twice as fast." } }
     ],
   },
   {
@@ -1241,7 +1241,7 @@ const END_TEXT = {
   },
 };
 
-/* content-hash: 958efbdccdbf3e31f23faad45cefbd13616ca66f2a33a175161ec24a3c14269e */
+/* content-hash: 6e26ca3192481ce4115761f923de850b43361108a17751082fee66b82276fafd */
 
 /* == END GENERATED CONTENT == */
 

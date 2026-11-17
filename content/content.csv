@@ -39,8 +39,8 @@ location;loc_rochesterFirstHome;;name;The First Four Walls and Roof Over Your he
 location;loc_rochesterFirstHome;;image;images/loc_rochesterFirstHome.jpg
 location;loc_rochesterFirstHome;;zone;1
 location;loc_rochesterFirstHome;;weight;1
-location;loc_rochesterFirstHome;;description;You're a family of 3. For now...how will you e
-choice;loc_rochesterFirstHome;0;label;Bring your third-grade-level reading skills to Jack and Jill kindergarten.
+location;loc_rochesterFirstHome;;description;You're a family of 3. How will you show off your precocious mind, before the siblings arrive?
+choice;loc_rochesterFirstHome;0;label;Bring your third-grade-level reading skills to Jack and Jill kindergarten. You're so smart, you did kindergarten twice, right?
 choice;loc_rochesterFirstHome;0;oracle_correct;true
 choice;loc_rochesterFirstHome;0;outcome_type;normal
 choice;loc_rochesterFirstHome;0;outcome_text;That's right. Jack and Jill were focused on scaling that hill, while you were reading chapter books for breakfast.
@@ -49,7 +49,7 @@ choice;loc_rochesterFirstHome;1;outcome_type;penalty
 choice;loc_rochesterFirstHome;1;outcome_text;Don't cry over spilled paint. The closet Montessori was in Boston.
 choice;loc_rochesterFirstHome;2;label;Mimi's home school provides the best, tailored education for your growing mind.
 choice;loc_rochesterFirstHome;2;outcome_type;heal
-choice;loc_rochesterFirstHome;2;outcome_text;Not quite, but we all know Mimi helped prepare you for academic succession years before kindergarten.
+choice;loc_rochesterFirstHome;2;outcome_text;Not quite, but we all know Mimi helped prepare you for academic success years before kindergarten.
 location;loc_stElizabethSeton;;name;St. Elizabeth Seton School
 location;loc_stElizabethSeton;;image;images/loc_stElizabethSeton.svg
 location;loc_stElizabethSeton;;zone;1
@@ -69,17 +69,17 @@ location;loc_theMoveToStrafford;;name;The Move to Strafford
 location;loc_theMoveToStrafford;;image;images/loc_theMoveToStrafford.jpg
 location;loc_theMoveToStrafford;;zone;1
 location;loc_theMoveToStrafford;;weight;1
-location;loc_theMoveToStrafford;;description;PLACEHOLDER: 1993. Rochester to Strafford, in a car with more boxes than seats. Strafford Elementary from kindergarten all the way through eighth grade — the longest address you ever had.
-choice;loc_theMoveToStrafford;0;label;Unpack the box marked KEEP FIRST
+location;loc_theMoveToStrafford;;description;Rochester to Strafford, the longest address you ever had. How will you spend your days at the new house?
+choice;loc_theMoveToStrafford;0;label;School, home, draw, Delilah on the radio, sleep, repeat.
 choice;loc_theMoveToStrafford;0;oracle_correct;true
 choice;loc_theMoveToStrafford;0;outcome_type;normal
-choice;loc_theMoveToStrafford;0;outcome_text;PLACEHOLDER: books, the good blanket, the tape player. First night, first order of business.
-choice;loc_theMoveToStrafford;1;label;Unpack the box marked THROW AWAY FIRST
+choice;loc_theMoveToStrafford;0;outcome_text;A creature of habit or managing your nervous system through art?
+choice;loc_theMoveToStrafford;1;label;Explore the local woods with your brothers. Remember that time you found an old abandonded tree house?
 choice;loc_theMoveToStrafford;1;outcome_type;penalty
-choice;loc_theMoveToStrafford;1;outcome_text;PLACEHOLDER: you break something irreplaceable before the first school day.
-choice;loc_theMoveToStrafford;2;label;Introduce yourself to a neighbour before you unpack
+choice;loc_theMoveToStrafford;1;outcome_text;This is not a scene from the Blair Witch project.
+choice;loc_theMoveToStrafford;2;label;Befriend your neighbor's horse and eventually take riding lessons right next door.
 choice;loc_theMoveToStrafford;2;outcome_type;heal
-choice;loc_theMoveToStrafford;2;outcome_text;PLACEHOLDER: by Sunday you have a house key that is not yours.
+choice;loc_theMoveToStrafford;2;outcome_text;A pleasant idea, but you were never a horse girl.
 location;loc_theTalentShow;;name;The Strafford Elementary Talent Show
 location;loc_theTalentShow;;image;images/loc_theTalentShow.jpg
 location;loc_theTalentShow;;zone;1
@@ -125,36 +125,36 @@ choice;loc_piscataquaYouthPlayers;1;outcome_text;Incorrect. You were made for th
 choice;loc_piscataquaYouthPlayers;2;label;A rabbit? You sat this one out and played Lucy Oopma Loompa in Charlie and the Chocolate Factory instead.
 choice;loc_piscataquaYouthPlayers;2;outcome_type;heal
 choice;loc_piscataquaYouthPlayers;2;outcome_text;You rose the occasion and did both. A true rising star.
-location;loc_theFamilyTrips;;name;Disney World, Jellystone, Poland Springs
+location;loc_theFamilyTrips;;name;Family Trips
 location;loc_theFamilyTrips;;image;images/loc_theFamilyTrips.svg
 location;loc_theFamilyTrips;;zone;1
 location;loc_theFamilyTrips;;weight;1
-location;loc_theFamilyTrips;;description;PLACEHOLDER: the three places you asked to go back to. Disney World in Orlando, Jellystone Campground in New Hampshire, and your grandparents' camp at Poland Springs, Maine — same camp, same rock, every summer for years.
-choice;loc_theFamilyTrips;0;label;Swim at Jellystone every single morning
+location;loc_theFamilyTrips;;description;Time flies, but the nostolgia for your old family trips never dies. What were those memorable trips from your childhood?
+choice;loc_theFamilyTrips;0;label;Disney World, Jellystone, Poland Springs
 choice;loc_theFamilyTrips;0;oracle_correct;true
 choice;loc_theFamilyTrips;0;outcome_type;normal
-choice;loc_theFamilyTrips;0;outcome_text;PLACEHOLDER: the water is cold, and you were in it before breakfast. Every day.
-choice;loc_theFamilyTrips;1;label;Ride the biggest one at Disney World, twice
+choice;loc_theFamilyTrips;0;outcome_text;The holy trinity of childhood fun.
+choice;loc_theFamilyTrips;1;label;Disney World, Cape Cod, Baileys
 choice;loc_theFamilyTrips;1;outcome_type;normal
-choice;loc_theFamilyTrips;1;outcome_text;PLACEHOLDER: twice, because the first time you were too small to remember it.
-choice;loc_theFamilyTrips;2;label;Go back to the same spot at Poland Springs every year
+choice;loc_theFamilyTrips;1;outcome_text;Cape cod? That didn't become a summer tradition until your 30s.
+choice;loc_theFamilyTrips;2;label;Disney World, Universal Studio, Santa's Village
 choice;loc_theFamilyTrips;2;outcome_type;heal
-choice;loc_theFamilyTrips;2;outcome_text;PLACEHOLDER: the same rock, the same view, the same people already waiting.
-location;loc_destinationImagination;;name;Destination Imagination, First Place
+choice;loc_theFamilyTrips;2;outcome_text;An amusement park dedicated to Christmas? Sounds like your kind of hell.
+location;loc_destinationImagination;;name;Destination Imagination
 location;loc_destinationImagination;;image;images/loc_destinationImagination.svg
 location;loc_destinationImagination;;zone;2
 location;loc_destinationImagination;;weight;1
-location;loc_destinationImagination;;description;PLACEHOLDER: March 2000. Your Destination Imagination team took first place, and you were three hundred miles away at your brother's hockey tournament in Pennsylvania. Train from Philadelphia to Boston, bus to Portsmouth, Aunt Lynne waiting at Kingswood High School in Wolfeboro. You flew back for the rest of the tournament and were told at the rink. There is a newspaper article.
-choice;loc_destinationImagination;0;label;Take the train, then the bus, to get there in time
+location;loc_destinationImagination;;description;Your brother's hockey tournament is in PA, but your team is competing in Destination Imagination back in NH! What's a creative-problem solver to do?
+choice;loc_destinationImagination;0;label;Take the train from Philadelphia to Boston, bus to Portsmouth, and meet Aunt Lynne waiting at Kingswood High School in Wolfeboro.
 choice;loc_destinationImagination;0;oracle_correct;true
 choice;loc_destinationImagination;0;outcome_type;normal
-choice;loc_destinationImagination;0;outcome_text;PLACEHOLDER: Philadelphia to Boston to Portsmouth, and Aunt Lynne at the school gates. You make it.
-choice;loc_destinationImagination;1;label;Stay at the tournament and miss it
+choice;loc_destinationImagination;0;outcome_text;You flew back for the rest of the tournament and were told at the rink you won first place.
+choice;loc_destinationImagination;1;label;Stay at the tournament and miss the competition. Find out later on the rink that your team won first place!
 choice;loc_destinationImagination;1;outcome_type;penalty
-choice;loc_destinationImagination;1;outcome_text;PLACEHOLDER: you hear about first place in a car park, a week later, out of somebody else's newspaper.
-choice;loc_destinationImagination;2;label;Carry the trophy home down the aisle yourself
+choice;loc_destinationImagination;1;outcome_text;You'd never sit on the bleachers of a hockey game, while your team takes the gold without you. 
+choice;loc_destinationImagination;2;label;Watch your brother win the hockey tournament then catch a direct fly from PA to NH. Whew. You barely made it to your competition.
 choice;loc_destinationImagination;2;outcome_type;heal
-choice;loc_destinationImagination;2;outcome_text;PLACEHOLDER: trophy on your lap, Portland to Philadelphia. Nobody says a word the whole way.
+choice;loc_destinationImagination;2;outcome_text;It's good to support your siblings, but don't forget your own competition!
 location;loc_storiesAreMadeThatWay;;name;"""Stories Are Made That Way"""
 location;loc_storiesAreMadeThatWay;;image;images/loc_storiesAreMadeThatWay.jpg
 location;loc_storiesAreMadeThatWay;;zone;2
@@ -182,7 +182,7 @@ choice;loc_theLeadershipConference;0;outcome_text;Boom. Ready to climb the corpo
 choice;loc_theLeadershipConference;1;label;Melted scoops and dropped cones. An unforgettable summer at the Rochester Dairy Queen.
 choice;loc_theLeadershipConference;1;outcome_type;penalty
 choice;loc_theLeadershipConference;1;outcome_text;You dropped too many cones, my dear.
-choice;loc_theLeadershipConference;2;label;Maple Haven sleep-away camp for you. It's time to hae your own wet, hot, American summer.
+choice;loc_theLeadershipConference;2;label;Maple Haven sleep-away camp for you. It's time to have your own wet, hot, American summer.
 choice;loc_theLeadershipConference;2;outcome_type;heal
 choice;loc_theLeadershipConference;2;outcome_text;Sigh. Watching a movie about camp, just isn't the same as living it, right?
 location;loc_editorsChoicePoetry;;name;Editor's Choice, Achievement in Poetry
@@ -242,7 +242,7 @@ choice;loc_magnaCumLaude;0;outcome_text;I think you finished Magna Cum Laude., c
 choice;loc_magnaCumLaude;1;label;Finish your major in social media marketing and start selling bubbly water.
 choice;loc_magnaCumLaude;1;outcome_type;penalty
 choice;loc_magnaCumLaude;1;outcome_text;No, no, no. The graveyard of empty cans didn't come until much later.
-choice;loc_magnaCumLaude;2;label;“I am flying into music” – you acted in your final college play with all the art kids.
+choice;loc_magnaCumLaude;2;label;“I am flying into myelf” – you acted in your final college play with all the art kids.
 choice;loc_magnaCumLaude;2;outcome_type;heal
 choice;loc_magnaCumLaude;2;outcome_text;Bill Knot would be proud., more than once.
 location;loc_wegoHealth;;name;WEGO Health, Somerville
@@ -279,17 +279,17 @@ location;loc_belmontFamily;;name;Belmont, 2020
 location;loc_belmontFamily;;image;images/loc_belmontFamily.svg
 location;loc_belmontFamily;;zone;3
 location;loc_belmontFamily;;weight;1
-location;loc_belmontFamily;;description;PLACEHOLDER: 2020. You started a family, and moved to Belmont, Massachusetts.
-choice;loc_belmontFamily;0;label;Start a family, and move to Belmont
+location;loc_belmontFamily;;description;2020: The year of the pandemic. How will you cope?
+choice;loc_belmontFamily;0;label;Start a family and move to a new neighborhood only a mile away.
 choice;loc_belmontFamily;0;oracle_correct;true
 choice;loc_belmontFamily;0;outcome_type;normal
-choice;loc_belmontFamily;0;outcome_text;PLACEHOLDER: 2020, two enormous things at once, and a new postcode to learn on the way.
-choice;loc_belmontFamily;1;label;Wait a year, and do one thing at a time
+choice;loc_belmontFamily;0;outcome_text;Why let a global pandemic hold your life back?
+choice;loc_belmontFamily;1;label;Stay inside and finally watch all of the Harry Potter movies. Hey, there was nothing else to do.
 choice;loc_belmontFamily;1;outcome_type;penalty
-choice;loc_belmontFamily;1;outcome_text;PLACEHOLDER: the year goes differently. Belmont happens without you.
-choice;loc_belmontFamily;2;label;Move first, and let the rest follow
+choice;loc_belmontFamily;1;outcome_text;JK Rowling is canceled.
+choice;loc_belmontFamily;2;label;Start a family, but move into the dream condo you've been eyeing.
 choice;loc_belmontFamily;2;outcome_type;heal
-choice;loc_belmontFamily;2;outcome_text;PLACEHOLDER: you learn the town while there is nothing else on your mind.
+choice;loc_belmontFamily;2;outcome_text;Forever browsing on Redfin and Zillow, but have you really found your dream condo?
 end;win;;title;The Fourth Decade
 end;win;;goodMessage;PLACEHOLDER: forty, and the road still going. Every stop on it is yours: the first house in Rochester, a yellow coat, a talent show on somebody's video tape, a train from Philadelphia, a cake with the candles knocked over on the ground, and a great deal of work done on behalf of other people. The Oracle puts the book away.
 end;win;;badMessage;PLACEHOLDER: forty, with a coin left at the shrine out of habit. Somebody has to move the shrine before the next traveller gets there. You do it yourself, and it is very funny.

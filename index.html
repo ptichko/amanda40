@@ -1055,12 +1055,12 @@ const LOCATIONS = [
   // --- Zone 1: Childhood (0-13) ---
   {
     id: "loc_rochesterFirstHome", name: "The First Four Walls and Roof Over Your head", image: "images/loc_rochesterFirstHome.jpg",
-    description: "You're a family of 3. For now...how will you e",
+    description: "You're a family of 3. How will you show off your precocious mind, before the siblings arrive?",
     zone: 1, weight: 1,
     choices: [
-      { label: "Bring your third-grade-level reading skills to Jack and Jill kindergarten.", oracleCorrect: true, outcome: { type: "normal", text: "That's right. Jack and Jill were focused on scaling that hill, while you were reading chapter books for breakfast." } },
+      { label: "Bring your third-grade-level reading skills to Jack and Jill kindergarten. You're so smart, you did kindergarten twice, right?", oracleCorrect: true, outcome: { type: "normal", text: "That's right. Jack and Jill were focused on scaling that hill, while you were reading chapter books for breakfast." } },
       { label: "Hone your natural craft and artistic abilities at Rochester Montessori.", outcome: { type: "penalty", text: "Don't cry over spilled paint. The closet Montessori was in Boston." } },
-      { label: "Mimi's home school provides the best, tailored education for your growing mind.", outcome: { type: "heal", text: "Not quite, but we all know Mimi helped prepare you for academic succession years before kindergarten." } }
+      { label: "Mimi's home school provides the best, tailored education for your growing mind.", outcome: { type: "heal", text: "Not quite, but we all know Mimi helped prepare you for academic success years before kindergarten." } }
     ],
   },
   {
@@ -1075,12 +1075,12 @@ const LOCATIONS = [
   },
   {
     id: "loc_theMoveToStrafford", name: "The Move to Strafford", image: "images/loc_theMoveToStrafford.jpg",
-    description: "PLACEHOLDER: 1993. Rochester to Strafford, in a car with more boxes than seats. Strafford Elementary from kindergarten all the way through eighth grade — the longest address you ever had.",
+    description: "Rochester to Strafford, the longest address you ever had. How will you spend your days at the new house?",
     zone: 1, weight: 1,
     choices: [
-      { label: "Unpack the box marked KEEP FIRST", oracleCorrect: true, outcome: { type: "normal", text: "PLACEHOLDER: books, the good blanket, the tape player. First night, first order of business." } },
-      { label: "Unpack the box marked THROW AWAY FIRST", outcome: { type: "penalty", text: "PLACEHOLDER: you break something irreplaceable before the first school day." } },
-      { label: "Introduce yourself to a neighbour before you unpack", outcome: { type: "heal", text: "PLACEHOLDER: by Sunday you have a house key that is not yours." } }
+      { label: "School, home, draw, Delilah on the radio, sleep, repeat.", oracleCorrect: true, outcome: { type: "normal", text: "A creature of habit or managing your nervous system through art?" } },
+      { label: "Explore the local woods with your brothers. Remember that time you found an old abandonded tree house?", outcome: { type: "penalty", text: "This is not a scene from the Blair Witch project." } },
+      { label: "Befriend your neighbor's horse and eventually take riding lessons right next door.", outcome: { type: "heal", text: "A pleasant idea, but you were never a horse girl." } }
     ],
   },
   {
@@ -1114,24 +1114,24 @@ const LOCATIONS = [
     ],
   },
   {
-    id: "loc_theFamilyTrips", name: "Disney World, Jellystone, Poland Springs", image: "images/loc_theFamilyTrips.svg",
-    description: "PLACEHOLDER: the three places you asked to go back to. Disney World in Orlando, Jellystone Campground in New Hampshire, and your grandparents' camp at Poland Springs, Maine — same camp, same rock, every summer for years.",
+    id: "loc_theFamilyTrips", name: "Family Trips", image: "images/loc_theFamilyTrips.svg",
+    description: "Time flies, but the nostolgia for your old family trips never dies. What were those memorable trips from your childhood?",
     zone: 1, weight: 1,
     choices: [
-      { label: "Swim at Jellystone every single morning", oracleCorrect: true, outcome: { type: "normal", text: "PLACEHOLDER: the water is cold, and you were in it before breakfast. Every day." } },
-      { label: "Ride the biggest one at Disney World, twice", outcome: { type: "normal", text: "PLACEHOLDER: twice, because the first time you were too small to remember it." } },
-      { label: "Go back to the same spot at Poland Springs every year", outcome: { type: "heal", text: "PLACEHOLDER: the same rock, the same view, the same people already waiting." } }
+      { label: "Disney World, Jellystone, Poland Springs", oracleCorrect: true, outcome: { type: "normal", text: "The holy trinity of childhood fun." } },
+      { label: "Disney World, Cape Cod, Baileys", outcome: { type: "normal", text: "Cape cod? That didn't become a summer tradition until your 30s." } },
+      { label: "Disney World, Universal Studio, Santa's Village", outcome: { type: "heal", text: "An amusement park dedicated to Christmas? Sounds like your kind of hell." } }
     ],
   },
   // --- Zone 2: The Teenage Years (14-26) ---
   {
-    id: "loc_destinationImagination", name: "Destination Imagination, First Place", image: "images/loc_destinationImagination.svg",
-    description: "PLACEHOLDER: March 2000. Your Destination Imagination team took first place, and you were three hundred miles away at your brother's hockey tournament in Pennsylvania. Train from Philadelphia to Boston, bus to Portsmouth, Aunt Lynne waiting at Kingswood High School in Wolfeboro. You flew back for the rest of the tournament and were told at the rink. There is a newspaper article.",
+    id: "loc_destinationImagination", name: "Destination Imagination", image: "images/loc_destinationImagination.svg",
+    description: "Your brother's hockey tournament is in PA, but your team is competing in Destination Imagination back in NH! What's a creative-problem solver to do?",
     zone: 2, weight: 1,
     choices: [
-      { label: "Take the train, then the bus, to get there in time", oracleCorrect: true, outcome: { type: "normal", text: "PLACEHOLDER: Philadelphia to Boston to Portsmouth, and Aunt Lynne at the school gates. You make it." } },
-      { label: "Stay at the tournament and miss it", outcome: { type: "penalty", text: "PLACEHOLDER: you hear about first place in a car park, a week later, out of somebody else's newspaper." } },
-      { label: "Carry the trophy home down the aisle yourself", outcome: { type: "heal", text: "PLACEHOLDER: trophy on your lap, Portland to Philadelphia. Nobody says a word the whole way." } }
+      { label: "Take the train from Philadelphia to Boston, bus to Portsmouth, and meet Aunt Lynne waiting at Kingswood High School in Wolfeboro.", oracleCorrect: true, outcome: { type: "normal", text: "You flew back for the rest of the tournament and were told at the rink you won first place." } },
+      { label: "Stay at the tournament and miss the competition. Find out later on the rink that your team won first place!", outcome: { type: "penalty", text: "You'd never sit on the bleachers of a hockey game, while your team takes the gold without you. " } },
+      { label: "Watch your brother win the hockey tournament then catch a direct fly from PA to NH. Whew. You barely made it to your competition.", outcome: { type: "heal", text: "It's good to support your siblings, but don't forget your own competition!" } }
     ],
   },
   {
@@ -1151,7 +1151,7 @@ const LOCATIONS = [
     choices: [
       { label: "The teaching staff at Bishop Brady nominated you for the National Student Leadership Conference in Washington DC.", oracleCorrect: true, outcome: { type: "normal", text: "Boom. Ready to climb the corporate ladder to CEO., in Business and Commerce. The letter is real." } },
       { label: "Melted scoops and dropped cones. An unforgettable summer at the Rochester Dairy Queen.", outcome: { type: "penalty", text: "You dropped too many cones, my dear." } },
-      { label: "Maple Haven sleep-away camp for you. It's time to hae your own wet, hot, American summer.", outcome: { type: "heal", text: "Sigh. Watching a movie about camp, just isn't the same as living it, right?" } }
+      { label: "Maple Haven sleep-away camp for you. It's time to have your own wet, hot, American summer.", outcome: { type: "heal", text: "Sigh. Watching a movie about camp, just isn't the same as living it, right?" } }
     ],
   },
   {
@@ -1192,7 +1192,7 @@ const LOCATIONS = [
     choices: [
       { label: "Combine creative non-fiction and poetry in the same degree and write that senior poetry thesis.", oracleCorrect: true, outcome: { type: "normal", text: "I think you finished Magna Cum Laude., creative writing, concentrated in creative non-fiction and poetry. Magna Cum Laude." } },
       { label: "Finish your major in social media marketing and start selling bubbly water.", outcome: { type: "penalty", text: "No, no, no. The graveyard of empty cans didn't come until much later." } },
-      { label: "“I am flying into music” – you acted in your final college play with all the art kids.", outcome: { type: "heal", text: "Bill Knot would be proud., more than once." } }
+      { label: "“I am flying into myelf” – you acted in your final college play with all the art kids.", outcome: { type: "heal", text: "Bill Knot would be proud., more than once." } }
     ],
   },
   {
@@ -1217,12 +1217,12 @@ const LOCATIONS = [
   },
   {
     id: "loc_belmontFamily", name: "Belmont, 2020", image: "images/loc_belmontFamily.svg",
-    description: "PLACEHOLDER: 2020. You started a family, and moved to Belmont, Massachusetts.",
+    description: "2020: The year of the pandemic. How will you cope?",
     zone: 3, weight: 1,
     choices: [
-      { label: "Start a family, and move to Belmont", oracleCorrect: true, outcome: { type: "normal", text: "PLACEHOLDER: 2020, two enormous things at once, and a new postcode to learn on the way." } },
-      { label: "Wait a year, and do one thing at a time", outcome: { type: "penalty", text: "PLACEHOLDER: the year goes differently. Belmont happens without you." } },
-      { label: "Move first, and let the rest follow", outcome: { type: "heal", text: "PLACEHOLDER: you learn the town while there is nothing else on your mind." } }
+      { label: "Start a family and move to a new neighborhood only a mile away.", oracleCorrect: true, outcome: { type: "normal", text: "Why let a global pandemic hold your life back?" } },
+      { label: "Stay inside and finally watch all of the Harry Potter movies. Hey, there was nothing else to do.", outcome: { type: "penalty", text: "JK Rowling is canceled." } },
+      { label: "Start a family, but move into the dream condo you've been eyeing.", outcome: { type: "heal", text: "Forever browsing on Redfin and Zillow, but have you really found your dream condo?" } }
     ],
   },
 ];
@@ -1241,7 +1241,7 @@ const END_TEXT = {
   },
 };
 
-/* content-hash: d5a5735167f951c8af622f64baeb2a513f651de2e6aac7a014e3271140c52683 */
+/* content-hash: ade22427b89c5e442cf76ac13427fe4813d8f852dc26fcd8af595dd270413b59 */
 
 /* == END GENERATED CONTENT == */
 

@@ -126,7 +126,7 @@ choice;loc_piscataquaYouthPlayers;2;label;A rabbit? You sat this one out and pla
 choice;loc_piscataquaYouthPlayers;2;outcome_type;heal
 choice;loc_piscataquaYouthPlayers;2;outcome_text;You rose the occasion and did both. A true rising star.
 location;loc_theFamilyTrips;;name;Family Trips
-location;loc_theFamilyTrips;;image;images/loc_theFamilyTrips.svg
+location;loc_theFamilyTrips;;image;images/disney_world.webp
 location;loc_theFamilyTrips;;zone;1
 location;loc_theFamilyTrips;;weight;1
 location;loc_theFamilyTrips;;description;Time flies, but the nostolgia for your old family trips never dies. What were those memorable trips from your childhood?
@@ -155,21 +155,21 @@ choice;loc_destinationImagination;1;outcome_text;You'd never sit on the bleacher
 choice;loc_destinationImagination;2;label;Watch your brother win the hockey tournament then catch a direct fly from PA to NH. Whew. You barely made it to your competition.
 choice;loc_destinationImagination;2;outcome_type;heal
 choice;loc_destinationImagination;2;outcome_text;It's good to support your siblings, but don't forget your own competition!
-location;loc_storiesAreMadeThatWay;;name;"""Stories Are Made That Way"""
+location;loc_storiesAreMadeThatWay;;name;Your Singing Talents
 location;loc_storiesAreMadeThatWay;;image;images/loc_storiesAreMadeThatWay.jpg
 location;loc_storiesAreMadeThatWay;;zone;2
 location;loc_storiesAreMadeThatWay;;weight;1
-location;loc_storiesAreMadeThatWay;;description;PLACEHOLDER: 1 April 2002. The musical CD comes out, and you sing several of the tracks with the other children. You still have the CD.
-choice;loc_storiesAreMadeThatWay;0;label;Sing your own tracks, not only the backing
+location;loc_storiesAreMadeThatWay;;description;Your singing talents attract a local music group. Which record is your voice forever captured on?
+choice;loc_storiesAreMadeThatWay;0;label;"""Stories Are Made That Way” – a hit 2002 musical CD where you take a lead verse."
 choice;loc_storiesAreMadeThatWay;0;oracle_correct;true
 choice;loc_storiesAreMadeThatWay;0;outcome_type;normal
-choice;loc_storiesAreMadeThatWay;0;outcome_text;PLACEHOLDER: several songs, with the other children, on an actual record.
-choice;loc_storiesAreMadeThatWay;1;label;Sing backing vocals only
+choice;loc_storiesAreMadeThatWay;0;outcome_text;David Delaney's home-composed theatrical songs for kids. Hey, it's on Spotify!
+choice;loc_storiesAreMadeThatWay;1;label;Kidz Bop NH 2001 – a local group of kids singing pop songs from 2001.
 choice;loc_storiesAreMadeThatWay;1;outcome_type;penalty
-choice;loc_storiesAreMadeThatWay;1;outcome_text;PLACEHOLDER: you are on every track, and nobody would know it from the sleeve notes.
-choice;loc_storiesAreMadeThatWay;2;label;Learn every other child's part as well
+choice;loc_storiesAreMadeThatWay;1;outcome_text;Each kid wanted to be on kidz bop after seeing those TV infomercials.
+choice;loc_storiesAreMadeThatWay;2;label;America's Got Talent – Kid Edition 2000
 choice;loc_storiesAreMadeThatWay;2;outcome_type;heal
-choice;loc_storiesAreMadeThatWay;2;outcome_text;PLACEHOLDER: you could have sung any of them. You never needed to.
+choice;loc_storiesAreMadeThatWay;2;outcome_text;I'm sure you could had landed on a kid's talent show in a parallel life.
 location;loc_theLeadershipConference;;name;Summer 2003, July 2003
 location;loc_theLeadershipConference;;image;images/loc_theLeadershipConference.svg
 location;loc_theLeadershipConference;;zone;2
@@ -185,27 +185,27 @@ choice;loc_theLeadershipConference;1;outcome_text;You dropped too many cones, my
 choice;loc_theLeadershipConference;2;label;Maple Haven sleep-away camp for you. It's time to have your own wet, hot, American summer.
 choice;loc_theLeadershipConference;2;outcome_type;heal
 choice;loc_theLeadershipConference;2;outcome_text;Sigh. Watching a movie about camp, just isn't the same as living it, right?
-location;loc_editorsChoicePoetry;;name;Editor's Choice, Achievement in Poetry
+location;loc_editorsChoicePoetry;;name;High-School Accolades
 location;loc_editorsChoicePoetry;;image;images/loc_editorsChoicePoetry.svg
 location;loc_editorsChoicePoetry;;zone;2
 location;loc_editorsChoicePoetry;;weight;1
-location;loc_editorsChoicePoetry;;description;PLACEHOLDER: March 2004. The Editor's Choice Award for Achievement in Poetry. There is a certificate, which means somebody wrote your name on a line and meant it.
-choice;loc_editorsChoicePoetry;0;label;Accept the poetry award
+location;loc_editorsChoicePoetry;;description;Out of all the superlatives you received in high-school, which one really captured your talent?
+choice;loc_editorsChoicePoetry;0;label;The Editor's Choice Award for Achievement in Poetry.
 choice;loc_editorsChoicePoetry;0;oracle_correct;true
 choice;loc_editorsChoicePoetry;0;outcome_type;normal
-choice;loc_editorsChoicePoetry;0;outcome_text;PLACEHOLDER: Editor's Choice, Achievement in Poetry, March 2004. The certificate is signed.
-choice;loc_editorsChoicePoetry;1;label;Turn it down â€” you were only doing it for the class
+choice;loc_editorsChoicePoetry;0;outcome_text;We have the certificate. Boom.
+choice;loc_editorsChoicePoetry;1;label;NH's Best Youth Short Fiction Award
 choice;loc_editorsChoicePoetry;1;outcome_type;penalty
-choice;loc_editorsChoicePoetry;1;outcome_text;PLACEHOLDER: you give it back, the class gives it back, and it ends up in a drawer either way.
+choice;loc_editorsChoicePoetry;1;outcome_text;Nah, you had to write about non-fiction. Transforming the mundane.
 choice;loc_editorsChoicePoetry;2;label;Read one poem out loud at the ceremony
 choice;loc_editorsChoicePoetry;2;outcome_type;heal
-choice;loc_editorsChoicePoetry;2;outcome_text;PLACEHOLDER: your own, not the one that won. It goes over well.
-location;loc_theNationalAnthem;;name;High-School Gradudation, June 2005
+choice;loc_editorsChoicePoetry;2;outcome_text;Scholastic's Best Youth Personal Essay
+location;loc_theNationalAnthem;;name;Scholastic? Come on. It was all about the pizza hut book-it campaign.
 location;loc_theNationalAnthem;;image;images/loc_theNationalAnthem.jpg
 location;loc_theNationalAnthem;;zone;2
 location;loc_theNationalAnthem;;weight;1
 location;loc_theNationalAnthem;;description;Bishop Brady High School graduation. How will you go out in style? 
-choice;loc_theNationalAnthem;0;label;Take the microphone and belt out the National Anthem Wait â€“ didn't you tell your parents?
+choice;loc_theNationalAnthem;0;label;Take the microphone and belt out the National Anthem Wait–didn't you tell your parents?
 choice;loc_theNationalAnthem;0;oracle_correct;true
 choice;loc_theNationalAnthem;0;outcome_type;normal
 choice;loc_theNationalAnthem;0;outcome_text;God bless America and god bless the private lives of teenagers.
@@ -291,9 +291,9 @@ choice;loc_belmontFamily;2;label;Start a family, but move into the dream condo y
 choice;loc_belmontFamily;2;outcome_type;heal
 choice;loc_belmontFamily;2;outcome_text;Forever browsing on Redfin and Zillow, but have you really found your dream condo?
 end;win;;title;The Fourth Decade
-end;win;;goodMessage;PLACEHOLDER: forty, and the road still going. Every stop on it is yours: the first house in Rochester, a yellow coat, a talent show on somebody's video tape, a train from Philadelphia, a cake with the candles knocked over on the ground, and a great deal of work done on behalf of other people. The Oracle puts the book away.
-end;win;;badMessage;PLACEHOLDER: forty, with a coin left at the shrine out of habit. Somebody has to move the shrine before the next traveller gets there. You do it yourself, and it is very funny.
+end;win;;goodMessage;Forty, and the road still going. Every stop on it is yours. What will the next 10 years look like?
+end;win;;badMessage;Forty, with a coin left at the shrine out of habit. Somebody has to move the shrine before the next traveller gets there. You do it yourself, and it is very funny.
 end;win;;image;images/win.svg
 end;gameover;;title;The journey ends
-end;gameover;;message;PLACEHOLDER: three stumbles and the Oracle calls it. She recommends rest, tea, and a second attempt â€” the whole of it is still there, exactly where you left it.
+end;gameover;;message;Uh oh. Three stumbles, and a dropped birthday cake. Try again.
 end;gameover;;image;images/gameover.svg

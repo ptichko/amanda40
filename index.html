@@ -1114,7 +1114,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: "loc_theFamilyTrips", name: "Family Trips", image: "images/loc_theFamilyTrips.svg",
+    id: "loc_theFamilyTrips", name: "Family Trips", image: "images/disney_world.webp",
     description: "Time flies, but the nostolgia for your old family trips never dies. What were those memorable trips from your childhood?",
     zone: 1, weight: 1,
     choices: [
@@ -1135,13 +1135,13 @@ const LOCATIONS = [
     ],
   },
   {
-    id: "loc_storiesAreMadeThatWay", name: "\"Stories Are Made That Way\"", image: "images/loc_storiesAreMadeThatWay.jpg",
-    description: "PLACEHOLDER: 1 April 2002. The musical CD comes out, and you sing several of the tracks with the other children. You still have the CD.",
+    id: "loc_storiesAreMadeThatWay", name: "Your Singing Talents", image: "images/loc_storiesAreMadeThatWay.jpg",
+    description: "Your singing talents attract a local music group. Which record is your voice forever captured on?",
     zone: 2, weight: 1,
     choices: [
-      { label: "Sing your own tracks, not only the backing", oracleCorrect: true, outcome: { type: "normal", text: "PLACEHOLDER: several songs, with the other children, on an actual record." } },
-      { label: "Sing backing vocals only", outcome: { type: "penalty", text: "PLACEHOLDER: you are on every track, and nobody would know it from the sleeve notes." } },
-      { label: "Learn every other child's part as well", outcome: { type: "heal", text: "PLACEHOLDER: you could have sung any of them. You never needed to." } }
+      { label: "\"Stories Are Made That Way” – a hit 2002 musical CD where you take a lead verse.", oracleCorrect: true, outcome: { type: "normal", text: "David Delaney's home-composed theatrical songs for kids. Hey, it's on Spotify!" } },
+      { label: "Kidz Bop NH 2001 – a local group of kids singing pop songs from 2001.", outcome: { type: "penalty", text: "Each kid wanted to be on kidz bop after seeing those TV infomercials." } },
+      { label: "America's Got Talent – Kid Edition 2000", outcome: { type: "heal", text: "I'm sure you could had landed on a kid's talent show in a parallel life." } }
     ],
   },
   {
@@ -1155,21 +1155,21 @@ const LOCATIONS = [
     ],
   },
   {
-    id: "loc_editorsChoicePoetry", name: "Editor's Choice, Achievement in Poetry", image: "images/loc_editorsChoicePoetry.svg",
-    description: "PLACEHOLDER: March 2004. The Editor's Choice Award for Achievement in Poetry. There is a certificate, which means somebody wrote your name on a line and meant it.",
+    id: "loc_editorsChoicePoetry", name: "High-School Accolades", image: "images/loc_editorsChoicePoetry.svg",
+    description: "Out of all the superlatives you received in high-school, which one really captured your talent?",
     zone: 2, weight: 1,
     choices: [
-      { label: "Accept the poetry award", oracleCorrect: true, outcome: { type: "normal", text: "PLACEHOLDER: Editor's Choice, Achievement in Poetry, March 2004. The certificate is signed." } },
-      { label: "Turn it down — you were only doing it for the class", outcome: { type: "penalty", text: "PLACEHOLDER: you give it back, the class gives it back, and it ends up in a drawer either way." } },
-      { label: "Read one poem out loud at the ceremony", outcome: { type: "heal", text: "PLACEHOLDER: your own, not the one that won. It goes over well." } }
+      { label: "The Editor's Choice Award for Achievement in Poetry.", oracleCorrect: true, outcome: { type: "normal", text: "We have the certificate. Boom." } },
+      { label: "NH's Best Youth Short Fiction Award", outcome: { type: "penalty", text: "Nah, you had to write about non-fiction. Transforming the mundane." } },
+      { label: "Read one poem out loud at the ceremony", outcome: { type: "heal", text: "Scholastic's Best Youth Personal Essay" } }
     ],
   },
   {
-    id: "loc_theNationalAnthem", name: "High-School Gradudation, June 2005", image: "images/loc_theNationalAnthem.jpg",
+    id: "loc_theNationalAnthem", name: "Scholastic? Come on. It was all about the pizza hut book-it campaign.", image: "images/loc_theNationalAnthem.jpg",
     description: "Bishop Brady High School graduation. How will you go out in style? ",
     zone: 2, weight: 1,
     choices: [
-      { label: "Take the microphone and belt out the National Anthem Wait – didn't you tell your parents?", oracleCorrect: true, outcome: { type: "normal", text: "God bless America and god bless the private lives of teenagers." } },
+      { label: "Take the microphone and belt out the National Anthem Wait–didn't you tell your parents?", oracleCorrect: true, outcome: { type: "normal", text: "God bless America and god bless the private lives of teenagers." } },
       { label: "Arrive 15 minutes after the start time, forcing you to walk down the aisle with Mr. Roberts.", outcome: { type: "penalty", text: "Turn back, old man" } },
       { label: "Ghost write your valedictory speech, slipping in one joke about principal Barker.", outcome: { type: "heal", text: "Mr. Miller loved your writing: why not an entire audience of graduates?" } }
     ],
@@ -1230,18 +1230,18 @@ const LOCATIONS = [
 const END_TEXT = {
   win: {
     title: "The Fourth Decade",
-    goodMessage: "PLACEHOLDER: forty, and the road still going. Every stop on it is yours: the first house in Rochester, a yellow coat, a talent show on somebody's video tape, a train from Philadelphia, a cake with the candles knocked over on the ground, and a great deal of work done on behalf of other people. The Oracle puts the book away.",
-    badMessage: "PLACEHOLDER: forty, with a coin left at the shrine out of habit. Somebody has to move the shrine before the next traveller gets there. You do it yourself, and it is very funny.",
+    goodMessage: "Forty, and the road still going. Every stop on it is yours. What will the next 10 years look like?",
+    badMessage: "Forty, with a coin left at the shrine out of habit. Somebody has to move the shrine before the next traveller gets there. You do it yourself, and it is very funny.",
     image: "images/win.svg",
   },
   gameover: {
     title: "The journey ends",
-    message: "PLACEHOLDER: three stumbles and the Oracle calls it. She recommends rest, tea, and a second attempt — the whole of it is still there, exactly where you left it.",
+    message: "Uh oh. Three stumbles, and a dropped birthday cake. Try again.",
     image: "images/gameover.svg",
   },
 };
 
-/* content-hash: ade22427b89c5e442cf76ac13427fe4813d8f852dc26fcd8af595dd270413b59 */
+/* content-hash: 63b691a5c4f59c9d4a5c35d33b8b53ae5116b082c504fe4aae69340927500d98 */
 
 /* == END GENERATED CONTENT == */
 

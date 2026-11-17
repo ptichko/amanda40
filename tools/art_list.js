@@ -9,7 +9,7 @@ window.ART_FILES = [
   { path: "images/loc_theTalentShow.jpg", label: "The Strafford Elementary Talent Show" },
   { path: "images/loc_theDareSpeech.jpg", label: "The DARE Graduation" },
   { path: "images/loc_piscataquaYouthPlayers.jpg", label: "The Piscataqua Youth Players" },
-  { path: "images/loc_theFamilyTrips.svg", label: "Disney World, Jellystone, Poland Springs" },
+  { path: "images/disney_world.webp", label: "Disney World, Jellystone, Poland Springs" },
   { path: "images/loc_destinationImagination.svg", label: "Destination Imagination, First Place" },
   { path: "images/loc_storiesAreMadeThatWay.jpg", label: "\"Stories Are Made That Way\"" },
   { path: "images/loc_theLeadershipConference.svg", label: "Washington DC, July 2003" },

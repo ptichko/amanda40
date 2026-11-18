@@ -234,11 +234,11 @@ location;loc_magnaCumLaude;;name;College Graduation
 location;loc_magnaCumLaude;;image;images/loc_magnaCumLaude.jpg
 location;loc_magnaCumLaude;;zone;3
 location;loc_magnaCumLaude;;weight;1
-location;loc_magnaCumLaude;;description;Time leave the ivory towers behind and make your mark on the word., Magna Cum Laude, with a BFA in creative writing and a concentration in creative non-fiction and poetry. Both halves of it, in one degree.
+location;loc_magnaCumLaude;;description;Time leave the ivory towers behind and make your mark on the word.
 choice;loc_magnaCumLaude;0;label;Combine creative non-fiction and poetry in the same degree and write that senior poetry thesis.
 choice;loc_magnaCumLaude;0;oracle_correct;true
 choice;loc_magnaCumLaude;0;outcome_type;normal
-choice;loc_magnaCumLaude;0;outcome_text;I think you finished Magna Cum Laude., creative writing, concentrated in creative non-fiction and poetry. Magna Cum Laude.
+choice;loc_magnaCumLaude;0;outcome_text;Magna Cum Laude, with a BFA in creative writing and a concentration in creative non-fiction and poetry. Both halves of it, in one degree.
 choice;loc_magnaCumLaude;1;label;Finish your major in social media marketing and start selling bubbly water.
 choice;loc_magnaCumLaude;1;outcome_type;penalty
 choice;loc_magnaCumLaude;1;outcome_text;No, no, no. The graveyard of empty cans didn't come until much later.

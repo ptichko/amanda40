@@ -197,14 +197,14 @@ choice;loc_editorsChoicePoetry;0;outcome_text;We have the certificate. Boom.
 choice;loc_editorsChoicePoetry;1;label;NH's Best Youth Short Fiction Award
 choice;loc_editorsChoicePoetry;1;outcome_type;penalty
 choice;loc_editorsChoicePoetry;1;outcome_text;Nah, you had to write about non-fiction. Transforming the mundane.
-choice;loc_editorsChoicePoetry;2;label;Read one poem out loud at the ceremony
+choice;loc_editorsChoicePoetry;2;label;Scholastic's Best Youth Personal Essay
 choice;loc_editorsChoicePoetry;2;outcome_type;heal
-choice;loc_editorsChoicePoetry;2;outcome_text;Scholastic's Best Youth Personal Essay
-location;loc_theNationalAnthem;;name;Scholastic? Come on. It was all about the pizza hut book-it campaign.
+choice;loc_editorsChoicePoetry;2;outcome_text;Scholastic? Come on. It was all about the pizza hut book-it campaign.
+location;loc_theNationalAnthem;;name;Bishop Brady High School graduation.
 location;loc_theNationalAnthem;;image;images/loc_theNationalAnthem.jpg
 location;loc_theNationalAnthem;;zone;2
 location;loc_theNationalAnthem;;weight;1
-location;loc_theNationalAnthem;;description;Bishop Brady High School graduation. How will you go out in style? 
+location;loc_theNationalAnthem;;description;Catholic school, as vicious as Roman rule. How will you go out in style? 
 choice;loc_theNationalAnthem;0;label;Take the microphone and belt out the National Anthem Wait–didn't you tell your parents?
 choice;loc_theNationalAnthem;0;oracle_correct;true
 choice;loc_theNationalAnthem;0;outcome_type;normal

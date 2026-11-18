@@ -983,10 +983,10 @@ const ZONES = [
 // she always highlights the location's actual "correct" choice (see
 // getCorrectChoice below), so there is no accuracy roll to tune.
 const ORACLE_HINTS = [
-  { text: "PLACEHOLDER: the Oracle taps the card without looking at it. \"That one. I remember.\"" },
-  { text: "PLACEHOLDER: the Oracle reads her own handwriting twice, and underlines the same line both times." },
-  { text: "PLACEHOLDER: the Oracle is reading from a different decade entirely, and still lands on the right one." },
-  { text: "PLACEHOLDER: the Oracle closes the book and says the same thing she said last time." }
+  { text: "The Oracle taps the card without looking at it. \"That one. I remember.\"" },
+  { text: "The Oracle reads her own handwriting twice, and underlines the same line both times." },
+  { text: "The Oracle is reading from a different decade entirely, and still lands on the right one." },
+  { text: "The Oracle closes the book and says the same thing she said last time." }
 ];
 
 // Each choice has a single, fixed outcome (no randomness in *what*
@@ -1064,13 +1064,13 @@ const LOCATIONS = [
     ],
   },
   {
-    id: "loc_stElizabethSeton", name: "St. Elizabeth Seton School", image: "images/loc_stElizabethSeton.svg",
-    description: "PLACEHOLDER: kindergarten and first grade at St. Elizabeth Seton, still in Rochester. Two rooms, one teacher who knew your name and your mother's, and a walk to the church that you insisted on doing backwards.",
+    id: "loc_stElizabethSeton", name: "Time to start kindergarten.", image: "images/loc_stElizabethSeton.svg",
+    description: "Kindergarten a second time? What academic institution should be so lucky to welcome your growing mind.",
     zone: 1, weight: 1,
     choices: [
-      { label: "Walk to school backwards the whole way", oracleCorrect: true, outcome: { type: "normal", text: "PLACEHOLDER: it takes twice as long, and you still get there first." } },
-      { label: "Move to a school further from home", outcome: { type: "penalty", text: "PLACEHOLDER: a longer drive, and nobody to sit with." } },
-      { label: "Learn the names of everyone in both rooms", outcome: { type: "heal", text: "PLACEHOLDER: first grade ends with thirty names and nobody missing." } }
+      { label: "St. Elizabeth Seton.", oracleCorrect: true, outcome: { type: "normal", text: "That's right.  Your first christ-centered community, years before catholic high school." } },
+      { label: "Jack and Jill Kindergarten.", outcome: { type: "penalty", text: "Not quite. You climbed up the hill at Jack and Jill for your first kindergarten." } },
+      { label: "Little Learners Kindergarten", outcome: { type: "heal", text: "Not to be confused with little sprouts, but we can pretend this kindergarten exists." } }
     ],
   },
   {
@@ -1241,7 +1241,7 @@ const END_TEXT = {
   },
 };
 
-/* content-hash: 63b691a5c4f59c9d4a5c35d33b8b53ae5116b082c504fe4aae69340927500d98 */
+/* content-hash: ca76a82d7be2723b3955253df952e78c6f22773cd79bc9b1a31def187202b694 */
 
 /* == END GENERATED CONTENT == */
 

@@ -13,10 +13,10 @@ zone;2;;max;26
 zone;3;;name;Grown Up
 zone;3;;min;27
 zone;3;;max;40
-hint;;0;text;"PLACEHOLDER: the Oracle taps the card without looking at it. ""That one. I remember."""
-hint;;1;text;PLACEHOLDER: the Oracle reads her own handwriting twice, and underlines the same line both times.
-hint;;2;text;PLACEHOLDER: the Oracle is reading from a different decade entirely, and still lands on the right one.
-hint;;3;text;PLACEHOLDER: the Oracle closes the book and says the same thing she said last time.
+hint;;0;text;"The Oracle taps the card without looking at it. ""That one. I remember."""
+hint;;1;text;The Oracle reads her own handwriting twice, and underlines the same line both times.
+hint;;2;text;The Oracle is reading from a different decade entirely, and still lands on the right one.
+hint;;3;text;The Oracle closes the book and says the same thing she said last time.
 intro;;;id;loc_intro
 intro;;;name;Happy 40th, Amanda!
 intro;;;image;images/loc_intro.svg
@@ -50,21 +50,21 @@ choice;loc_rochesterFirstHome;1;outcome_text;Don't cry over spilled paint. The c
 choice;loc_rochesterFirstHome;2;label;Mimi's home school provides the best, tailored education for your growing mind.
 choice;loc_rochesterFirstHome;2;outcome_type;heal
 choice;loc_rochesterFirstHome;2;outcome_text;Not quite, but we all know Mimi helped prepare you for academic success years before kindergarten.
-location;loc_stElizabethSeton;;name;St. Elizabeth Seton School
+location;loc_stElizabethSeton;;name;Time to start kindergarten.
 location;loc_stElizabethSeton;;image;images/loc_stElizabethSeton.svg
 location;loc_stElizabethSeton;;zone;1
 location;loc_stElizabethSeton;;weight;1
-location;loc_stElizabethSeton;;description;PLACEHOLDER: kindergarten and first grade at St. Elizabeth Seton, still in Rochester. Two rooms, one teacher who knew your name and your mother's, and a walk to the church that you insisted on doing backwards.
-choice;loc_stElizabethSeton;0;label;Walk to school backwards the whole way
+location;loc_stElizabethSeton;;description;Kindergarten a second time? What academic institution should be so lucky to welcome your growing mind.
+choice;loc_stElizabethSeton;0;label;St. Elizabeth Seton.
 choice;loc_stElizabethSeton;0;oracle_correct;true
 choice;loc_stElizabethSeton;0;outcome_type;normal
-choice;loc_stElizabethSeton;0;outcome_text;PLACEHOLDER: it takes twice as long, and you still get there first.
-choice;loc_stElizabethSeton;1;label;Move to a school further from home
+choice;loc_stElizabethSeton;0;outcome_text;That's right.  Your first christ-centered community, years before catholic high school.
+choice;loc_stElizabethSeton;1;label;Jack and Jill Kindergarten.
 choice;loc_stElizabethSeton;1;outcome_type;penalty
-choice;loc_stElizabethSeton;1;outcome_text;PLACEHOLDER: a longer drive, and nobody to sit with.
-choice;loc_stElizabethSeton;2;label;Learn the names of everyone in both rooms
+choice;loc_stElizabethSeton;1;outcome_text;Not quite. You climbed up the hill at Jack and Jill for your first kindergarten.
+choice;loc_stElizabethSeton;2;label;Little Learners Kindergarten
 choice;loc_stElizabethSeton;2;outcome_type;heal
-choice;loc_stElizabethSeton;2;outcome_text;PLACEHOLDER: first grade ends with thirty names and nobody missing.
+choice;loc_stElizabethSeton;2;outcome_text;Not to be confused with little sprouts, but we can pretend this kindergarten exists.
 location;loc_theMoveToStrafford;;name;The Move to Strafford
 location;loc_theMoveToStrafford;;image;images/loc_theMoveToStrafford.jpg
 location;loc_theMoveToStrafford;;zone;1

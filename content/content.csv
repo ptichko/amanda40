@@ -245,7 +245,7 @@ choice;loc_magnaCumLaude;1;outcome_text;No, no, no. The graveyard of empty cans 
 choice;loc_magnaCumLaude;2;label;“I am flying into myelf” – you acted in your final college play with all the art kids.
 choice;loc_magnaCumLaude;2;outcome_type;heal
 choice;loc_magnaCumLaude;2;outcome_text;Bill Knot would be proud., more than once.
-location;loc_wegoHealth;;name;WEGO Health, Somerville
+location;loc_wegoHealth;;name;WEGO Health
 location;loc_wegoHealth;;image;images/loc_wegoHealth.jpg
 location;loc_wegoHealth;;zone;3
 location;loc_wegoHealth;;weight;1
@@ -253,8 +253,8 @@ location;loc_wegoHealth;;description;First big-girl job as a Health Social Media
 choice;loc_wegoHealth;0;label;" Your article, ""Patient Leaders of Online Health Communities Discuss Patient to Patient Conversations on Clinical Trials"", ran in Monitor Magazine, the global voice of clinical research professionals."
 choice;loc_wegoHealth;0;oracle_correct;true
 choice;loc_wegoHealth;0;outcome_type;normal
-choice;loc_wegoHealth;0;outcome_text;The only time a BFA actually published a healthcare article., Somerville. The Monitor article. There is a copy of the magazine.
-choice;loc_wegoHealth;1;label;Create a network of twitter accounts of real patients that begin tweeting large health insurance companies to enact change., you saw the other side.
+choice;loc_wegoHealth;0;outcome_text;The only time a BFA actually published a healthcare article.
+choice;loc_wegoHealth;1;label;Create a network of twitter accounts of real patients that begin tweeting large health insurance companies to enact change.
 choice;loc_wegoHealth;1;outcome_type;penalty
 choice;loc_wegoHealth;1;outcome_text;Remember Google Circles? You're early adoption tired to get patients the help they needed., which was never the point.
 choice;loc_wegoHealth;2;label;Google Circles was running itself in circles, but you're blogging help create a stronger health community.

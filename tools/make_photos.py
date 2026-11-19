@@ -57,6 +57,7 @@ MAPPING = [
     ('wind_beneath_my_wings.jpg',      'loc_theTalentShow'),
     ('velveteen_rabbit.jpg',           'loc_piscataquaYouthPlayers'),
     ('stories_are_made_that_way.jpg',  'loc_storiesAreMadeThatWay'),
+    ('dc.jpg',                         'loc_theLeadershipConference'),
     ('bishop_brady_high_school.jpg',   'loc_theNationalAnthem'),
     ('stonehill_college.jpg',          'loc_stonehillToEmerson'),
     ('emerson_college.jpg',            'loc_magnaCumLaude'),

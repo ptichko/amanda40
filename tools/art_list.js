@@ -12,7 +12,7 @@ window.ART_FILES = [
   { path: "images/disney_world.webp", label: "Family Trips" },
   { path: "images/loc_destinationImagination.svg", label: "Destination Imagination" },
   { path: "images/loc_storiesAreMadeThatWay.jpg", label: "Your Singing Talents" },
-  { path: "images/loc_theLeadershipConference.svg", label: "Summer 2003, July 2003" },
+  { path: "images/loc_theLeadershipConference.jpg", label: "Summer 2003, July 2003" },
   { path: "images/loc_editorsChoicePoetry.svg", label: "High-School Accolades" },
   { path: "images/loc_theNationalAnthem.jpg", label: "Bishop Brady High School graduation." },
   { path: "images/loc_stonehillToEmerson.jpg", label: "Stonehill to Emerson" },

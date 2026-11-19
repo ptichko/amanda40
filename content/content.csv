@@ -141,7 +141,7 @@ choice;loc_theFamilyTrips;2;label;Disney World, Universal Studio, Santa's Villag
 choice;loc_theFamilyTrips;2;outcome_type;heal
 choice;loc_theFamilyTrips;2;outcome_text;An amusement park dedicated to Christmas? Sounds like your kind of hell.
 location;loc_destinationImagination;;name;Destination Imagination
-location;loc_destinationImagination;;image;images/loc_destinationImagination.svg
+location;loc_destinationImagination;;image;images/loc_destinationImagination.jpg
 location;loc_destinationImagination;;zone;2
 location;loc_destinationImagination;;weight;1
 location;loc_destinationImagination;;description;Your brother's hockey tournament is in PA, but your team is competing in Destination Imagination back in NH! What's a creative-problem solver to do?
@@ -186,7 +186,7 @@ choice;loc_theLeadershipConference;2;label;Maple Haven sleep-away camp for you. 
 choice;loc_theLeadershipConference;2;outcome_type;heal
 choice;loc_theLeadershipConference;2;outcome_text;Sigh. Watching a movie about camp, just isn't the same as living it, right?
 location;loc_editorsChoicePoetry;;name;High-School Accolades
-location;loc_editorsChoicePoetry;;image;images/loc_editorsChoicePoetry.svg
+location;loc_editorsChoicePoetry;;image;images/loc_editorsChoicePoetry.jpg
 location;loc_editorsChoicePoetry;;zone;2
 location;loc_editorsChoicePoetry;;weight;1
 location;loc_editorsChoicePoetry;;description;Out of all the superlatives you received in high-school, which one really captured your talent?
@@ -276,7 +276,7 @@ choice;loc_spindrift;2;label;Take Jenna's old job at Athena health. Nothing like
 choice;loc_spindrift;2;outcome_type;heal
 choice;loc_spindrift;2;outcome_text;You had the interview but you decided you were meant for different things., and learn the job twice as fast.
 location;loc_belmontFamily;;name;Belmont, 2020
-location;loc_belmontFamily;;image;images/loc_belmontFamily.svg
+location;loc_belmontFamily;;image;images/loc_belmontFamily.jpg
 location;loc_belmontFamily;;zone;3
 location;loc_belmontFamily;;weight;1
 location;loc_belmontFamily;;description;2020: The year of the pandemic. How will you cope?

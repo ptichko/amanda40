@@ -120,10 +120,9 @@ instead of reading the whole journey back to back.
 
 ## Images
 `images/` is done for the intro, the win card, and the game-over card (real pixel art -
-leave those alone unless you want to redraw her). Of the 16 mid-game locations, **13 now use
-a real photograph** and the remaining 3 have generated placeholder cards - a dithered
-gradient in their era's colour, the year, and the location name. The birth cutscene is a
-photograph too: Wentworth-Douglass Hospital at dusk.
+leave those alone unless you want to redraw her). All 16 mid-game locations now use a real photograph, and there are no generated
+placeholder location cards left. The birth cutscene is a photograph too:
+Wentworth-Douglass Hospital at dusk.
 
 The photographs are the actual artefacts: the Velveteen Rabbit title page, the Bette
 Midler single, the D.A.R.E. logo, the CD, the school signs, a wall of Spindrift cans. They
@@ -239,9 +238,8 @@ cards match.
 
 ### 2. Drop in the remaining photographs
 
-Thirteen are in. The other three stops still have generated placeholder cards: Disney
-World / Jellystone / Poland Springs, Destination Imagination, and Belmont. Each is named
-after its location `id` - put a photo at `images/loc_<id>.jpg`, point that row in
+All sixteen are in; there are no generated placeholder location cards left. If you add
+or replace a stop later, put a photo at `images/loc_<id>.jpg`, point that row in
 `content/content.csv` at it, and nothing else needs to change. `index.html?debug=true`
 shows every one at once.
 

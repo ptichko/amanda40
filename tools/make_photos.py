@@ -65,6 +65,9 @@ MAPPING = [
     # softened version rather than the raw screenshot
     ('wego_blurred.png',               'loc_wegoHealth'),
     ('spindrift.jpg',                  'loc_spindrift'),
+    ('belmont-entering.jpg',           'loc_belmontFamily'),
+    ('destinationimagination.jpg',     'loc_destinationImagination'),
+    ('poetry_trophy.jpg',              'loc_editorsChoicePoetry'),
     # the birth cutscene panel, which is a final pixel-art file in make_art.py
     # and becomes a photograph here
     ('wentworth_douglas_hospital.jpg', 'cutscene_birth'),

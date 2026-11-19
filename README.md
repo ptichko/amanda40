@@ -120,8 +120,8 @@ instead of reading the whole journey back to back.
 
 ## Images
 `images/` is done for the intro, the win card, and the game-over card (real pixel art -
-leave those alone unless you want to redraw her). Of the 16 mid-game locations, **11 now use
-a real photograph** and the remaining 5 have generated placeholder cards - a dithered
+leave those alone unless you want to redraw her). Of the 16 mid-game locations, **12 now use
+a real photograph** and the remaining 4 have generated placeholder cards - a dithered
 gradient in their era's colour, the year, and the location name. The birth cutscene is a
 photograph too: Wentworth-Douglass Hospital at dusk.
 
@@ -239,11 +239,11 @@ cards match.
 
 ### 2. Drop in the remaining photographs
 
-Eleven are in. The other five stops still have generated placeholder cards: Disney
+Twelve are in. The other four stops still have generated placeholder cards: Disney
 World / Jellystone / Poland Springs, Destination Imagination, the Washington DC
-conference, WEGO Health, and Belmont. Each is named after its location `id` - put a
-photo at `images/loc_<id>.jpg`, point that row in `content/content.csv` at it, and
-nothing else needs to change. `index.html?debug=true` shows every one at once.
+conference, and Belmont. Each is named after its location `id` - put a photo at
+`images/loc_<id>.jpg`, point that row in `content/content.csv` at it, and nothing else
+needs to change. `index.html?debug=true` shows every one at once.
 
 Still worth hunting down: the leadership-conference letter, the Monitor magazine article,
 and anything from Strafford Elementary. `strafford_house.png` is on disk but deliberately

@@ -246,7 +246,7 @@ choice;loc_magnaCumLaude;2;label;“I am flying into myelf” – you acted in y
 choice;loc_magnaCumLaude;2;outcome_type;heal
 choice;loc_magnaCumLaude;2;outcome_text;Bill Knot would be proud., more than once.
 location;loc_wegoHealth;;name;WEGO Health, Somerville
-location;loc_wegoHealth;;image;images/loc_wegoHealth.svg
+location;loc_wegoHealth;;image;images/loc_wegoHealth.jpg
 location;loc_wegoHealth;;zone;3
 location;loc_wegoHealth;;weight;1
 location;loc_wegoHealth;;description;First big-girl job as a Health Social Media writer at WEGO Health. How are you going to change the healthcare industry?

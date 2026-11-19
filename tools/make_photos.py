@@ -60,6 +60,9 @@ MAPPING = [
     ('bishop_brady_high_school.jpg',   'loc_theNationalAnthem'),
     ('stonehill_college.jpg',          'loc_stonehillToEmerson'),
     ('emerson_college.jpg',            'loc_magnaCumLaude'),
+    # blurred copy of wego.png (Gaussian blur, radius 8) so the card uses the
+    # softened version rather than the raw screenshot
+    ('wego_blurred.png',               'loc_wegoHealth'),
     ('spindrift.jpg',                  'loc_spindrift'),
     # the birth cutscene panel, which is a final pixel-art file in make_art.py
     # and becomes a photograph here

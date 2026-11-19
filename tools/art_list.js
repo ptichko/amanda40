@@ -17,7 +17,7 @@ window.ART_FILES = [
   { path: "images/loc_theNationalAnthem.jpg", label: "Bishop Brady High School graduation." },
   { path: "images/loc_stonehillToEmerson.jpg", label: "Stonehill to Emerson" },
   { path: "images/loc_magnaCumLaude.jpg", label: "College Graduation" },
-  { path: "images/loc_wegoHealth.svg", label: "WEGO Health, Somerville" },
+  { path: "images/loc_wegoHealth.jpg", label: "WEGO Health, Somerville" },
   { path: "images/loc_spindrift.jpg", label: "Spindrift, and Watertown" },
   { path: "images/loc_belmontFamily.svg", label: "Belmont, 2020" },
   { path: "images/win.svg", label: "The Fourth Decade" },

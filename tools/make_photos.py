@@ -53,6 +53,7 @@ MAPPING = [
     # -- which is really what the sign is about, and what neither card covers.
     ('strafford_elementary_school.jpg', 'loc_theMoveToStrafford'),
     ('rochester_first_house.png',      'loc_rochesterFirstHome'),
+    ('st_eliz.jpg',                    'loc_stElizabethSeton'),
     ('wind_beneath_my_wings.jpg',      'loc_theTalentShow'),
     ('velveteen_rabbit.jpg',           'loc_piscataquaYouthPlayers'),
     ('stories_are_made_that_way.jpg',  'loc_storiesAreMadeThatWay'),

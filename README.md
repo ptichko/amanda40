@@ -1,8 +1,11 @@
 # The Fourth Decade
 
 A single-page, no-build, no-server text/image adventure, made as a birthday gift for
-Amanda. Open `index.html` in a browser to play — there is no server, no install step,
-and nothing to compile.
+Amanda.
+
+**Play:** [ptichko.github.io/amanda40](https://ptichko.github.io/amanda40/) (once GitHub
+Pages is enabled for this repo), or open `index.html` in a browser — no server, no install
+step, and nothing to compile.
 
 The text you'll want to change lives in one spreadsheet, `content/content.csv`; see
 [Working on it](#working-on-it). Editing it runs a small Python step that pastes the new
@@ -37,14 +40,14 @@ Wentworth Douglass Hospital, Dover NH, 1986. The first **Wandering N steps** lin
 after that, as the road actually starts, so the progress bar never moves ahead of the thing
 explaining it.
 
-## Status: placeholder content
+## Status
 
 The engine is complete and playable, and the **structure is real** — the three eras, the
-15 stops, the years, the artefacts (video, playbill, CD, certificate, letter, newspaper
-article, magazine) and the true/wrong choice on every location are all in place. What is
-still placeholder is the **wording**: every description, caption and outcome started as a
-first draft, marked `PLACEHOLDER:` in the source. 58 lines to go. `test_content.js`
-reports the count on every run, and it should be zero before this is given to anyone.
+17 stops, the years, the artefacts (video, playbill, CD, certificate, letter, newspaper
+article, magazine) and the true/wrong choice on every location are all in place. All
+16 mid-game locations now use photograph cards (plus the birth cutscene photograph), and
+there are no `PLACEHOLDER:` markers left in `content/content.csv`. The text and details are
+still worth reviewing and playtesting so the voice, balance, and memories feel right.
 
 Swap in the real memories, keeping the years and the facts. Everything you'd want to write
 lives in **`content/content.csv`** — one spreadsheet, edited directly:
@@ -185,15 +188,16 @@ python tools\build_content.py --force    # apply, discarding hand-edits to the b
 `tools/` holds dev-only helpers. Nothing in there is loaded by the page, and the game
 still runs if you delete the folder — but it's what makes the project maintainable.
 
-**Tests.** 481 checks over the engine, the content and the images, no browser required:
+**Tests.** 496 checks over nine files (engine, content, images, replay, sound, styles, and
+more), no browser required:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # all nine files
 node tools\test_replay.js                                     # just one
 ```
 
-`test_content.js` also reports how many lines still say `PLACEHOLDER:` — that number
-should be zero before this is given to anyone.
+`test_content.js` also reports if any lines still say `PLACEHOLDER:` — there should be none
+before this is given to anyone.
 
 **The art** is generated, not hand-drawn, so the character can be restyled without
 redrawing pixels by hand. `tools/make_art.py` rewrites the six files it owns:
@@ -217,24 +221,21 @@ invariants a change must preserve, and the rules for keeping replay and sound wo
 
 The structure is done. What's left is the writing and the photographs.
 
-### 1. Replace the 78 `PLACEHOLDER:` lines
+### 1. Review and polish the writing
 
-`test_content.js` prints the worklist on every run, and it's the same 78 rows in
-`content/content.csv` — search that file for `PLACEHOLDER`. Everything it finds is a first
-draft written from the facts — the years, the schools, the towns, the artefacts and who
-did what are all correct, but the voice is generic. Go through it and make it hers, then
-run `python tools\build_content.py` and reload.
+There are no `PLACEHOLDER:` markers left in `content/content.csv`, but the text is still
+worth a careful pass so it sounds like her and gets the details right. Read through the
+descriptions, choices, and outcomes, then run `python tools\build_content.py` and reload.
 
 Two things to preserve while you do:
 
-- **Keep the years.** They carry the chronology, and the placeholder cards read them
-  straight out of the descriptions.
+- **Keep the years.** They carry the chronology and help anchor the story.
 - **Keep `oracleCorrect: true` on the true choice.** It's what makes the Oracle point at
   what actually happened instead of guessing. `test_content.js` fails if a location
   doesn't have exactly one.
 
-If you add or remove a location, re-run `python tools/make_art.py --placeholders` so the
-cards match.
+If you add or remove a location, re-run `python tools/make_art.py --placeholders` if any
+generated placeholder cards remain, and update the content/photo mappings as needed.
 
 ### 2. Drop in the remaining photographs
 
@@ -261,12 +262,13 @@ Play several full runs by hand, both outcomes. Things to look for:
 
 ### 4. Ship it
 
-- [ ] Run `tools\run_tests.ps1` one last time; green, and reporting zero `PLACEHOLDER:`
-      lines.
+- [ ] Run `tools\run_tests.ps1` one last time; green, with no `PLACEHOLDER:` lines.
 - [ ] Open `index.html` on the machine it'll be played on (a `file://` path works; no
       server, nothing to install). If she'll play it on a phone, serve it for a minute with
       `python -m http.server 8000 --directory .` and open `http://<your-pc-ip>:8000` —
       phones can't open `file://` paths.
+- [ ] Publish on GitHub Pages: **Settings → Pages → Deploy from a branch → `main` / `/ (root)`**,
+      then check [ptichko.github.io/amanda40](https://ptichko.github.io/amanda40/).
 - [ ] Check the `<title>` and `<h1>` still suit, and add a dedication line to
       `INTRO_LOCATION` if you want her name in the first thing she reads.
 - [ ] Optional, all content-only: a third intro panel, an `outcome.image` on a dramatic

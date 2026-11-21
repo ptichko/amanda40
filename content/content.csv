@@ -234,7 +234,7 @@ location;loc_magnaCumLaude;;name;College Graduation
 location;loc_magnaCumLaude;;image;images/loc_magnaCumLaude.jpg
 location;loc_magnaCumLaude;;zone;3
 location;loc_magnaCumLaude;;weight;1
-location;loc_magnaCumLaude;;description;Time leave the ivory towers behind and make your mark on the word.
+location;loc_magnaCumLaude;;description;Time to leave the ivory towers behind and make your mark on the word.
 choice;loc_magnaCumLaude;0;label;Combine creative non-fiction and poetry in the same degree and write that senior poetry thesis.
 choice;loc_magnaCumLaude;0;oracle_correct;true
 choice;loc_magnaCumLaude;0;outcome_type;normal
@@ -242,7 +242,7 @@ choice;loc_magnaCumLaude;0;outcome_text;Magna Cum Laude, with a BFA in creative 
 choice;loc_magnaCumLaude;1;label;Finish your major in social media marketing and start selling bubbly water.
 choice;loc_magnaCumLaude;1;outcome_type;penalty
 choice;loc_magnaCumLaude;1;outcome_text;No, no, no. The graveyard of empty cans didn't come until much later.
-choice;loc_magnaCumLaude;2;label;“I am flying into myelf” – you acted in your final college play with all the art kids.
+choice;loc_magnaCumLaude;2;label;I am flying into myself.' You acted in your final college play with all the art kids.
 choice;loc_magnaCumLaude;2;outcome_type;heal
 choice;loc_magnaCumLaude;2;outcome_text;Bill Knot would be proud., more than once.
 location;loc_wegoHealth;;name;WEGO Health
